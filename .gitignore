@@ -34,3 +34,11 @@ Icon
 # Files that might appear on external disk
 .Spotlight-V100
 .Trashes
+
+
+# SASS Cache
+.sass_cache/
+
+# Installed Bower/Node modules
+bower_components/
+node_modules/
