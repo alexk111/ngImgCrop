@@ -71,43 +71,36 @@ crop.factory('cropAreaCircle', ['cropArea', function(CropArea) {
     this._areaIsHover = false;
 
     if (this._areaIsDragging) {
-        this._x = mouseCurX - this._posDragStartX;
-        this._y = mouseCurY - this._posDragStartY;
-        this._areaIsHover = true;
-        cursor='move';
-        res=true;
-        this._events.trigger('area-move');
-    } else {
-        if (this._boxResizeIsDragging) {
-            cursor = 'nesw-resize';
-            var iFR, iFX, iFY;
-            iFX = mouseCurX - this._posResizeStartX;
-            iFY = this._posResizeStartY - mouseCurY;
-            if(iFX>iFY) {
-              iFR = this._posResizeStartSize + iFY*2;
-            } else {
-              iFR = this._posResizeStartSize + iFX*2;
-            }
-
-            this._size = Math.max(this._minSize, iFR);
-            this._boxResizeIsHover = true;
-            res=true;
-            this._events.trigger('area-resize');
+      this._x = mouseCurX - this._posDragStartX;
+      this._y = mouseCurY - this._posDragStartY;
+      this._areaIsHover = true;
+      cursor='move';
+      res=true;
+      this._events.trigger('area-move');
+    } else if (this._boxResizeIsDragging) {
+        cursor = 'nesw-resize';
+        var iFR, iFX, iFY;
+        iFX = mouseCurX - this._posResizeStartX;
+        iFY = this._posResizeStartY - mouseCurY;
+        if(iFX>iFY) {
+          iFR = this._posResizeStartSize + iFY*2;
         } else {
-            // hovering over circle
-            if(this._isCoordWithinArea([mouseCurX,mouseCurY])) {
-                cursor = 'move';
-                this._areaIsHover = true;
-                res=true;
-            }
+          iFR = this._posResizeStartSize + iFX*2;
         }
 
-        if (this._isCoordWithinBoxResize([mouseCurX,mouseCurY])) {
-            cursor = 'nesw-resize';
-            this._areaIsHover = false;
-            this._boxResizeIsHover = true;
-            res=true;
-        }
+        this._size = Math.max(this._minSize, iFR);
+        this._boxResizeIsHover = true;
+        res=true;
+        this._events.trigger('area-resize');
+    } else if (this._isCoordWithinBoxResize([mouseCurX,mouseCurY])) {
+        cursor = 'nesw-resize';
+        this._areaIsHover = false;
+        this._boxResizeIsHover = true;
+        res=true;
+    } else if(this._isCoordWithinArea([mouseCurX,mouseCurY])) {
+        cursor = 'move';
+        this._areaIsHover = true;
+        res=true;
     }
 
     this._dontDragOutside();
@@ -117,20 +110,23 @@ crop.factory('cropAreaCircle', ['cropArea', function(CropArea) {
   };
 
   CropAreaCircle.prototype.processMouseDown=function(mouseDownX, mouseDownY) {
-    if (this._isCoordWithinArea([mouseDownX,mouseDownY])) {
-        this._areaIsDragging = true;
-        this._posDragStartX = mouseDownX - this._x;
-        this._posDragStartY = mouseDownY - this._y;
-        this._events.trigger('area-move-start');
-    }
-
-    if (this._boxResizeIsHover) {
-        this._areaIsDragging = false;
-        this._boxResizeIsDragging = true;
-        this._posResizeStartX=mouseDownX;
-        this._posResizeStartY=mouseDownY;
-        this._posResizeStartSize = this._size;
-        this._events.trigger('area-resize-start');
+    if (this._isCoordWithinBoxResize([mouseDownX,mouseDownY])) {
+      this._areaIsDragging = false;
+      this._areaIsHover = false;
+      this._boxResizeIsDragging = true;
+      this._boxResizeIsHover = true;
+      this._posResizeStartX=mouseDownX;
+      this._posResizeStartY=mouseDownY;
+      this._posResizeStartSize = this._size;
+      this._events.trigger('area-resize-start');
+    } else if (this._isCoordWithinArea([mouseDownX,mouseDownY])) {
+      this._areaIsDragging = true;
+      this._areaIsHover = true;
+      this._boxResizeIsDragging = false;
+      this._boxResizeIsHover = false;
+      this._posDragStartX = mouseDownX - this._x;
+      this._posDragStartY = mouseDownY - this._y;
+      this._events.trigger('area-move-start');
     }
   };
 
@@ -143,6 +139,8 @@ crop.factory('cropAreaCircle', ['cropArea', function(CropArea) {
       this._boxResizeIsDragging = false;
       this._events.trigger('area-resize-end');
     }
+    this._areaIsHover = false;
+    this._boxResizeIsHover = false;
 
     this._posDragStartX = 0;
     this._posDragStartY = 0;

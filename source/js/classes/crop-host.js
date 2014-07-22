@@ -97,8 +97,16 @@ crop.factory('cropHost', ['$document', 'cropAreaCircle', 'cropAreaSquare', funct
 
     var onMouseMove=function(e) {
       if(image!==null) {
-        var offset=getElementOffset(ctx.canvas);
-        theArea.processMouseMove(e.pageX-offset.left, e.pageY-offset.top);
+        var offset=getElementOffset(ctx.canvas),
+            pageX, pageY;
+        if(e.type === 'touchmove') {
+          pageX=e.changedTouches[0].pageX;
+          pageY=e.changedTouches[0].pageY;
+        } else {
+          pageX=e.pageX;
+          pageY=e.pageY;
+        }
+        theArea.processMouseMove(pageX-offset.left, pageY-offset.top);
         drawScene();
       }
     };
@@ -107,15 +115,33 @@ crop.factory('cropHost', ['$document', 'cropAreaCircle', 'cropAreaSquare', funct
       e.preventDefault();
       e.stopPropagation();
       if(image!==null) {
-        var offset=getElementOffset(ctx.canvas);
-        theArea.processMouseDown(e.pageX-offset.left, e.pageY-offset.top);
+        var offset=getElementOffset(ctx.canvas),
+            pageX, pageY;
+        if(e.type === 'touchstart') {
+          pageX=e.changedTouches[0].pageX;
+          pageY=e.changedTouches[0].pageY;
+        } else {
+          pageX=e.pageX;
+          pageY=e.pageY;
+        }
+        theArea.processMouseDown(pageX-offset.left, pageY-offset.top);
+        drawScene();
       }
     };
 
     var onMouseUp=function(e) {
       if(image!==null) {
-        var offset=getElementOffset(ctx.canvas);
-        theArea.processMouseUp(e.pageX-offset.left, e.pageY-offset.top);
+        var offset=getElementOffset(ctx.canvas),
+            pageX, pageY;
+        if(e.type === 'touchend') {
+          pageX=e.changedTouches[0].pageX;
+          pageY=e.changedTouches[0].pageY;
+        } else {
+          pageX=e.pageX;
+          pageY=e.pageY;
+        }
+        theArea.processMouseUp(pageX-offset.left, pageY-offset.top);
+        drawScene();
       }
     };
 
@@ -246,11 +272,20 @@ crop.factory('cropHost', ['$document', 'cropAreaCircle', 'cropAreaSquare', funct
     elCanvas.on('mousedown',onMouseDown);
     $document.on('mouseup',onMouseUp);
 
+    // Init Touch Event Listeners
+    $document.on('touchmove',onMouseMove);
+    elCanvas.on('touchstart',onMouseDown);
+    $document.on('touchend',onMouseUp);
+
     // CropHost Destructor
     this.destroy=function() {
       $document.off('mousemove',onMouseMove);
       elCanvas.off('mousedown',onMouseDown);
       $document.off('mouseup',onMouseMove);
+
+      $document.off('touchmove',onMouseMove);
+      elCanvas.off('touchstart',onMouseDown);
+      $document.off('touchend',onMouseMove);
 
       elCanvas.remove();
     };
