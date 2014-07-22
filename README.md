@@ -41,7 +41,7 @@ var myAppModule = angular.module('MyApp', ['ngImgCrop']);
 
 ## Usage
 
-1. Add the image crop directive `<img-crop>` to the HTML file where you want to use an image crop control.
+1. Add the image crop directive `<img-crop>` to the HTML file where you want to use an image crop control. *Note:* a container, you place the directive to, should have some pre-defined size (absolute or relative to its parent). That's required, because the image crop control fits the size of its container.
 2. Bind the directive to a source image property (using **image=""** option). The directive will read the image data from that property and watch for updates. The property can be a url to an image, or a data uri.
 3. Bind the directive to a result image property (using **result-image=""** option). On each update, the directive will put the content of the crop area to that property in the data uri format.
 4. Set up the options that make sense to your application.
@@ -61,6 +61,14 @@ The following code enables to select an image using a file input and crop it. Th
   <script src="angular.js"></script>
   <script src="ng-img-crop.js"></script>
   <link rel="stylesheet" type="text/css" href="ng-img-crop.css">
+  <style>
+    .cropArea {
+      background: #E4E4E4;
+      overflow: hidden;
+      width:500px;
+      height:350px;
+    }
+  </style>
   <script>
     angular.module('app', ['ngImgCrop'])
       .controller('Ctrl', function($scope) {
@@ -83,7 +91,9 @@ The following code enables to select an image using a file input and crop it. Th
 </head>
 <body ng-app="app" ng-controller="Ctrl">
   <div>Select an image file: <input type="file" id="fileInput" /></div>
-  <img-crop image="myImage" result-image="myCroppedImage"></img-crop>
+  <div class="cropArea">
+    <img-crop image="myImage" result-image="myCroppedImage"></img-crop>
+  </div>
   <div>Cropped Image:</div>
   <div><img src="myCroppedImage" /></div>
 </body>
