@@ -163,8 +163,7 @@ crop.factory('cropAreaSquare', ['cropArea', function(CropArea) {
       }
       var prevCenter = this.getCenterPoint();
 
-      var width = Math.max(this._minSize.w, iFR);
-      this.setSize({w: width, h: width});
+      this.setSize(Math.max(this._minSize.w, iFR));
 
       //recenter
       this.setCenterPoint(prevCenter);

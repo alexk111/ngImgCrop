@@ -90,11 +90,9 @@ crop.factory('cropAreaCircle', ['cropArea', function(CropArea) {
           iFR = this._posResizeStartSize.w + iFX*2;
         }
 
-        var diameter = Math.max(this._minSize.h, iFR);
-
         var prevCenter = this.getCenterPoint();
 
-        this.setSize({w: diameter, h: diameter});
+        this.setSize(Math.max(this._minSize.h, iFR));
 
         //recenter
         this.setCenterPoint(prevCenter);

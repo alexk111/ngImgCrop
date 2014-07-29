@@ -28,12 +28,7 @@ crop.factory('cropArea', ['cropCanvas', function(CropCanvas) {
 
   CropArea.prototype.setSize = function (size) {
 
-    //make this polymorphic to accept a single floating point number n , size.w = n, size.h = n
-    this._size = {x: Math.max(this._minSize.x, size.x) || this._minSize.x,
-                  y: Math.max(this._minSize.y, size.y) || this._minSize.y,
-                  w: Math.max(this._minSize.w, size.w) || this._minSize.w,
-                  h: Math.max(this._minSize.h, size.h) || this._minSize.h};
-
+    this._size = this._processSize(size);
     this._dontDragOutside();
   };
 
@@ -58,8 +53,8 @@ crop.factory('cropArea', ['cropCanvas', function(CropCanvas) {
   };
 
   CropArea.prototype.setMinSize = function (size) {
-    this._minSize = size;
-    this.setSize(size);
+    this._minSize = this._processSize(size);
+    this.setSize(this._minSize);
     this._dontDragOutside();
   };
 
@@ -90,6 +85,20 @@ crop.factory('cropArea', ['cropCanvas', function(CropCanvas) {
   };
 
   CropArea.prototype._drawArea=function() {};
+
+  CropArea.prototype._processSize=function(size)
+  {
+    // make this polymorphic to accept a single floating point number
+    // for square-like sizes (including circle)
+    if (typeof size == "number")
+    {
+      size = {w: size, h: size};
+    }
+    return {x: Math.max(this._minSize.x, size.x) || this._minSize.x,
+            y: Math.max(this._minSize.y, size.y) || this._minSize.y,
+            w: Math.max(this._minSize.w, size.w) || this._minSize.w,
+            h: Math.max(this._minSize.h, size.h) || this._minSize.h};
+  }
 
   CropArea.prototype.draw=function() {
     // draw crop area
