@@ -32,6 +32,15 @@ crop.factory('cropArea', ['cropCanvas', function(CropCanvas) {
     this._dontDragOutside();
   };
 
+  CropArea.prototype.setSizeByCorners = function (northWestCorner, southEastCorner) {
+
+    var size = {x: northWestCorner.x,
+                y: northWestCorner.y,
+                w: southEastCorner.x - northWestCorner.x,
+                h: southEastCorner.y - northWestCorner.y};
+    this.setSize(size);
+  };
+
   CropArea.prototype.getSouthEastBound = function () {
     var s = this.getSize();
     return {x: s.x + s.w, y: s.y + s.h};
