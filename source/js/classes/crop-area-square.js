@@ -28,44 +28,19 @@ crop.factory('cropAreaSquare', ['cropArea', function(CropArea) {
   CropAreaSquare.prototype = new CropArea();
 
   CropAreaSquare.prototype._calcSquareCorners=function() {
-    var hSize=this._size.h/2;
-    var c = this.getCenterPoint();
+    var size = this.getSize();
+    var se = this.getSouthEastBound();
      return [
-      [c.x-hSize, c.y-hSize],
-      [c.x+hSize, c.y-hSize],
-      [c.x-hSize, c.y+hSize],
-      [c.x+hSize, c.y+hSize]
+      [size.x, size.y], //northwest
+      [se.x, size.y], //northeast
+      [size.x, se.y], //southwest
+      [se.x, se.y] //southeast
      ];
    };
 
    CropAreaSquare.prototype._calcSquareDimensions=function() {
-    var hSize=this._size.h/2;
-    var c = this.getCenterPoint();
-     return {
-      left: c.x-hSize,
-      top: c.y-hSize,
-      right: c.x+hSize,
-      bottom: c.y+hSize
-    }
-  };
-
-/*
-
-//FIXME:
-  CropAreaSquare.prototype._calcSquareCorners=function() {
     var size = this.getSize();
-    var se = this.getSoutheastBound();
-    return [
-      [size.x, size.y], //northwest
-      [se.x, size.y], //northeast
-      [size.x, size.y], //southwest
-      [se.x, se.y] //southeast
-    ];
-  };
-
-  CropAreaSquare.prototype._calcSquareDimensions=function() {
-    var size = this.getSize();
-    var se = this.getSoutheastBound();
+    var se = this.getSouthEastBound();
     return {
       left: size.x,
       top: size.y,
@@ -73,7 +48,6 @@ crop.factory('cropAreaSquare', ['cropArea', function(CropArea) {
       bottom: se.y
     };
   };
-*/
 
   CropAreaSquare.prototype._isCoordWithinArea=function(coord) {
     var squareDimensions=this._calcSquareDimensions();
