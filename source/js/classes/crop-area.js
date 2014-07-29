@@ -28,8 +28,9 @@ crop.factory('cropArea', ['cropCanvas', function(CropCanvas) {
 
   CropArea.prototype.setSize = function (size) {
 
-    this._size = {x: Math.max(this._minSize.x, size.x) ||  this._minSize.x,
-                  y: Math.max(this._minSize.y, size.y) ||  this._minSize.y,
+    //make this polymorphic to accept a single floating point number n , size.w = n, size.h = n
+    this._size = {x: Math.max(this._minSize.x, size.x) || this._minSize.x,
+                  y: Math.max(this._minSize.y, size.y) || this._minSize.y,
                   w: Math.max(this._minSize.w, size.w) || this._minSize.w,
                   h: Math.max(this._minSize.h, size.h) || this._minSize.h};
 
@@ -40,8 +41,6 @@ crop.factory('cropArea', ['cropCanvas', function(CropCanvas) {
     var s = this.getSize();
     return {x: s.x + s.w, y: s.y + s.h};
   };
-
-
 
   CropArea.prototype.getMinSize = function () {
     return this._minSize;
@@ -66,22 +65,35 @@ crop.factory('cropArea', ['cropCanvas', function(CropCanvas) {
 
   /* FUNCTIONS */
   CropArea.prototype._dontDragOutside=function() {
-    var h=this._ctx.canvas.height,
-        w=this._ctx.canvas.width;
+    var canvasH=this._ctx.canvas.height,
+        canvasW=this._ctx.canvas.width;
 
-    if(this._size.w>w) { this._size.w=w; }
-    if(this._size.w>h) { this._size.w=h; }
+    var s = this.getSize();
+    var se = this.getSouthEastBound();
+    // copy size
+    var newSize = {x: s.x, y: s.y, w:s.w, h:s.h};
 
-    //FIXME: check southeast bound
-    if(this._size.x<0) { this._size.x=0; }
-    if(this._size.y<0) { this._size.y=0; }
+    //check northwest corner
+    if(s.x<0) { newSize.x=0; }
+    if(s.y<0) { newSize.y=0; }
+
+    //check southeast corner
+    if(se.x>canvasW) { newSize.x=canvasW-s.w; }
+    if(se.y>canvasH) { newSize.y=canvasW-s.w; }
+
+    //check width / height
+    if(s.w>canvasW) { newSize.w=canvasW; }
+    if(s.h>canvasH) { newSize.h=canvasH; }
+
+    this._size = newSize;
+
   };
 
   CropArea.prototype._drawArea=function() {};
 
   CropArea.prototype.draw=function() {
     // draw crop area
-    this._cropCanvas.drawCropArea(this._image,this._size,this.getCenterPoint(),this._drawArea);
+    this._cropCanvas.drawCropArea(this._image,this.getCenterPoint(),this._size,this._drawArea);
   };
 
   CropArea.prototype.processMouseMove=function() {};
