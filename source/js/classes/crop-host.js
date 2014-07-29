@@ -34,9 +34,6 @@ crop.factory('cropHost', ['$document', 'cropAreaCircle', 'cropAreaSquare', 'crop
     var minCanvasDims=[100,100],
         maxCanvasDims=[300,300];
 
-    // Result Image size
-    var resImgSize={w: 200, h: 200};
-
     /* PRIVATE FUNCTIONS */
 
     // Draw Scene
@@ -153,11 +150,11 @@ crop.factory('cropHost', ['$document', 'cropAreaCircle', 'cropAreaSquare', 'crop
       var temp_ctx, temp_canvas;
       temp_canvas = angular.element('<canvas></canvas>')[0];
       temp_ctx = temp_canvas.getContext('2d');
-      temp_canvas.width = resImgSize.w;
-      temp_canvas.height = resImgSize.h;
+      temp_canvas.width = theArea.getSize().w;
+      temp_canvas.height = theArea.getSize().h;
       var center = theArea.getCenterPoint();
       if(image!==null){
-        temp_ctx.drawImage(image, (center.x-theArea.getSize().w/2)*(image.width/ctx.canvas.width), (center.y-theArea.getSize().h/2)*(image.height/ctx.canvas.height), theArea.getSize().w*(image.width/ctx.canvas.width), theArea.getSize().h*(image.height/ctx.canvas.height), 0, 0, resImgSize.w, resImgSize.h);
+        temp_ctx.drawImage(image, (center.x-theArea.getSize().w/2)*(image.width/ctx.canvas.width), (center.y-theArea.getSize().h/2)*(image.height/ctx.canvas.height), theArea.getSize().w*(image.width/ctx.canvas.width), theArea.getSize().h*(image.height/ctx.canvas.height), 0, 0, theArea.getSize().w, theArea.getSize().h);
       }
       return {dataURI: temp_canvas.toDataURL(),
               imageData: temp_canvas.getContext("2d").getImageData(0, 0, temp_canvas.width, temp_canvas.height)};
