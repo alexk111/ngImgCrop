@@ -34,6 +34,9 @@ crop.factory('cropHost', ['$document', 'cropAreaCircle', 'cropAreaSquare', 'crop
     var minCanvasDims=[100,100],
         maxCanvasDims=[300,300];
 
+    // Result Image size
+    var resImgSize={w: 200, h: 200};
+
     /* PRIVATE FUNCTIONS */
 
     // Draw Scene
@@ -150,11 +153,12 @@ crop.factory('cropHost', ['$document', 'cropAreaCircle', 'cropAreaSquare', 'crop
       var temp_ctx, temp_canvas;
       temp_canvas = angular.element('<canvas></canvas>')[0];
       temp_ctx = temp_canvas.getContext('2d');
-      temp_canvas.width = theArea.getSize().w;
-      temp_canvas.height = theArea.getSize().h;
+      var ris = this.getResultImageSize();
+      temp_canvas.width = ris.w;
+      temp_canvas.height = ris.h;
       var center = theArea.getCenterPoint();
       if(image!==null){
-        temp_ctx.drawImage(image, (center.x-theArea.getSize().w/2)*(image.width/ctx.canvas.width), (center.y-theArea.getSize().h/2)*(image.height/ctx.canvas.height), theArea.getSize().w*(image.width/ctx.canvas.width), theArea.getSize().h*(image.height/ctx.canvas.height), 0, 0, theArea.getSize().w, theArea.getSize().h);
+        temp_ctx.drawImage(image, (center.x-theArea.getSize().w/2)*(image.width/ctx.canvas.width), (center.y-theArea.getSize().h/2)*(image.height/ctx.canvas.height), theArea.getSize().w*(image.width/ctx.canvas.width), theArea.getSize().h*(image.height/ctx.canvas.height), 0, 0, ris.w, ris.h);
       }
       return {dataURI: temp_canvas.toDataURL(),
               imageData: temp_canvas.getContext("2d").getImageData(0, 0, temp_canvas.width, temp_canvas.height)};
@@ -239,15 +243,32 @@ crop.factory('cropHost', ['$document', 'cropAreaCircle', 'cropAreaSquare', 'crop
       }
     };
 
+    this.getResultImageSize=function() {
+      if (resImgSize == "selection")
+      {
+        return theArea.getSize();
+      }
+
+      return resImgSize;
+    };
     this.setResultImageSize=function(size) {
       if (angular.isUndefined(size))
       {
         return;
       }
-      size={w: parseInt(size.w,10),
-            h: parseInt(size.h,10)};
+
+      //allow scalar values for square-like selection shapes
+      if (typeof size === "number")
+      {
+        size = parseInt(size, 10);
+        size = {w: size,
+                h: size};
+      }
+
+      size={w: parseInt(size.w, 10),
+            h: parseInt(size.h, 10)};
       if(!isNaN(size.w) && !isNaN(size.h)) {
-        theArea.setMinSize(size);
+        resImgSize=size;
         drawScene();
       }
     };
