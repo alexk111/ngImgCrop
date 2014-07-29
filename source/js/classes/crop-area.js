@@ -83,7 +83,7 @@ crop.factory('cropArea', ['cropCanvas', function(CropCanvas) {
 
     //check southeast corner
     if(se.x>canvasW) { newSize.x=canvasW-s.w; }
-    if(se.y>canvasH) { newSize.y=canvasW-s.w; }
+    if(se.y>canvasH) { newSize.y=canvasH-s.h; }
 
     //check width / height
     if(s.w>canvasW) { newSize.w=canvasW; }
