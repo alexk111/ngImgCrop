@@ -157,12 +157,14 @@ crop.factory('cropHost', ['$document', 'cropAreaCircle', 'cropAreaSquare', 'crop
       temp_canvas.width = ris.w;
       temp_canvas.height = ris.h;
       var center = theArea.getCenterPoint();
+      var retObj = {dataURI: null,
+                    imageData: null};
       if(image!==null){
         temp_ctx.drawImage(image, (center.x-theArea.getSize().w/2)*(image.width/ctx.canvas.width), (center.y-theArea.getSize().h/2)*(image.height/ctx.canvas.height), theArea.getSize().w*(image.width/ctx.canvas.width), theArea.getSize().h*(image.height/ctx.canvas.height), 0, 0, ris.w, ris.h);
+        retObj.dataURI = temp_canvas.toDataURL();
+        retObj.imageData = temp_canvas.getContext("2d").getImageData(0, 0, temp_canvas.width, temp_canvas.height);
       }
-      return {dataURI: temp_canvas.toDataURL(),
-              imageData: temp_canvas.getContext("2d").getImageData(0, 0, temp_canvas.width, temp_canvas.height)};
-
+      return retObj;
     };
 
     this.setNewImageSource=function(imageSource) {
