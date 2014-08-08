@@ -28,7 +28,8 @@ crop.factory('cropArea', ['cropCanvas', function(CropCanvas) {
 
   CropArea.prototype.setSize = function (size) {
 
-    this._size = this._processSize(size);
+    size = this._processSize(size);
+    this._size = this._preventBoundaryCollision(size);
   };
 
   CropArea.prototype.setSizeByCorners = function (northWestCorner, southEastCorner) {
@@ -112,7 +113,7 @@ crop.factory('cropArea', ['cropCanvas', function(CropCanvas) {
       {
         se.y = canvasH;
         //adjust nw corner according to min height
-        nw.y = Math.max(se.y - canvasY, se.y - this._minSize.h);
+        nw.y = Math.max(se.y - canvasH, se.y - this._minSize.h);
         newSize = {x: nw.x,
                    y: nw.y,
                    w: se.x - nw.x,
@@ -135,13 +136,10 @@ crop.factory('cropArea', ['cropCanvas', function(CropCanvas) {
       size = {w: size, h: size};
     }
 
-    size = {x: size.x || this._minSize.x,
+    return {x: size.x || this._minSize.x,
             y: size.y || this._minSize.y,
             w: size.w || this._minSize.w,
             h: size.h || this._minSize.h};
-
-    return this._preventBoundaryCollision(size);
-
   }
 
   CropArea.prototype._southEastBound=function(size)
