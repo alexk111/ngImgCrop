@@ -37,6 +37,12 @@ crop.factory('cropHost', ['$document', 'cropAreaCircle', 'cropAreaSquare', funct
     // Result Image size
     var resImgSize=200;
 
+    // Result Image type
+    var resImgFormat='image/png';
+
+    // Result Image quality
+    var resImgQuality=null;
+
     /* PRIVATE FUNCTIONS */
 
     // Draw Scene
@@ -155,7 +161,10 @@ crop.factory('cropHost', ['$document', 'cropAreaCircle', 'cropAreaSquare', funct
       if(image!==null){
         temp_ctx.drawImage(image, (theArea.getX()-theArea.getSize()/2)*(image.width/ctx.canvas.width), (theArea.getY()-theArea.getSize()/2)*(image.height/ctx.canvas.height), theArea.getSize()*(image.width/ctx.canvas.width), theArea.getSize()*(image.height/ctx.canvas.height), 0, 0, resImgSize, resImgSize);
       }
-      return temp_canvas.toDataURL();
+      if (resImgQuality!==null ){
+        return temp_canvas.toDataURL(resImgFormat, resImgQuality);
+      }
+      return temp_canvas.toDataURL(resImgFormat);
     };
 
     this.setNewImageSource=function(imageSource) {
@@ -232,6 +241,17 @@ crop.factory('cropHost', ['$document', 'cropAreaCircle', 'cropAreaSquare', funct
       size=parseInt(size,10);
       if(!isNaN(size)) {
         resImgSize=size;
+      }
+    };
+
+    this.setResultImageFormat=function(format) {
+      resImgFormat = format;
+    };
+
+    this.setResultImageQuality=function(quality){
+      quality = parseFloat(quality);
+      if (!isNaN(quality) && quality>=0 && quality<=1){
+        resImgQuality = quality;
       }
     };
 
