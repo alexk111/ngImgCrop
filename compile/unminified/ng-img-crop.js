@@ -5,7 +5,7 @@
  * Copyright (c) 2014 Alex Kaul
  * License: MIT
  *
- * Generated at Wednesday, August 13th, 2014, 10:50:54 AM
+ * Generated at Wednesday, August 13th, 2014, 10:55:49 AM
  */
 (function() {
 'use strict';
@@ -1145,7 +1145,7 @@ crop.directive('imgCrop', ['$timeout', 'cropHost', 'cropPubSub', function($timeo
           }
           updateAreaCoords(scope)
           scope.onChange({
-            $dataURI: scope.resultImage
+            $dataURI: scope.resultImage,
             $imageData: scope.resultImageData
           });
         }
