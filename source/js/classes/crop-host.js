@@ -158,6 +158,10 @@ crop.factory('cropHost', ['$document', 'cropAreaCircle', 'cropAreaSquare', funct
       return temp_canvas.toDataURL();
     };
 
+    this.getAreaCoords=function() {
+      return theArea.getPosition()
+    }
+
     this.setNewImageSource=function(imageSource) {
       image=null;
       resetCropHost();

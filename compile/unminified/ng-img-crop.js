@@ -5,7 +5,7 @@
  * Copyright (c) 2014 Alex Kaul
  * License: MIT
  *
- * Generated at Tuesday, July 22nd, 2014, 10:37:39 PM
+ * Generated at Wednesday, August 13th, 2014, 9:53:20 AM
  */
 (function() {
 'use strict';
@@ -432,6 +432,15 @@ crop.factory('cropArea', ['cropCanvas', function(CropCanvas) {
     this._dontDragOutside();
   };
 
+  CropArea.prototype.getPosition = function () {
+    return {
+      left: this._x - this._size/2,
+      top: this._y - this._size/2,
+      width: this._size,
+      height: this._size,
+    }
+  }
+
   CropArea.prototype.getMinSize = function () {
     return this._minSize;
   };
@@ -760,6 +769,10 @@ crop.factory('cropHost', ['$document', 'cropAreaCircle', 'cropAreaSquare', funct
       return temp_canvas.toDataURL();
     };
 
+    this.getAreaCoords=function() {
+      return theArea.getPosition()
+    }
+
     this.setNewImageSource=function(imageSource) {
       image=null;
       resetCropHost();
@@ -929,6 +942,7 @@ crop.directive('imgCrop', ['$timeout', 'cropHost', 'cropPubSub', function($timeo
       resultImage: '=',
 
       changeOnFly: '=',
+      areaCoords: '=',
       areaType: '@',
       areaMinSize: '=',
       resultImageSize: '=',
@@ -959,9 +973,15 @@ crop.directive('imgCrop', ['$timeout', 'cropHost', 'cropPubSub', function($timeo
           if(angular.isDefined(scope.resultImage)) {
             scope.resultImage=resultImage;
           }
+          updateAreaCoords(scope)
           scope.onChange({$dataURI: scope.resultImage});
         }
       };
+
+      var updateAreaCoords=function(scope) {
+        var areaCoords=cropHost.getAreaCoords();
+        scope.areaCoords=areaCoords;
+      }
 
       // Wrapper to safely exec functions within $apply on a running $digest cycle
       var fnSafeApply=function(fn) {
@@ -1030,4 +1050,5 @@ crop.directive('imgCrop', ['$timeout', 'cropHost', 'cropPubSub', function($timeo
     }
   };
 }]);
+
 }());
