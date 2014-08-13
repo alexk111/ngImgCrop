@@ -6,6 +6,7 @@ crop.directive('imgCrop', ['$timeout', 'cropHost', 'cropPubSub', function($timeo
     scope: {
       image: '=',
       resultImage: '=',
+      resultImageData: '=',
 
       changeOnFly: '=',
       areaCoords: '=',
@@ -33,14 +34,21 @@ crop.directive('imgCrop', ['$timeout', 'cropHost', 'cropPubSub', function($timeo
       var storedResultImage;
 
       var updateResultImage=function(scope) {
-        var resultImage=cropHost.getResultImageDataURI();
+        var resultImageObj=cropHost.getResultImage();
+        var resultImage = resultImageObj.dataURI;
         if(storedResultImage!==resultImage) {
           storedResultImage=resultImage;
           if(angular.isDefined(scope.resultImage)) {
             scope.resultImage=resultImage;
           }
+          if(angular.isDefined(scope.resultImageData)) {
+            scope.resultImageData=resultImageObj.imageData;
+          }
           updateAreaCoords(scope)
-          scope.onChange({$dataURI: scope.resultImage});
+          scope.onChange({
+            $dataURI: scope.resultImage
+            $imageData: scope.resultImageData
+          });
         }
       };
 

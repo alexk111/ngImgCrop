@@ -17,7 +17,7 @@ crop.factory('cropAreaCircle', ['cropArea', function(CropArea) {
     this._posDragStartY=0;
     this._posResizeStartX=0;
     this._posResizeStartY=0;
-    this._posResizeStartSize=0;
+    this._posResizeStartSize={w: 0, h: 0};
 
     this._boxResizeIsHover = false;
     this._areaIsHover = false;
@@ -28,10 +28,11 @@ crop.factory('cropAreaCircle', ['cropArea', function(CropArea) {
   CropAreaCircle.prototype = new CropArea();
 
   CropAreaCircle.prototype._calcCirclePerimeterCoords=function(angleDegrees) {
-    var hSize=this._size/2;
+    var c = this.getCenterPoint();
+    var s = this.getSize();
     var angleRadians=angleDegrees * (Math.PI / 180),
-        circlePerimeterX=this._x + hSize * Math.cos(angleRadians),
-        circlePerimeterY=this._y + hSize * Math.sin(angleRadians);
+        circlePerimeterX=c.x + s.w / 2 * Math.cos(angleRadians),
+        circlePerimeterY=c.y + s.h / 2 * Math.sin(angleRadians);
     return [circlePerimeterX, circlePerimeterY];
   };
 
@@ -40,7 +41,8 @@ crop.factory('cropAreaCircle', ['cropArea', function(CropArea) {
   };
 
   CropAreaCircle.prototype._isCoordWithinArea=function(coord) {
-    return Math.sqrt((coord[0]-this._x)*(coord[0]-this._x) + (coord[1]-this._y)*(coord[1]-this._y)) < this._size/2;
+    var c = this.getCenterPoint();
+    return Math.sqrt((coord[0]-c.x)*(coord[0]-c.x) + (coord[1]-c.y)*(coord[1]-c.y)) < this._size.h/2;
   };
   CropAreaCircle.prototype._isCoordWithinBoxResize=function(coord) {
     var resizeIconCenterCoords=this._calcResizeIconCenterCoords();
@@ -49,15 +51,16 @@ crop.factory('cropAreaCircle', ['cropArea', function(CropArea) {
            coord[1] > resizeIconCenterCoords[1] - hSize && coord[1] < resizeIconCenterCoords[1] + hSize);
   };
 
-  CropAreaCircle.prototype._drawArea=function(ctx,centerCoords,size){
-    ctx.arc(centerCoords[0],centerCoords[1],size/2,0,2*Math.PI);
+  CropAreaCircle.prototype._drawArea=function(ctx, center, size){
+    ctx.arc(center.x, center.y,size.h/2,0,2*Math.PI);
   };
 
   CropAreaCircle.prototype.draw=function() {
     CropArea.prototype.draw.apply(this, arguments);
 
     // draw move icon
-    this._cropCanvas.drawIconMove([this._x,this._y], this._areaIsHover?this._iconMoveHoverRatio:this._iconMoveNormalRatio);
+    var c = this.getCenterPoint();
+    this._cropCanvas.drawIconMove([c.x, c.y], this._areaIsHover?this._iconMoveHoverRatio:this._iconMoveNormalRatio);
 
     // draw resize cubes
     this._cropCanvas.drawIconResizeBoxNESW(this._calcResizeIconCenterCoords(), this._boxResizeBaseSize, this._boxResizeIsHover?this._boxResizeHoverRatio:this._boxResizeNormalRatio);
@@ -71,8 +74,7 @@ crop.factory('cropAreaCircle', ['cropArea', function(CropArea) {
     this._areaIsHover = false;
 
     if (this._areaIsDragging) {
-      this._x = mouseCurX - this._posDragStartX;
-      this._y = mouseCurY - this._posDragStartY;
+      this.setCenterPoint({x: mouseCurX - this._posDragStartX, y: mouseCurY - this._posDragStartY});
       this._areaIsHover = true;
       cursor='move';
       res=true;
@@ -83,12 +85,18 @@ crop.factory('cropAreaCircle', ['cropArea', function(CropArea) {
         iFX = mouseCurX - this._posResizeStartX;
         iFY = this._posResizeStartY - mouseCurY;
         if(iFX>iFY) {
-          iFR = this._posResizeStartSize + iFY*2;
+          iFR = this._posResizeStartSize.h + iFY*2;
         } else {
-          iFR = this._posResizeStartSize + iFX*2;
+          iFR = this._posResizeStartSize.w + iFX*2;
         }
 
-        this._size = Math.max(this._minSize, iFR);
+        var prevCenter = this.getCenterPoint();
+
+        this.setSize(Math.max(this._minSize.h, iFR));
+
+        //recenter
+        this.setCenterPoint(prevCenter);
+
         this._boxResizeIsHover = true;
         res=true;
         this._events.trigger('area-resize');
@@ -124,8 +132,8 @@ crop.factory('cropAreaCircle', ['cropArea', function(CropArea) {
       this._areaIsHover = true;
       this._boxResizeIsDragging = false;
       this._boxResizeIsHover = false;
-      this._posDragStartX = mouseDownX - this._x;
-      this._posDragStartY = mouseDownY - this._y;
+      this._posDragStartX = mouseDownX - this.getCenterPoint().x;
+      this._posDragStartY = mouseDownY - this.getCenterPoint().y;
       this._events.trigger('area-move-start');
     }
   };
