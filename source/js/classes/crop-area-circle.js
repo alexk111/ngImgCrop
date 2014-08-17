@@ -111,7 +111,6 @@ crop.factory('cropAreaCircle', ['cropArea', function(CropArea) {
         res=true;
     }
 
-    this._dontDragOutside();
     angular.element(this._ctx.canvas).css({'cursor': cursor});
 
     return res;
