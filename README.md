@@ -8,6 +8,10 @@ Simple Image Crop directive for AngularJS. Enables to crop a circle or a square 
 
 ![Square Crop](https://raw.github.com/alexk111/ngImgCrop/master/screenshots/square_1.jpg "Square Crop")
 
+## Live demo
+
+[Live demo on JSFiddle](http://jsfiddle.net/alexk111/rw6q9/)
+
 ## Requirements
 
  - AngularJS
@@ -51,7 +55,7 @@ var myAppModule = angular.module('MyApp', ['ngImgCrop']);
 
 The result image will always be a square for the both circle and square area types. It's highly recommended to store the image as a square on your back-end, because this will enable you to easily update your pics later, if you decide to implement some design changes. Showing a square image as a circle on the front-end is not a problem - it is as easy as adding a *border-radius* style for that image in a css.
 
-## Example
+## Example code
 
 The following code enables to select an image using a file input and crop it. The cropped image data is inserted into img each time the crop area updates.
 
@@ -95,7 +99,7 @@ The following code enables to select an image using a file input and crop it. Th
     <img-crop image="myImage" result-image="myCroppedImage"></img-crop>
   </div>
   <div>Cropped Image:</div>
-  <div><img src="myCroppedImage" /></div>
+  <div><img ng-src="{{myCroppedImage}}" /></div>
 </body>
 </html>
 ```
