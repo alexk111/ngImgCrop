@@ -81,7 +81,7 @@ crop.directive('imgCrop', ['$timeout', 'cropHost', 'cropPubSub', function($timeo
 
       // Sync CropHost with Directive's options
       scope.$watch('image',function(){
-        cropHost.setNewImageSource(scope.image, scope.areaType);
+        cropHost.setNewImageSource(scope.image);
       });
       scope.$watch('areaType',function(){
         cropHost.setAreaType(scope.areaType);

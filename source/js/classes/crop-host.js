@@ -28,7 +28,8 @@ crop.factory('cropHost', ['$document', 'cropAreaCircle', 'cropAreaSquare', 'crop
     // Object Pointers
     var ctx=null,
         image=null,
-        theArea=null;
+        theArea=null,
+        self=this;
 
     // Dimensions
     var minCanvasDims=[100,100],
@@ -62,7 +63,7 @@ crop.factory('cropHost', ['$document', 'cropAreaCircle', 'cropAreaSquare', 'crop
     }
 
     // Resets CropHost
-    var resetCropHost=function(areaType) {
+    var resetCropHost=function() {
       if(image!==null) {
         theArea.setImage(image);
         var imageDims=[image.width, image.height],
@@ -88,6 +89,8 @@ crop.factory('cropHost', ['$document', 'cropAreaCircle', 'cropAreaSquare', 'crop
         var cw = ctx.canvas.width;
         var ch = ctx.canvas.height;
 
+
+        var areaType = self.getAreaType();
         // enforce 1:1 aspect ratio for square-like selections
         if ((areaType === 'circle') || (areaType === 'square')) {
           cw = ch = Math.min(cw, ch);
@@ -174,16 +177,16 @@ crop.factory('cropHost', ['$document', 'cropAreaCircle', 'cropAreaSquare', 'crop
       return retObj;
     };
 
-    this.setNewImageSource=function(imageSource, areaType) {
+    this.setNewImageSource=function(imageSource) {
       image=null;
-      resetCropHost(areaType);
+      resetCropHost();
       events.trigger('image-updated');
       if(!!imageSource) {
         var newImage = new Image();
         newImage.onload = function(){
           events.trigger('load-done');
           image=newImage;
-          resetCropHost(areaType);
+          resetCropHost();
           events.trigger('image-updated');
         };
         newImage.onerror=function() {
@@ -288,6 +291,18 @@ crop.factory('cropHost', ['$document', 'cropAreaCircle', 'cropAreaSquare', 'crop
         drawScene();
       }
     };
+
+    // returns a string of the area type based on its class
+    this.getAreaType=function() {
+      if (theArea instanceof CropAreaSquare)
+      {
+        return 'square';
+      } else if (theArea instanceof CropAreaRectangle)
+      {
+        return 'rectangle';
+      }
+      return 'circle';
+    }
 
     this.setAreaType=function(type) {
       var center = theArea.getCenterPoint();
