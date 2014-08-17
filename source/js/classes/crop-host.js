@@ -62,7 +62,7 @@ crop.factory('cropHost', ['$document', 'cropAreaCircle', 'cropAreaSquare', 'crop
     }
 
     // Resets CropHost
-    var resetCropHost=function() {
+    var resetCropHost=function(areaType) {
       if(image!==null) {
         theArea.setImage(image);
         var imageDims=[image.width, image.height],
@@ -85,9 +85,16 @@ crop.factory('cropHost', ['$document', 'cropAreaCircle', 'cropAreaSquare', 'crop
         }
         elCanvas.prop('width',canvasDims[0]).prop('height',canvasDims[1]).css({'margin-left': -canvasDims[0]/2+'px', 'margin-top': -canvasDims[1]/2+'px'});
 
-        theArea.setSize({ w: Math.min(200, ctx.canvas.width/2),
-                          h: Math.min(200, ctx.canvas.height/2)});
+        var cw = ctx.canvas.width;
+        var ch = ctx.canvas.height;
 
+        // enforce 1:1 aspect ratio for square-like selections
+        if ((areaType === 'circle') || (areaType === 'square')) {
+          cw = ch = Math.min(cw, ch);
+        }
+
+        theArea.setSize({ w: Math.min(200, cw / 2),
+                          h: Math.min(200, ch / 2)});
         //TODO: set top left corner point
         theArea.setCenterPoint({x: ctx.canvas.width/2, y: ctx.canvas.height/2});
 
@@ -167,16 +174,16 @@ crop.factory('cropHost', ['$document', 'cropAreaCircle', 'cropAreaSquare', 'crop
       return retObj;
     };
 
-    this.setNewImageSource=function(imageSource) {
+    this.setNewImageSource=function(imageSource, areaType) {
       image=null;
-      resetCropHost();
+      resetCropHost(areaType);
       events.trigger('image-updated');
       if(!!imageSource) {
         var newImage = new Image();
         newImage.onload = function(){
           events.trigger('load-done');
           image=newImage;
-          resetCropHost();
+          resetCropHost(areaType);
           events.trigger('image-updated');
         };
         newImage.onerror=function() {
