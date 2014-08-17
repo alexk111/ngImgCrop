@@ -7,6 +7,11 @@ crop.factory('cropAreaSquare', ['cropArea', 'cropAreaRectangle', function(CropAr
 
   CropAreaSquare.prototype = new CropAreaRectangle();
 
+  // return a type string
+  CropAreaSquare.prototype.getType = function() {
+    return 'square';
+  }
+
   // override rectangle's mouse move method
   CropAreaSquare.prototype.processMouseMove=function(mouseCurX, mouseCurY) {
     var cursor='default';

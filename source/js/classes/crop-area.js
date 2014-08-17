@@ -65,6 +65,13 @@ crop.factory('cropArea', ['cropCanvas', function(CropCanvas) {
     this.setSize(this._minSize);
   };
 
+
+  // return a type string
+  CropArea.prototype.getType = function() {
+    //default to circle
+    return 'circle';
+  }
+
   /* FUNCTIONS */
   CropArea.prototype._preventBoundaryCollision=function(size) {
     var canvasH=this._ctx.canvas.height,
@@ -119,9 +126,16 @@ crop.factory('cropArea', ['cropCanvas', function(CropCanvas) {
                    w: se.x - nw.x,
                    h: se.y - nw.y};
       }
-
     }
 
+    //finally, enforce 1:1 aspect ratio for sqaure-like selections
+    if (this.getType() === "circle" || this.getType() === "square")
+    {
+      newSize = {x: newSize.x,
+                 y: newSize.y,
+                 w: Math.min(newSize.w, newSize.h),
+                 h: Math.min(newSize.w, newSize.h)};
+    }
     return newSize;
   };
 

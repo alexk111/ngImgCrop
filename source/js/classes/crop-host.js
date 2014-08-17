@@ -292,16 +292,9 @@ crop.factory('cropHost', ['$document', 'cropAreaCircle', 'cropAreaSquare', 'crop
       }
     };
 
-    // returns a string of the area type based on its class
+    // returns a string of the selection area's type
     this.getAreaType=function() {
-      if (theArea instanceof CropAreaSquare)
-      {
-        return 'square';
-      } else if (theArea instanceof CropAreaRectangle)
-      {
-        return 'rectangle';
-      }
-      return 'circle';
+      return theArea.getType();
     }
 
     this.setAreaType=function(type) {
