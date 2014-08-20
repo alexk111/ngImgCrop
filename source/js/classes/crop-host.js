@@ -95,13 +95,25 @@ crop.factory('cropHost', ['$document', 'cropAreaCircle', 'cropAreaSquare', funct
       drawScene();
     };
 
+    /**
+     * Returns event.changedTouches directly if event is a TouchEvent.
+     * If event is a jQuery event, return changedTouches of event.originalEvent
+     */
+    var getChangedTouches=function(event){
+      if(angular.isDefined(event.changedTouches)){
+        return event.changedTouches;
+      }else{
+        return event.originalEvent.changedTouches;
+      }
+    };
+
     var onMouseMove=function(e) {
       if(image!==null) {
         var offset=getElementOffset(ctx.canvas),
             pageX, pageY;
         if(e.type === 'touchmove') {
-          pageX=e.changedTouches[0].pageX;
-          pageY=e.changedTouches[0].pageY;
+          pageX=getChangedTouches(e)[0].pageX;
+          pageY=getChangedTouches(e)[0].pageY;
         } else {
           pageX=e.pageX;
           pageY=e.pageY;
@@ -118,8 +130,8 @@ crop.factory('cropHost', ['$document', 'cropAreaCircle', 'cropAreaSquare', funct
         var offset=getElementOffset(ctx.canvas),
             pageX, pageY;
         if(e.type === 'touchstart') {
-          pageX=e.changedTouches[0].pageX;
-          pageY=e.changedTouches[0].pageY;
+          pageX=getChangedTouches(e)[0].pageX;
+          pageY=getChangedTouches(e)[0].pageY;
         } else {
           pageX=e.pageX;
           pageY=e.pageY;
@@ -134,8 +146,8 @@ crop.factory('cropHost', ['$document', 'cropAreaCircle', 'cropAreaSquare', funct
         var offset=getElementOffset(ctx.canvas),
             pageX, pageY;
         if(e.type === 'touchend') {
-          pageX=e.changedTouches[0].pageX;
-          pageY=e.changedTouches[0].pageY;
+          pageX=getChangedTouches(e)[0].pageX;
+          pageY=getChangedTouches(e)[0].pageY;
         } else {
           pageX=e.pageX;
           pageY=e.pageY;
