@@ -6,11 +6,13 @@ crop.directive('imgCrop', ['$timeout', 'cropHost', 'cropPubSub', function($timeo
     scope: {
       image: '=',
       resultImage: '=',
+      resultImageData: '=',
 
       changeOnFly: '=',
       areaType: '@',
+      aspectRatio: '=',
       areaMinSize: '=',
-      resultImageSize: '=',
+      resultImageSize: '@',
 
       onChange: '&',
       onLoadBegin: '&',
@@ -32,13 +34,18 @@ crop.directive('imgCrop', ['$timeout', 'cropHost', 'cropPubSub', function($timeo
       var storedResultImage;
 
       var updateResultImage=function(scope) {
-        var resultImage=cropHost.getResultImageDataURI();
+        var resultImageObj=cropHost.getResultImage();
+        var resultImage = resultImageObj.dataURI;
         if(storedResultImage!==resultImage) {
           storedResultImage=resultImage;
           if(angular.isDefined(scope.resultImage)) {
             scope.resultImage=resultImage;
           }
+          if(angular.isDefined(scope.resultImageData)) {
+            scope.resultImageData=resultImageObj.imageData;
+          }
           scope.onChange({$dataURI: scope.resultImage});
+          scope.onChange({$imageData: scope.resultImageData});
         }
       };
 
@@ -79,6 +86,10 @@ crop.directive('imgCrop', ['$timeout', 'cropHost', 'cropPubSub', function($timeo
       });
       scope.$watch('areaType',function(){
         cropHost.setAreaType(scope.areaType);
+        updateResultImage(scope);
+      });
+      scope.$watch('aspectRatio',function(){
+        cropHost.setAspectRatio(scope.aspectRatio);
         updateResultImage(scope);
       });
       scope.$watch('areaMinSize',function(){

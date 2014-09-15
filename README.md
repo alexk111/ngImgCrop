@@ -135,7 +135,11 @@ Assignable angular expression to data-bind to. NgImgCrop puts a data uri of a cr
 
 ### area-type
 
-*Optional*. Type of the crop area. Possible values: circle|square. Default: circle.
+*Optional*. Type of the crop area. Possible values: circle|square|rectangle. Default: circle.
+
+### aspect-ratio
+
+*Optional*. Customizable aspect ratio for rectangle area type. Possible values: decimal. Default: none.
 
 ### area-min-size
 

@@ -26,7 +26,8 @@ $RECYCLE.BIN/
 .LSOverride
 
 # Icon must ends with two \r.
-Icon
+Icon
+
 
 # Thumbnails
 ._*
@@ -38,6 +39,7 @@ Icon
 
 # SASS Cache
 .sass_cache/
+.sass-cache/
 
 # Installed Bower/Node modules
 bower_components/
