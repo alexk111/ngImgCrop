@@ -95,6 +95,10 @@ crop.factory('cropHost', ['$document', 'cropAreaCircle', 'cropAreaSquare', 'crop
         if ((areaType === 'circle') || (areaType === 'square')) {
           cw = ch = Math.min(cw, ch);
         }
+        //allow to set a user-defined aspect ratio for rectangles
+        else if (areaType === "rectangle" && theArea._aspectRatio !== null) {
+          ch = cw / theArea._aspectRatio;
+        }
 
         theArea.setSize({ w: Math.min(200, cw / 2),
                           h: Math.min(200, ch / 2)});
@@ -242,6 +246,18 @@ crop.factory('cropHost', ['$document', 'cropAreaCircle', 'cropAreaSquare', 'crop
 
     };
 
+    this.setAspectRatio=function(ratio) {
+      if (angular.isUndefined(ratio))
+      {
+        return;
+      }
+     ratio=parseFloat(ratio);
+      if(!isNaN(ratio)) {
+        theArea.setAspectRatio(ratio);
+        drawScene();
+      }
+    };
+
     this.setAreaMinSize=function(size) {
       if (angular.isUndefined(size))
       {
@@ -295,7 +311,7 @@ crop.factory('cropHost', ['$document', 'cropAreaCircle', 'cropAreaSquare', 'crop
     // returns a string of the selection area's type
     this.getAreaType=function() {
       return theArea.getType();
-    }
+    };
 
     this.setAreaType=function(type) {
       var center = theArea.getCenterPoint();

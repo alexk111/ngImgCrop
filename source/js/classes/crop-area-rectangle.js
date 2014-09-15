@@ -30,7 +30,7 @@ crop.factory('cropAreaRectangle', ['cropArea', function(CropArea) {
   // return a type string
   CropAreaRectangle.prototype.getType = function() {
     return 'rectangle';
-  }
+  };
 
   CropAreaRectangle.prototype._calcRectangleCorners=function() {
     var size = this.getSize();
