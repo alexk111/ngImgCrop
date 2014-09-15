@@ -286,22 +286,23 @@ crop.factory('cropHost', ['$document', 'cropAreaCircle', 'cropAreaSquare', 'crop
       }
 
       //allow setting of size to "selection" for mirroring selection's dimensions
-      if (angular.isString(size))
+      if (angular.isString(size) && isNaN(parseFloat(size)))
       {
         resImgSize = size;
         return;
       }
 
       //allow scalar values for square-like selection shapes
-      if (angular.isNumber(size))
+      var parsedSize = parseInt(size, 10);
+      if (!isNaN(parsedSize))
       {
-        size = parseInt(size, 10);
-        size = {w: size,
-                h: size};
+        size = {w: parsedSize,
+                h: parsedSize};
+      } else {
+        size = {w: parseInt(size.w, 10),
+                h: parseInt(size.h, 10)};
       }
 
-      size={w: parseInt(size.w, 10),
-            h: parseInt(size.h, 10)};
       if(!isNaN(size.w) && !isNaN(size.h)) {
         resImgSize=size;
         drawScene();

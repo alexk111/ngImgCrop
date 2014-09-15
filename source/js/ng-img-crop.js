@@ -12,7 +12,7 @@ crop.directive('imgCrop', ['$timeout', 'cropHost', 'cropPubSub', function($timeo
       areaType: '@',
       aspectRatio: '=',
       areaMinSize: '=',
-      resultImageSize: '=',
+      resultImageSize: '@',
 
       onChange: '&',
       onLoadBegin: '&',
