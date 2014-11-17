@@ -6,6 +6,7 @@ crop.directive('imgCrop', ['$timeout', 'cropHost', 'cropPubSub', function($timeo
     scope: {
       image: '=',
       resultImage: '=',
+      resultImageData: '=',
 
       changeOnFly: '=',
       areaType: '@',
@@ -32,16 +33,21 @@ crop.directive('imgCrop', ['$timeout', 'cropHost', 'cropPubSub', function($timeo
       // Store Result Image to check if it's changed
       var storedResultImage;
 
-       var updateResultImage=function(scope) {
-        var resultImage=cropHost.getResultImageDataURI();
-         if(storedResultImage!==resultImage) {
-           storedResultImage=resultImage;
-           if(angular.isDefined(scope.resultImage)) {
-             scope.resultImage=resultImage;
-           }
-           scope.onChange({$dataURI: scope.resultImage});
-         }
-       };
+      var updateResultImage=function(scope) {
+        var resultImageObj=cropHost.getResultImage();
+        var resultImage = resultImageObj.dataURI;
+        if(storedResultImage!==resultImage) {
+          storedResultImage=resultImage;
+          if(angular.isDefined(scope.resultImage)) {
+            scope.resultImage=resultImage;
+          }
+          if(angular.isDefined(scope.resultImageData)) {
+            scope.resultImageData=resultImageObj.imageData;
+          }
+          scope.onChange({$dataURI: scope.resultImage});
+          scope.onChange({$imageData: scope.resultImageData});
+        }
+      };
 
       // Wrapper to safely exec functions within $apply on a running $digest cycle
       var fnSafeApply=function(fn) {
