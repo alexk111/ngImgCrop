@@ -1,11 +1,11 @@
 /*!
- * ngImgCrop v0.3.0
+ * ngImgCrop v0.3.1
  * https://github.com/alexk111/ngImgCrop
  *
  * Copyright (c) 2014 Alex Kaul
  * License: MIT
  *
- * Generated at Sunday, November 16th, 2014, 6:44:28 PM
+ * Generated at Thursday, November 20th, 2014, 9:12:38 AM
  */
 (function() {
 'use strict';
@@ -787,7 +787,9 @@ crop.factory('cropHost', ['$document', 'cropAreaCircle', 'cropAreaSquare', funct
       events.trigger('image-updated');
       if(!!imageSource) {
         var newImage = new Image();
-        newImage.crossOrigin = 'anonymous';
+        if(imageSource.substring(0,4).toLowerCase()==='http') {
+          newImage.crossOrigin = 'anonymous';
+        }
         newImage.onload = function(){
           events.trigger('load-done');
           image=newImage;
