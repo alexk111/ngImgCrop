@@ -88,7 +88,8 @@ gulp.task('scripts', function(){
       process: function(src) {
         // Remove all 'use strict'; from the code and
         // replaces all double blank lines with one
-        return src.replace(/'use strict';\n+/g, '')
+        return src.replace(/\r\n/g, '\n')
+                  .replace(/'use strict';\n+/g, '')
                   .replace(/\n\n\s*\n/g, '\n\n');
       }
     }))
