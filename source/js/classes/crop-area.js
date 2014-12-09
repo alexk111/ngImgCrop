@@ -143,6 +143,8 @@ crop.factory('cropArea', ['cropCanvas', function(CropCanvas) {
 
   CropArea.prototype._processSize=function(size)
   {
+    var isRectangleArea = this.getType() === "rectangle";
+
     // make this polymorphic to accept a single floating point number
     // for square-like sizes (including circle)
     if (typeof size == "number")

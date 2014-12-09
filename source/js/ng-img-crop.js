@@ -11,7 +11,7 @@ crop.directive('imgCrop', ['$timeout', 'cropHost', 'cropPubSub', function($timeo
       changeOnFly: '=',
       areaType: '@',
       areaMinSize: '=',
-      resultImageSize: '@',
+      resultImageSize: '=',
 
       onChange: '&',
       onLoadBegin: '&',
