@@ -5,7 +5,6 @@ crop.factory('cropArea', ['cropCanvas', function(CropCanvas) {
     this._ctx=ctx;
     this._events=events;
 
-    this._aspectRatio=null;
     this._minSize={x:0, y: 0, w:80, h:80};
 
     this._cropCanvas=new CropCanvas(ctx);
@@ -61,12 +60,6 @@ crop.factory('cropArea', ['cropCanvas', function(CropCanvas) {
     this.setSize({x: point.x - s.w / 2, y: point.y - s.h / 2, w: s.w, h: s.h});
   };
 
-  CropArea.prototype.setAspectRatio = function (ratio) {
-    this._aspectRatio = ratio;
-    this._minSize = this._processSize(this._minSize);
-    this.setSize(this._minSize);
-  };
-
   CropArea.prototype.setMinSize = function (size) {
     this._minSize = this._processSize(size);
     this.setSize(this._minSize);
@@ -77,7 +70,7 @@ crop.factory('cropArea', ['cropCanvas', function(CropCanvas) {
   CropArea.prototype.getType = function() {
     //default to circle
     return 'circle';
-  };
+  }
 
   /* FUNCTIONS */
   CropArea.prototype._preventBoundaryCollision=function(size) {
@@ -95,6 +88,7 @@ crop.factory('cropArea', ['cropCanvas', function(CropCanvas) {
     // check southeast corner
     if(se.x>canvasW) { se.x = canvasW }
     if(se.y>canvasH) { se.y = canvasH }
+
 
     var newSize = {x: nw.x,
                    y: nw.y,
@@ -134,27 +128,14 @@ crop.factory('cropArea', ['cropCanvas', function(CropCanvas) {
       }
     }
 
-    //finally, enforce 1:1 aspect ratio for square-like selections
-    var areaType = this.getType();
-    if (areaType === "circle" || areaType === "square")
+    //finally, enforce 1:1 aspect ratio for sqaure-like selections
+    if (this.getType() === "circle" || this.getType() === "square")
     {
       newSize = {x: newSize.x,
                  y: newSize.y,
                  w: Math.min(newSize.w, newSize.h),
                  h: Math.min(newSize.w, newSize.h)};
     }
-    //allow to set a user-defined aspect ratio for rectangles
-    else if (areaType === "rectangle" && this._aspectRatio !== null) {
-      var canvasH = this._ctx.canvas.height;
-      var heightWithRatio = newSize.w / this._aspectRatio;
-
-      if (heightWithRatio < canvasH && se.y < canvasH) {
-        newSize.h = newSize.w / this._aspectRatio;
-      } else {
-        newSize.w = newSize.h * this._aspectRatio;
-      }
-    }
-
     return newSize;
   };
 
@@ -166,24 +147,19 @@ crop.factory('cropArea', ['cropCanvas', function(CropCanvas) {
     // for square-like sizes (including circle)
     if (typeof size == "number")
     {
-      size = {
-        w: size,
-        h: size
-      };
+      size = {w: size, h: size};
     }
 
-    return {
-      x: size.x || this._minSize.x,
-      y: size.y || this._minSize.y,
-      w: size.w || this._minSize.w,
-      h: size.h || this._minSize.h
-    };
-  };
+    return {x: size.x || this._minSize.x,
+            y: size.y || this._minSize.y,
+            w: size.w || this._minSize.w,
+            h: size.h || this._minSize.h};
+  }
 
   CropArea.prototype._southEastBound=function(size)
   {
     return {x: size.x + size.w, y: size.y + size.h};
-  };
+  }
   CropArea.prototype.draw=function() {
     // draw crop area
     this._cropCanvas.drawCropArea(this._image,this.getCenterPoint(),this._size,this._drawArea);

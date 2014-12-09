@@ -95,10 +95,6 @@ crop.factory('cropHost', ['$document', 'cropAreaCircle', 'cropAreaSquare', 'crop
         if ((areaType === 'circle') || (areaType === 'square')) {
           cw = ch = Math.min(cw, ch);
         }
-        //allow to set a user-defined aspect ratio for rectangles
-        else if (areaType === "rectangle" && theArea._aspectRatio !== null) {
-          ch = cw / theArea._aspectRatio;
-        }
 
         theArea.setSize({ w: Math.min(200, cw / 2),
                           h: Math.min(200, ch / 2)});
@@ -242,18 +238,6 @@ crop.factory('cropHost', ['$document', 'cropAreaCircle', 'cropAreaSquare', 'crop
 
     };
 
-    this.setAspectRatio=function(ratio) {
-      if (angular.isUndefined(ratio))
-      {
-        return;
-      }
-     ratio=parseFloat(ratio);
-      if(!isNaN(ratio)) {
-        theArea.setAspectRatio(ratio);
-        drawScene();
-      }
-    };
-
     this.setAreaMinSize=function(size) {
       if (angular.isUndefined(size))
       {
@@ -282,23 +266,22 @@ crop.factory('cropHost', ['$document', 'cropAreaCircle', 'cropAreaSquare', 'crop
       }
 
       //allow setting of size to "selection" for mirroring selection's dimensions
-      if (angular.isString(size) && isNaN(parseFloat(size)))
+      if (angular.isString(size))
       {
         resImgSize = size;
         return;
       }
 
       //allow scalar values for square-like selection shapes
-      var parsedSize = parseInt(size, 10);
-      if (!isNaN(parsedSize))
+      if (angular.isNumber(size))
       {
-        size = {w: parsedSize,
-                h: parsedSize};
-      } else {
-        size = {w: parseInt(size.w, 10),
-                h: parseInt(size.h, 10)};
+        size = parseInt(size, 10);
+        size = {w: size,
+                h: size};
       }
 
+      size={w: parseInt(size.w, 10),
+            h: parseInt(size.h, 10)};
       if(!isNaN(size.w) && !isNaN(size.h)) {
         resImgSize=size;
         drawScene();
@@ -308,7 +291,7 @@ crop.factory('cropHost', ['$document', 'cropAreaCircle', 'cropAreaSquare', 'crop
     // returns a string of the selection area's type
     this.getAreaType=function() {
       return theArea.getType();
-    };
+    }
 
     this.setAreaType=function(type) {
       var center = theArea.getCenterPoint();
