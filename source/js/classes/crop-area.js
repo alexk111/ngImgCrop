@@ -5,8 +5,8 @@ crop.factory('cropArea', ['cropCanvas', function(CropCanvas) {
     this._ctx=ctx;
     this._events=events;
 
-    this._minSize = 40;
-    // since minSize is scaled, we need set another minimum regardless of scale
+    this._minSize = 80;
+    // since minSize is scaled, we need to set another minimum regardless of scale
     this._unscaledMinSize = 40;
 
     this._cropCanvas=new CropCanvas(ctx);
