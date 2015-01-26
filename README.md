@@ -116,6 +116,9 @@ The following code enables to select an image using a file input and crop it. Th
    [result-image-size="{number}"]
    [result-image-format="{string}"]
    [result-image-quality="{number}"]
+   [result-image-aspect="{string}"]
+   [crop-data="{object}"]
+   [original-data="{object}"]
    [on-change="{expression}"]
    [on-load-begin="{expression"]
    [on-load-done="{expression"]
@@ -141,11 +144,11 @@ Assignable angular expression to data-bind to. NgImgCrop puts a data uri of a cr
 
 ### area-min-size
 
-*Optional*. Min. width/height of the crop area (in pixels). Default: 80.
+*Optional*. Min. width of the crop area (in pixels). Default: 80.
 
 ### result-image-size
 
-*Optional*. Width/height of the result image (in pixels). Default: 200.
+*Optional*. Width of the result image (in pixels). Please note, all height values are calculated from the width and aspect ratio values. Default: 200.
 
 ### result-image-format
 
@@ -154,6 +157,18 @@ Assignable angular expression to data-bind to. NgImgCrop puts a data uri of a cr
 ### result-image-quality
 
 *Optional*. Quality of result image. Possible values between 0.0 and 1.0 inclusive. Default: browser default.
+
+### result-image-aspect
+
+*Optional*. Aspect ratio of result image. Possible values are string combinations of width+'x'+height. Default: 1x1.
+
+### crop-data
+
+*Optional*. Object variable to store data about the current crop. Returns object of { width, height, x, y }. Be sure to assign variables using the "dot rule" to avoid issues with prototypal inheritance (ex: image.cropData, instead of cropData).
+
+### original-data
+
+*Optional*. Object variable to store data about the image being cropped. Returns object of { width, height }. Be sure to assign variables using the "dot rule" to avoid issues with prototypal inheritance (ex: image.origData, instead of origData).
 
 ### on-change
 

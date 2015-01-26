@@ -52,7 +52,6 @@ crop.factory('cropCanvas', [function() {
         ctx.restore();
     };
 
-
     /* Icons */
 
     this.drawIconMove=function(centerCoords, scale) {
@@ -99,27 +98,32 @@ crop.factory('cropCanvas', [function() {
 
     /* Crop Area */
 
-    this.drawCropArea=function(image, centerCoords, size, fnDrawClipPath) {
+    this.drawCropArea=function(image, centerCoords, width, height, fnDrawClipPath) {
       var xRatio=image.width/ctx.canvas.width,
           yRatio=image.height/ctx.canvas.height,
-          xLeft=centerCoords[0]-size/2,
-          yTop=centerCoords[1]-size/2;
+          xLeft=centerCoords[0]-width/2,
+          yTop=centerCoords[1]-height/2;
 
+      // console.log(image.width+' x '+image.height+' vs '+ctx.canvas.width+' x '+ctx.canvas.height);
       ctx.save();
       ctx.strokeStyle = colors.areaOutline;
       ctx.lineWidth = 2;
       ctx.beginPath();
-      fnDrawClipPath(ctx, centerCoords, size);
+      fnDrawClipPath(ctx, centerCoords, width, height);
       ctx.stroke();
       ctx.clip();
 
+      // prevent factoring beyond the original image dimensions
+      while(width*xRatio > image.width){ width--; }
+      while(height*yRatio > image.height){ height--; }
+
       // draw part of original image
-      if (size > 0) {
-          ctx.drawImage(image, xLeft*xRatio, yTop*yRatio, size*xRatio, size*yRatio, xLeft, yTop, size, size);
+      if (width > 0 && height > 0) {
+          ctx.drawImage(image, xLeft*xRatio, yTop*yRatio, width*xRatio, height*yRatio, xLeft, yTop, width, height);
       }
 
       ctx.beginPath();
-      fnDrawClipPath(ctx, centerCoords, size);
+      fnDrawClipPath(ctx, centerCoords, width, height);
       ctx.stroke();
       ctx.clip();
 
