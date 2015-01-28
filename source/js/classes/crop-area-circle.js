@@ -58,7 +58,7 @@ crop.factory('cropAreaCircle', ['cropArea', function(CropArea) {
     // new method, drawing ellipse using bezier curves
     var x = centerCoords[0] - w/2.0,
         y = centerCoords[1] - h/2.0;
-    var kappa = .5522848,
+    var kappa = 0.5522848,
         ox = (w / 2) * kappa, // control point offset horizontal
         oy = (h / 2) * kappa, // control point offset vertical
         xe = x + w,           // x-end

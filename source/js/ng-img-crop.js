@@ -50,7 +50,7 @@ crop.directive('imgCrop', ['$timeout', 'cropHost', 'cropPubSub', function($timeo
             cropArea.setHeight(cropCanvas.height);
           }
 
-          if(angular.isDefined(scope.cropData) && imgWidth != 0){
+          if(angular.isDefined(scope.cropData) && imgWidth !== 0){
             var imgRatio= imgWidth/cropCanvas.width;
 
             scope.cropData= {
@@ -60,11 +60,11 @@ crop.directive('imgCrop', ['$timeout', 'cropHost', 'cropPubSub', function($timeo
               y: Math.round((cropArea.getY() - (cropArea.getHeight()/2))*imgRatio)
             };
           }
-          if(angular.isDefined(scope.originalData) && imgWidth != 0 && imgHeight != 0){
+          if(angular.isDefined(scope.originalData) && imgWidth !== 0 && imgHeight !== 0){
             scope.originalData= {
               width: imgWidth,
               height: imgHeight
-            }
+            };
           }
           
           var resultImage=cropHost.getResultImageDataURI();
@@ -133,7 +133,7 @@ crop.directive('imgCrop', ['$timeout', 'cropHost', 'cropPubSub', function($timeo
       scope.$watch('resultImageAspect',function(){
         if(typeof scope.resultImageAspect !== 'undefined'){
           // split string into 2 parts
-          var aspect = scope.resultImageAspect.toLowerCase().split("x");
+          var aspect = scope.resultImageAspect.toLowerCase().split('x');
           // if there are 2 parts, and each part is a valid integer
           if(aspect.length === 2 && !isNaN(parseInt(aspect[0],10)) && !isNaN(parseInt(aspect[1],10))){
             cropHost.setResultImageAspect(parseInt(aspect[0],10),parseInt(aspect[1],10));

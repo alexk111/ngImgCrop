@@ -1,17 +1,17 @@
 'use strict';
 
-crop.factory('cropHost', ['$document', 'cropAreaCircle', 'cropAreaSquare', 'cropEXIF', function($document, CropAreaCircle, CropAreaSquare, cropEXIF) {
+crop.factory('cropHost', ['$document', '$window', 'cropAreaCircle', 'cropAreaSquare', 'cropEXIF', function($document, $window, CropAreaCircle, CropAreaSquare, cropEXIF) {
   /* STATIC FUNCTIONS */
 
   // Get Element's Offset
   var getElementOffset=function(elem) {
       var box = elem.getBoundingClientRect();
 
-      var body = document.body;
-      var docElem = document.documentElement;
+      var body = $document[0].body;
+      var docElem = $document[0].documentElement;
 
-      var scrollTop = window.pageYOffset || docElem.scrollTop || body.scrollTop;
-      var scrollLeft = window.pageXOffset || docElem.scrollLeft || body.scrollLeft;
+      var scrollTop = $window.pageYOffset || docElem.scrollTop || body.scrollTop;
+      var scrollLeft = $window.pageXOffset || docElem.scrollLeft || body.scrollLeft;
 
       var clientTop = docElem.clientTop || body.clientTop || 0;
       var clientLeft = docElem.clientLeft || body.clientLeft || 0;
@@ -111,7 +111,7 @@ crop.factory('cropHost', ['$document', 'cropAreaCircle', 'cropAreaSquare', 'crop
           var cur_ratio = ctx.canvas.width/image.width;
           setSize = Math.round(cropData.width*cur_ratio);
           // Keep size in-bounds
-          if(setSize > ctx.canvas.width) setSize = ctx.canvas.width-1;
+          if(setSize > ctx.canvas.width) { setSize = ctx.canvas.width-1; }
           setHeight = Math.floor(resImgAspect[1] * setSize / resImgAspect[0]);
           // Passed cropData coordinates set to top left corner, adjusted in libarary at center point...
           setX = Math.round((cropData.x*cur_ratio)+(setSize/2));
@@ -124,8 +124,8 @@ crop.factory('cropHost', ['$document', 'cropAreaCircle', 'cropAreaSquare', 'crop
           setSize = Math.floor(resImgAspect[0] * setHeight / resImgAspect[1]);
         }
         // Keep coordinates in-bounds
-        if(setX + (setSize/2) > ctx.canvas.width) setX = Math.floor(ctx.canvas.width - (setSize/2));
-        if(setY + (setHeight/2) > ctx.canvas.height) setY = Math.floor(ctx.canvas.height - (setHeight/2));
+        if(setX + (setSize/2) > ctx.canvas.width) { setX = Math.floor(ctx.canvas.width - (setSize/2)); }
+        if(setY + (setHeight/2) > ctx.canvas.height) { setY = Math.floor(ctx.canvas.height - (setHeight/2)); }
 
         theArea.setX(setX);
         theArea.setY(setY);
@@ -218,8 +218,8 @@ crop.factory('cropHost', ['$document', 'cropAreaCircle', 'cropAreaSquare', 'crop
             yTop=theArea.getY()-areaHeight/2;
 
         // prevent factoring beyond the original image dimensions
-        while(areaWidth*xRatio > image.width) areaWidth--;
-        while(areaHeight*yRatio > image.height) areaHeight--;
+        while(areaWidth*xRatio > image.width) { areaWidth--; }
+        while(areaHeight*yRatio > image.height) { areaHeight--; }
 
         temp_ctx.drawImage(image, xLeft*xRatio, yTop*yRatio, areaWidth*xRatio, areaHeight*yRatio, 0, 0, resImgWidth, resImgHeight);
       }
@@ -245,8 +245,8 @@ crop.factory('cropHost', ['$document', 'cropAreaCircle', 'cropAreaSquare', 'crop
             var orientation=cropEXIF.getTag(newImage,'Orientation');
 
             if([3,6,8].indexOf(orientation)>-1) {
-              var canvas = document.createElement("canvas"),
-                  ctx=canvas.getContext("2d"),
+              var canvas = $document.createElement('canvas'),
+                  ctx=canvas.getContext('2d'),
                   cw = newImage.width, ch = newImage.height, cx = 0, cy = 0, deg=0;
               switch(orientation) {
                 case 3:
@@ -274,7 +274,7 @@ crop.factory('cropHost', ['$document', 'cropAreaCircle', 'cropAreaSquare', 'crop
               ctx.drawImage(newImage, cx, cy);
 
               image=new Image();
-              image.src = canvas.toDataURL("image/png");
+              image.src = canvas.toDataURL('image/png');
             } else {
               image=newImage;
             }
