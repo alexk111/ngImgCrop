@@ -31,11 +31,11 @@ crop.factory('cropHost', ['$document', 'cropAreaCircle', 'cropAreaSquare', 'crop
         theArea=null;
 
     // Dimensions
-    var minCanvasDims=[100,100],
-        maxCanvasDims=[300,300];
+    var minCanvasDims=[100, 100],
+        maxCanvasDims=[300, 300];
 
     // Result Image size
-    var resImgSize=200;
+    var resImgSize=[200, 200];
 
     // Result Image type
     var resImgFormat='image/png';
@@ -93,7 +93,7 @@ crop.factory('cropHost', ['$document', 'cropAreaCircle', 'cropAreaSquare', 'crop
 
         theArea.setX(ctx.canvas.width/2);
         theArea.setY(ctx.canvas.height/2);
-        theArea.setSize(Math.min(200, ctx.canvas.width/2, ctx.canvas.height/2));
+        theArea.setSize([Math.min(200, ctx.canvas.width/2, ctx.canvas.height/2), Math.min(200, ctx.canvas.width/2, ctx.canvas.height/2)]);
       } else {
         elCanvas.prop('width',0).prop('height',0).css({'margin-top': 0});
       }
@@ -168,10 +168,10 @@ crop.factory('cropHost', ['$document', 'cropAreaCircle', 'cropAreaSquare', 'crop
       var temp_ctx, temp_canvas;
       temp_canvas = angular.element('<canvas></canvas>')[0];
       temp_ctx = temp_canvas.getContext('2d');
-      temp_canvas.width = resImgSize;
-      temp_canvas.height = resImgSize;
+      temp_canvas.width = resImgSize[0];
+      temp_canvas.height = resImgSize[1];
       if(image!==null){
-        temp_ctx.drawImage(image, (theArea.getX()-theArea.getSize()/2)*(image.width/ctx.canvas.width), (theArea.getY()-theArea.getSize()/2)*(image.height/ctx.canvas.height), theArea.getSize()*(image.width/ctx.canvas.width), theArea.getSize()*(image.height/ctx.canvas.height), 0, 0, resImgSize, resImgSize);
+        temp_ctx.drawImage(image, (theArea.getX()-theArea.getSize()[0]/2)*(image.width/ctx.canvas.width), (theArea.getY()-theArea.getSize()[1]/2)*(image.height/ctx.canvas.height), theArea.getSize()[0]*(image.width/ctx.canvas.width), theArea.getSize()[1]*(image.height/ctx.canvas.height), 0, 0, resImgSize[0], resImgSize[1]);
       }
       if (resImgQuality!==null ){
         return temp_canvas.toDataURL(resImgFormat, resImgQuality);
@@ -273,7 +273,7 @@ crop.factory('cropHost', ['$document', 'cropAreaCircle', 'cropAreaSquare', 'crop
 
         theArea.setX(theArea.getX()*ratioNewCurWidth);
         theArea.setY(theArea.getY()*ratioNewCurHeight);
-        theArea.setSize(theArea.getSize()*ratioMin);
+        theArea.setSize([theArea.getSize()[0]*ratioMin, theArea.getSize()[1]*ratioMin]);
       } else {
         elCanvas.prop('width',0).prop('height',0).css({'margin-top': 0});
       }
@@ -283,18 +283,21 @@ crop.factory('cropHost', ['$document', 'cropAreaCircle', 'cropAreaSquare', 'crop
     };
 
     this.setAreaMinSize=function(size) {
-      size=parseInt(size,10);
-      if(!isNaN(size)) {
-        theArea.setMinSize(size);
-        drawScene();
+      size=[parseInt(size[0],10), parseInt(size[1], 10)];
+      if (isNaN(size[0]) || isNaN(size[1])) {
+        return;
       }
+      theArea.setMinSize(size);
+      drawScene();
     };
 
     this.setResultImageSize=function(size) {
-      size=parseInt(size,10);
-      if(!isNaN(size)) {
-        resImgSize=size;
+      size=[parseInt(size[0],10), parseInt(size[1], 10)];
+      if (isNaN(size[0]) || isNaN(size[1])) {
+        return;
       }
+      
+      resImgSize=size;
     };
 
     this.setResultImageFormat=function(format) {

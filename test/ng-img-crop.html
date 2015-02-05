@@ -51,10 +51,12 @@
   </div>
   -->
   <div>
-    <label>Area Min Size (Size = Width = Height): <input type="text" ng-model="selMinSize" /></label>
+    <label>Area Min Width: <input type="number" ng-model="selMinSize[0]" /></label>
+    <label>Area Min Height: <input type="number" ng-model="selMinSize[1]" /></label>
   </div>
   <div>
-    <label>Result Image Size (Size = Width = Height): <input type="text" ng-model="resImgSize" /></label>
+    <label>Result Image Width: <input type="number" ng-model="resImgSize[0]" /></label>
+    <label>Result Image Height: <input type="number" ng-model="resImgSize[1]" /></label>
   </div>
   <div>
     Result Image Format:
@@ -106,14 +108,14 @@
   <script type="text/javascript">
     angular.module('app', ['ngImgCrop'])
       .controller('Ctrl', function($scope) {
-        $scope.size='small';
-        $scope.type='circle';
+        $scope.size='big';
+        $scope.type='square';
         $scope.imageDataURI='';
         $scope.resImageDataURI='';
         $scope.resImgFormat='image/png';
         $scope.resImgQuality=1;
-        $scope.selMinSize=100;
-        $scope.resImgSize=200;
+        $scope.selMinSize=[100, 100];
+        $scope.resImgSize=[200, 200];
         //$scope.aspectRatio=1.2;
         $scope.onChange=function($dataURI) {
           console.log('onChange fired');

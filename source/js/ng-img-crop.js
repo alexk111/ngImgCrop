@@ -83,11 +83,11 @@ crop.directive('imgCrop', ['$timeout', 'cropHost', 'cropPubSub', function($timeo
         cropHost.setAreaType(scope.areaType);
         updateResultImage(scope);
       });
-      scope.$watch('areaMinSize',function(){
+      scope.$watchCollection('areaMinSize',function(){
         cropHost.setAreaMinSize(scope.areaMinSize);
         updateResultImage(scope);
       });
-      scope.$watch('resultImageSize',function(){
+      scope.$watchCollection('resultImageSize',function(){
         cropHost.setResultImageSize(scope.resultImageSize);
         updateResultImage(scope);
       });
