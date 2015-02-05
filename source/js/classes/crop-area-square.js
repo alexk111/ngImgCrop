@@ -17,7 +17,7 @@ crop.factory('cropAreaSquare', ['cropArea', function(CropArea) {
     this._posDragStartY=0;
     this._posResizeStartX=0;
     this._posResizeStartY=0;
-    this._posResizeStartSize=0;
+    this._posResizeStartSize=[0, 0];
 
     this._resizeCtrlIsHover = -1;
     this._areaIsHover = false;
@@ -28,21 +28,23 @@ crop.factory('cropAreaSquare', ['cropArea', function(CropArea) {
   CropAreaSquare.prototype = new CropArea();
 
   CropAreaSquare.prototype._calcSquareCorners=function() {
-    var hSize=this._size/2;
+    var wSize=this._size[0]/2;
+    var hSize=this._size[1]/2;
     return [
-      [this._x-hSize, this._y-hSize],
-      [this._x+hSize, this._y-hSize],
-      [this._x-hSize, this._y+hSize],
-      [this._x+hSize, this._y+hSize]
+      [this._x-wSize, this._y-hSize],
+      [this._x+wSize, this._y-hSize],
+      [this._x-wSize, this._y+hSize],
+      [this._x+wSize, this._y+hSize]
     ];
   };
 
   CropAreaSquare.prototype._calcSquareDimensions=function() {
-    var hSize=this._size/2;
+    var wSize=this._size[0]/2;
+    var hSize=this._size[1]/2;
     return {
-      left: this._x-hSize,
+      left: this._x-wSize,
       top: this._y-hSize,
-      right: this._x+hSize,
+      right: this._x+wSize,
       bottom: this._y+hSize
     };
   };
@@ -67,8 +69,10 @@ crop.factory('cropAreaSquare', ['cropArea', function(CropArea) {
   };
 
   CropAreaSquare.prototype._drawArea=function(ctx,centerCoords,size){
-    var hSize=size/2;
-    ctx.rect(centerCoords[0]-hSize,centerCoords[1]-hSize,size,size);
+    var wSize=size[0]/2;
+    var hSize=size[1]/2;
+    //console.log('rectangular coord', centerCoords[0]-wSize, centerCoords[1]-hSize, size[0], size[1]);
+    ctx.rect(centerCoords[0]-wSize,centerCoords[1]-hSize,size[0],size[1]);
   };
 
   CropAreaSquare.prototype.draw=function() {
@@ -125,17 +129,23 @@ crop.factory('cropAreaSquare', ['cropArea', function(CropArea) {
       }
       var iFX = (mouseCurX - this._posResizeStartX)*xMulti;
       var iFY = (mouseCurY - this._posResizeStartY)*yMulti;
-      var iFR;
-      if(iFX>iFY) {
-        iFR = this._posResizeStartSize + iFY;
-      } else {
-        iFR = this._posResizeStartSize + iFX;
-      }
+      var iFW, iFH;
       var wasSize=this._size;
-      this._size = Math.max(this._minSize, iFR);
-      var posModifier=(this._size-wasSize)/2;
-      this._x+=posModifier*xMulti;
-      this._y+=posModifier*yMulti;
+
+      if(iFX>iFY) {
+        iFW = this._posResizeStartSize[0] + iFY;
+        iFH = iFW / wasSize[0] * wasSize[1];
+      } else {
+        iFH = this._posResizeStartSize[1] + iFX;
+        iFW = iFH / wasSize[1] * wasSize[0];
+      }
+
+      this._size = [Math.max(this._minSize[0], iFW), Math.max(this._minSize[1], iFH)];
+      var posModifierX=(this._size[0]-wasSize[0])/2;
+      var posModifierY=(this._size[1]-wasSize[1])/2;
+      this._x+=posModifierX*xMulti;
+      this._y+=posModifierY*yMulti;
+
       this._resizeCtrlIsHover = this._resizeCtrlIsDragging;
       res=true;
       this._events.trigger('area-resize');
