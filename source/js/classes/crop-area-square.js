@@ -71,6 +71,7 @@ crop.factory('cropAreaSquare', ['cropArea', function(CropArea) {
   CropAreaSquare.prototype._drawArea=function(ctx,centerCoords,size){
     var wSize=size[0]/2;
     var hSize=size[1]/2;
+    //console.log('rectangular coord', centerCoords[0]-wSize, centerCoords[1]-hSize, size[0], size[1]);
     ctx.rect(centerCoords[0]-wSize,centerCoords[1]-hSize,size[0],size[1]);
   };
 
@@ -128,18 +129,23 @@ crop.factory('cropAreaSquare', ['cropArea', function(CropArea) {
       }
       var iFX = (mouseCurX - this._posResizeStartX)*xMulti;
       var iFY = (mouseCurY - this._posResizeStartY)*yMulti;
-      var iFR;
-      if(iFX>iFY) {
-        iFR = this._posResizeStartSize[1] + iFY;
-      } else {
-        iFR = this._posResizeStartSize[0] + iFX;
-      }
+      var iFW, iFH;
       var wasSize=this._size;
-      this._size = [Math.max(this._minSize[0], iFR), Math.max(this._minSize[1], iFR)];
+
+      if(iFX>iFY) {
+        iFW = this._posResizeStartSize[0] + iFY;
+        iFH = iFW / wasSize[0] * wasSize[1];
+      } else {
+        iFH = this._posResizeStartSize[1] + iFX;
+        iFW = iFH / wasSize[1] * wasSize[0];
+      }
+
+      this._size = [Math.max(this._minSize[0], iFW), Math.max(this._minSize[1], iFH)];
       var posModifierX=(this._size[0]-wasSize[0])/2;
       var posModifierY=(this._size[1]-wasSize[1])/2;
       this._x+=posModifierX*xMulti;
       this._y+=posModifierY*yMulti;
+
       this._resizeCtrlIsHover = this._resizeCtrlIsDragging;
       res=true;
       this._events.trigger('area-resize');
