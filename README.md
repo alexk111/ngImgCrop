@@ -12,6 +12,14 @@ Simple Image Crop directive for AngularJS. Enables to crop a circle or a square 
 
 [Live demo on JSFiddle](http://jsfiddle.net/alexk111/rw6q9/)
 
+## Build from local
+
+Dependencies `npm, bower`
+1. Install gulp `npm install --global gulp`
+2. Install angularjs `bower install angular`
+3. Run gulp from at ngImgCrop directory `gulp`
+4. You should now be able to access the test page at: `http://localhost:9000/test/ng-img-crop.html`
+
 ## Requirements
 
  - AngularJS
@@ -96,7 +104,7 @@ The following code enables to select an image using a file input and crop it. Th
 <body ng-app="app" ng-controller="Ctrl">
   <div>Select an image file: <input type="file" id="fileInput" /></div>
   <div class="cropArea">
-    <img-crop image="myImage" result-image="myCroppedImage"></img-crop>
+    <img-crop image="myImage" result-image="myCroppedImage" area-min-size="[width, height]"></img-crop>
   </div>
   <div>Cropped Image:</div>
   <div><img ng-src="{{myCroppedImage}}" /></div>
@@ -112,14 +120,14 @@ The following code enables to select an image using a file input and crop it. Th
     result-image="{string}"
    [change-on-fly="{boolean}"]
    [area-type="{circle|square}"]
-   [area-min-size="{number}"]
-   [result-image-size="{number}"]
+   [area-min-size="{[width, height]}"]
+   [result-image-size="{[width, height]}"]
    [result-image-format="{string}"]
    [result-image-quality="{number}"]
    [on-change="{expression}"]
-   [on-load-begin="{expression"]
-   [on-load-done="{expression"]
-   [on-load-error="{expression"]
+   [on-load-begin="{expression}"]
+   [on-load-done="{expression}"]
+   [on-load-error="{expression}"]
 ></img-crop>
 ```
 
@@ -135,17 +143,13 @@ Assignable angular expression to data-bind to. NgImgCrop puts a data uri of a cr
 
 *Optional*. By default, to reduce CPU usage, when a user drags/resizes the crop area, the result image is only updated after the user stops dragging/resizing. Set true to always update the result image as the user drags/resizes the crop area.
 
-### area-type
-
-*Optional*. Type of the crop area. Possible values: circle|square. Default: circle.
-
 ### area-min-size
 
-*Optional*. Min. width/height of the crop area (in pixels). Default: 80.
+*Optional*. Min. width/height of the crop area (in pixels). Default: [80, 80].
 
 ### result-image-size
 
-*Optional*. Width/height of the result image (in pixels). Default: 200.
+*Optional*. Width/height of the result image (in pixels). Default: [200, 200].
 
 ### result-image-format
 

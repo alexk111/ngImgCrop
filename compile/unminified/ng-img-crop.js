@@ -5,7 +5,7 @@
  * Copyright (c) 2015 Alex Kaul
  * License: MIT
  *
- * Generated at Thursday, February 5th, 2015, 12:33:41 AM
+ * Generated at Thursday, February 5th, 2015, 10:15:38 AM
  */
 (function() {
 'use strict';
@@ -1688,9 +1688,9 @@ crop.factory('cropHost', ['$document', 'cropAreaCircle', 'cropAreaSquare', 'crop
           curX=theArea.getX(),
           curY=theArea.getY();
 
-      var AreaClass=CropAreaCircle;
-      if(type==='square') {
-        AreaClass=CropAreaSquare;
+      var AreaClass=CropAreaSquare;
+      if(type==='circle') {
+        AreaClass=CropAreaCircle;
       }
       theArea = new AreaClass(ctx, events);
       theArea.setMinSize(curMinSize);
@@ -1712,7 +1712,7 @@ crop.factory('cropHost', ['$document', 'cropAreaCircle', 'cropAreaSquare', 'crop
     ctx = elCanvas[0].getContext('2d');
 
     // Init CropArea
-    theArea = new CropAreaCircle(ctx, events);
+    theArea = new CropAreaSquare(ctx, events);
 
     // Init Mouse Event Listeners
     $document.on('mousemove',onMouseMove);
