@@ -6,6 +6,8 @@ crop.directive('imgCrop', ['$timeout', 'cropHost', 'cropPubSub', function($timeo
     scope: {
       image: '=',
       resultImage: '=',
+      position: '=',
+
 
       changeOnFly: '=',
       areaType: '@',
@@ -28,7 +30,7 @@ crop.directive('imgCrop', ['$timeout', 'cropHost', 'cropPubSub', function($timeo
       var events = scope.events;
 
       // Init Crop Host
-      var cropHost=new CropHost(element.find('canvas'), {}, events);
+      var cropHost=new CropHost(element.find('canvas'), {}, events, scope.position);
 
       // Store Result Image to check if it's changed
       var storedResultImage;
