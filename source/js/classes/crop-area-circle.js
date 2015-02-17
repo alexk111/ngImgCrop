@@ -73,10 +73,8 @@ crop.factory('cropAreaCircle', ['cropArea', function(CropArea) {
     if (this._areaIsDragging) {
       this._x = mouseCurX - this._posDragStartX;
       this._y = mouseCurY - this._posDragStartY;
-      if (position) {
-        position.x = this._x
-        position.y = this._y
-      }
+      position.x = this._x;
+      position.y = this._y;
       this._areaIsHover = true;
       cursor='move';
       res=true;
@@ -93,9 +91,8 @@ crop.factory('cropAreaCircle', ['cropArea', function(CropArea) {
         }
 
         this._size = Math.max(this._minSize, iFR);
-        if(position) {
-          position.size = this._size
-        }
+        position.size = this._size;
+
 
         this._boxResizeIsHover = true;
         res=true;

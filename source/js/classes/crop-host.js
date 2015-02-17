@@ -91,15 +91,16 @@ crop.factory('cropHost', ['$document', 'cropAreaCircle', 'cropAreaSquare', 'crop
         }
         elCanvas.prop('width',canvasDims[0]).prop('height',canvasDims[1]).css({'margin-left': -canvasDims[0]/2+'px', 'margin-top': -canvasDims[1]/2+'px'});
 
-        if(position) {
+          if(position.fake) {
+            position.size = Math.min(200, ctx.canvas.width / 2, ctx.canvas.height / 2);
+            position.x = ctx.canvas.width / 2;
+            position.y = ctx.canvas.height / 2;
+          }
+
           theArea.setX(position.x);
           theArea.setY(position.y);
           theArea.setSize(position.size);
-        }else{
-          theArea.setX(ctx.canvas.width/2);
-          theArea.setY(ctx.canvas.height/2);
-          theArea.setSize(Math.min(200, ctx.canvas.width/2, ctx.canvas.height/2));
-        }
+
 
         } else {
         elCanvas.prop('width',0).prop('height',0).css({'margin-top': 0});
@@ -281,11 +282,10 @@ crop.factory('cropHost', ['$document', 'cropAreaCircle', 'cropAreaSquare', 'crop
         theArea.setX(theArea.getX()*ratioNewCurWidth);
         theArea.setY(theArea.getY()*ratioNewCurHeight);
         theArea.setSize(theArea.getSize()*ratioMin);
-        if(position) {
-          position.x = theArea.getX()
-          position.y = theArea.getY()
-          position.size = theArea.getSize()
-        }
+        position.x = theArea.getX();
+        position.y = theArea.getY();
+        position.size = theArea.getSize();
+
       } else {
         elCanvas.prop('width',0).prop('height',0).css({'margin-top': 0});
       }
@@ -332,15 +332,17 @@ crop.factory('cropHost', ['$document', 'cropAreaCircle', 'cropAreaSquare', 'crop
       }
       theArea = new AreaClass(ctx, events);
       theArea.setMinSize(curMinSize);
-      if(position) {
-        theArea.setSize(position.size);
-        theArea.setX(position.x);
-        theArea.setY(position.y);
-      }else{
-        theArea.setSize(curSize);
-        theArea.setX(curX);
-        theArea.setY(curY);
+
+      if(position.fake) {
+        position.size = curSize;
+        position.x = curX;
+        position.y = curY;
       }
+      theArea.setSize(position.size);
+      theArea.setX(position.x);
+      theArea.setY(position.y);
+
+
 
 
       // resetCropHost();

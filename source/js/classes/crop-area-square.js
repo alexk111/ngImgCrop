@@ -95,10 +95,8 @@ crop.factory('cropAreaSquare', ['cropArea', function(CropArea) {
     if (this._areaIsDragging) {
       this._x = mouseCurX - this._posDragStartX;
       this._y = mouseCurY - this._posDragStartY;
-      if (position) {
-        position.x = this._x
-        position.y = this._y
-      }
+      position.x = this._x;
+      position.y = this._y;
       this._areaIsHover = true;
       cursor='move';
       res=true;
@@ -140,11 +138,9 @@ crop.factory('cropAreaSquare', ['cropArea', function(CropArea) {
       var posModifier=(this._size-wasSize)/2;
       this._x+=posModifier*xMulti;
       this._y+=posModifier*yMulti;
-      if(position) {
-        position.size = this._size
-        position.x = this._x
-        position.y = this._y
-      }
+      position.size = this._size;
+      position.x = this._x;
+      position.y = this._y;
       this._resizeCtrlIsHover = this._resizeCtrlIsDragging;
       res=true;
       this._events.trigger('area-resize');
