@@ -33,7 +33,7 @@ crop.directive('imgCrop', ['$timeout', 'cropHost', 'cropPubSub', function($timeo
 
       if (typeof scope.position != 'object' || !scope.position) {
         scope.position = {};
-        scope.position.fake = true;
+        scope.position.withoutSavingPosition = true;
       }
       var cropHost=new CropHost(element.find('canvas'), {}, events, scope.position);
 

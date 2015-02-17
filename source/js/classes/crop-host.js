@@ -91,7 +91,7 @@ crop.factory('cropHost', ['$document', 'cropAreaCircle', 'cropAreaSquare', 'crop
         }
         elCanvas.prop('width',canvasDims[0]).prop('height',canvasDims[1]).css({'margin-left': -canvasDims[0]/2+'px', 'margin-top': -canvasDims[1]/2+'px'});
 
-          if(position.fake) {
+          if(position.withoutSavingPosition) {
             position.size = Math.min(200, ctx.canvas.width / 2, ctx.canvas.height / 2);
             position.x = ctx.canvas.width / 2;
             position.y = ctx.canvas.height / 2;
@@ -333,7 +333,7 @@ crop.factory('cropHost', ['$document', 'cropAreaCircle', 'cropAreaSquare', 'crop
       theArea = new AreaClass(ctx, events);
       theArea.setMinSize(curMinSize);
 
-      if(position.fake) {
+      if(position.withoutSavingPosition) {
         position.size = curSize;
         position.x = curX;
         position.y = curY;
