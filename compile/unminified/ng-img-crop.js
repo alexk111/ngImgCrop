@@ -5,7 +5,7 @@
  * Copyright (c) 2015 Alex Kaul
  * License: MIT
  *
- * Generated at Wednesday, February 18th, 2015, 10:47:31 AM
+ * Generated at Wednesday, February 18th, 2015, 4:15:47 PM
  */
 (function() {
 'use strict';
@@ -1551,7 +1551,7 @@ crop.factory('cropHost', ['$document', '$window', 'cropAreaCircle', 'cropAreaSqu
     }
 
     // Resets CropHost
-    var resetCropHost=function(cropData) {
+    var resetCropHost=function(toMax, cropData) {
       if(image!==null) {
         theArea.setImage(image);
         var imageDims=[image.width, image.height],
@@ -1580,9 +1580,22 @@ crop.factory('cropHost', ['$document', '$window', 'cropAreaCircle', 'cropAreaSqu
 
         setX = ctx.canvas.width/2;
         setY = ctx.canvas.height/2;
-        // Set maximum cropping selection based on width
-        setSize = ctx.canvas.width-1;
-        setHeight = Math.floor(resImgAspect[1] * setSize / resImgAspect[0]);
+
+        if(toMax){
+          // Set maximum cropping selection based on width
+          setSize = ctx.canvas.width-1;
+          setHeight = Math.floor(resImgAspect[1] * setSize / resImgAspect[0]);
+        }else{
+          // Set cropping selection to 3/4 width
+          setSize = ctx.canvas.width*0.75;
+          setHeight = Math.floor(resImgAspect[1] * setSize / resImgAspect[0]);
+          if(setHeight > ctx.canvas.height * 0.75){
+            // Set cropping selection to 3/4 height
+            setHeight = ctx.canvas.height * 0.75;
+            setSize = Math.floor(resImgAspect[0] * setHeight / resImgAspect[1]);
+          }
+        }
+        
         if(typeof cropData !== 'undefined' && typeof cropData.width !== 'undefined' && cropData.width > 0){
           var cur_ratio = ctx.canvas.width/image.width;
           setSize = Math.round(cropData.width*cur_ratio);
@@ -1705,9 +1718,9 @@ crop.factory('cropHost', ['$document', '$window', 'cropAreaCircle', 'cropAreaSqu
       return temp_canvas.toDataURL(resImgFormat);
     };
 
-    this.setNewImageSource=function(imageSource, cropData) {
+    this.setNewImageSource=function(imageSource, toMax, cropData) {
       image=null;
-      resetCropHost();
+      resetCropHost(toMax);
       events.trigger('image-updated');
       if(!!imageSource) {
         var newImage = new Image();
@@ -1754,7 +1767,7 @@ crop.factory('cropHost', ['$document', '$window', 'cropAreaCircle', 'cropAreaSqu
           //   } else {
               image=newImage;
             // }
-            resetCropHost(cropData);
+            resetCropHost(toMax, cropData);
             events.trigger('image-updated');
           // });
         };
@@ -1969,6 +1982,7 @@ crop.directive('imgCrop', ['$timeout', 'cropHost', 'cropPubSub', function($timeo
       resultImageAspect: '@',
       resultImageFormat: '@',
       resultImageQuality: '=',
+      maximizeCrop: '=',
 
       onChange: '&',
       onLoadBegin: '&',
@@ -2065,10 +2079,11 @@ crop.directive('imgCrop', ['$timeout', 'cropHost', 'cropPubSub', function($timeo
       // Sync CropHost with Directive's options
       scope.$watch('image',function(){
         var initCrop = {};
+        var setToMaximum = (!!scope.maximizeCrop)? true : false;
         if(angular.isDefined(scope.cropData)){
           initCrop = scope.cropData;
         }
-        cropHost.setNewImageSource(scope.image, initCrop);
+        cropHost.setNewImageSource(scope.image, setToMaximum, initCrop);
       });
       scope.$watch('areaType',function(){
         cropHost.setAreaType(scope.areaType);
@@ -2101,6 +2116,12 @@ crop.directive('imgCrop', ['$timeout', 'cropHost', 'cropPubSub', function($timeo
       scope.$watch('resultImageQuality',function(){
         cropHost.setResultImageQuality(scope.resultImageQuality);
         updateResultImage(scope);
+      });
+      scope.$watch('maximizeCrop',function(){
+        var setToMaximum = (!!scope.maximizeCrop)? true : false;
+        if(angular.isDefined(scope.image)){
+          cropHost.setNewImageSource(scope.image, setToMaximum);
+        }
       });
 
       // Update CropHost dimensions when the directive element is resized
