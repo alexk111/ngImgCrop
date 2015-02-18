@@ -46,6 +46,9 @@
     <div>
       <label><input type="checkbox" ng-model="changeOnFly" /> Change On Fly</label>
     </div>
+    <div>
+      <label><input type="checkbox" ng-model="maximizeCrop" /> Maximize Default Crop Selection</label>
+    </div>
     
     <div>
       Aspect Ratio: 
@@ -105,6 +108,7 @@
     <img-crop image="imageDataURI"
               result-image="$parent.resImageDataURI"
               change-on-fly="changeOnFly"
+              maximize-crop="maximizeCrop"
               area-type="{{type}}"
               result-image-aspect="{{aspectRatio}}"
               crop-data="image.cropInfo"

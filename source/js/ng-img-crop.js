@@ -16,6 +16,7 @@ crop.directive('imgCrop', ['$timeout', 'cropHost', 'cropPubSub', function($timeo
       resultImageAspect: '@',
       resultImageFormat: '@',
       resultImageQuality: '=',
+      maximizeCrop: '=',
 
       onChange: '&',
       onLoadBegin: '&',
@@ -112,10 +113,11 @@ crop.directive('imgCrop', ['$timeout', 'cropHost', 'cropPubSub', function($timeo
       // Sync CropHost with Directive's options
       scope.$watch('image',function(){
         var initCrop = {};
+        var setToMaximum = (!!scope.maximizeCrop)? true : false;
         if(angular.isDefined(scope.cropData)){
           initCrop = scope.cropData;
         }
-        cropHost.setNewImageSource(scope.image, initCrop);
+        cropHost.setNewImageSource(scope.image, setToMaximum, initCrop);
       });
       scope.$watch('areaType',function(){
         cropHost.setAreaType(scope.areaType);
@@ -148,6 +150,12 @@ crop.directive('imgCrop', ['$timeout', 'cropHost', 'cropPubSub', function($timeo
       scope.$watch('resultImageQuality',function(){
         cropHost.setResultImageQuality(scope.resultImageQuality);
         updateResultImage(scope);
+      });
+      scope.$watch('maximizeCrop',function(){
+        var setToMaximum = (!!scope.maximizeCrop)? true : false;
+        if(angular.isDefined(scope.image)){
+          cropHost.setNewImageSource(scope.image, setToMaximum);
+        }
       });
 
       // Update CropHost dimensions when the directive element is resized
