@@ -5,7 +5,7 @@
  * Copyright (c) 2015 Alex Kaul
  * License: MIT
  *
- * Generated at Wednesday, January 28th, 2015, 1:04:44 PM
+ * Generated at Wednesday, February 18th, 2015, 10:47:31 AM
  */
 (function() {
 'use strict';
@@ -1717,46 +1717,46 @@ crop.factory('cropHost', ['$document', '$window', 'cropAreaCircle', 'cropAreaSqu
         newImage.onload = function(){
           events.trigger('load-done');
 
-          cropEXIF.getData(newImage,function(){
-            var orientation=cropEXIF.getTag(newImage,'Orientation');
+          // cropEXIF.getData(newImage,function(){
+          //   var orientation=cropEXIF.getTag(newImage,'Orientation');
 
-            if([3,6,8].indexOf(orientation)>-1) {
-              var canvas = $document.createElement('canvas'),
-                  ctx=canvas.getContext('2d'),
-                  cw = newImage.width, ch = newImage.height, cx = 0, cy = 0, deg=0;
-              switch(orientation) {
-                case 3:
-                  cx=-newImage.width;
-                  cy=-newImage.height;
-                  deg=180;
-                  break;
-                case 6:
-                  cw = newImage.height;
-                  ch = newImage.width;
-                  cy=-newImage.height;
-                  deg=90;
-                  break;
-                case 8:
-                  cw = newImage.height;
-                  ch = newImage.width;
-                  cx=-newImage.width;
-                  deg=270;
-                  break;
-              }
+          //   if([3,6,8].indexOf(orientation)>-1) {
+          //     var canvas = $document.createElement('canvas'),
+          //         ctx=canvas.getContext('2d'),
+          //         cw = newImage.width, ch = newImage.height, cx = 0, cy = 0, deg=0;
+          //     switch(orientation) {
+          //       case 3:
+          //         cx=-newImage.width;
+          //         cy=-newImage.height;
+          //         deg=180;
+          //         break;
+          //       case 6:
+          //         cw = newImage.height;
+          //         ch = newImage.width;
+          //         cy=-newImage.height;
+          //         deg=90;
+          //         break;
+          //       case 8:
+          //         cw = newImage.height;
+          //         ch = newImage.width;
+          //         cx=-newImage.width;
+          //         deg=270;
+          //         break;
+          //     }
 
-              canvas.width = cw;
-              canvas.height = ch;
-              ctx.rotate(deg*Math.PI/180);
-              ctx.drawImage(newImage, cx, cy);
+          //     canvas.width = cw;
+          //     canvas.height = ch;
+          //     ctx.rotate(deg*Math.PI/180);
+          //     ctx.drawImage(newImage, cx, cy);
 
-              image=new Image();
-              image.src = canvas.toDataURL('image/png');
-            } else {
+          //     image=new Image();
+          //     image.src = canvas.toDataURL('image/png');
+          //   } else {
               image=newImage;
-            }
+            // }
             resetCropHost(cropData);
             events.trigger('image-updated');
-          });
+          // });
         };
         newImage.onerror=function() {
           events.trigger('load-error');
