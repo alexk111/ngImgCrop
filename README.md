@@ -117,6 +117,7 @@ The following code enables to select an image using a file input and crop it. Th
    [result-image-format="{string}"]
    [result-image-quality="{number}"]
    [result-image-aspect="{string}"]
+   [maximize-crop="{boolean}"]
    [crop-data="{object}"]
    [original-data="{object}"]
    [on-change="{expression}"]
@@ -161,6 +162,10 @@ Assignable angular expression to data-bind to. NgImgCrop puts a data uri of a cr
 ### result-image-aspect
 
 *Optional*. Aspect ratio of result image. Possible values are string combinations of width+'x'+height. Default: 1x1.
+
+### maximize-crop
+
+*Optional*. When set to true, it will maximize the initial crop selection. Otherwise, it scales to 75% of the shortest dimension. Default: false.
 
 ### crop-data
 
