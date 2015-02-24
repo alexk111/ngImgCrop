@@ -219,7 +219,7 @@ crop.directive('imgCropResult', function() {
         if(scope.image !== current_source){
           current_source = scope.image;
           // only use the img.onload if we're not already passing the original dimensions in
-          if(!angular.isDefined(scope.originalData) || typeof scope.originalData.width === 'undefined'){
+          if(!angular.isDefined(scope.originalData) || typeof scope.originalData.width === 'undefined' || scope.originalData.width === 0){
             temp_image = new Image();
             // we need to gather the new image's natural dimensions
             // angular.element(result_img).css({ 'width' : 'auto' });
