@@ -185,6 +185,7 @@ crop.directive('imgCropResult', function() {
     scope: {
       image: '=',
       cropData: '=',
+      originalData: '=',
       width: '@'
     },
     template: '<div class="imgCropResultContainer"><img /></div>',
@@ -205,6 +206,7 @@ crop.directive('imgCropResult', function() {
       };
 
       var updateImage = function(){
+        var temp_image;
         var new_aspect = Math.round( 100 * scope.cropData.width / scope.cropData.height );
         // only change the div's height if the aspect ratio is adjusted
         if(new_aspect !== cur_aspect){
@@ -216,15 +218,25 @@ crop.directive('imgCropResult', function() {
         // if the image path changes, we need to wait for it to load before updating the result
         if(scope.image !== current_source){
           current_source = scope.image;
-          // we need to gather the new image's natural dimensions
-          angular.element(result_img).css({ 'width' : 'auto' });
-          result_img.onload = function(){
-            // save the width and height of the generated img, before we adjust it
-            result_img_width = result_img.width;
-            result_img_height = result_img.height;
+          // only use the img.onload if we're not already passing the original dimensions in
+          if(!angular.isDefined(scope.originalData) || typeof scope.originalData.width === 'undefined'){
+            temp_image = new Image();
+            // we need to gather the new image's natural dimensions
+            // angular.element(result_img).css({ 'width' : 'auto' });
+            temp_image.onload = function(){
+              // save the width and height of the generated img, before we adjust it
+              result_img_width = temp_image.width;
+              result_img_height = temp_image.height;
+
+              setNewData();
+            };
+            temp_image.src = scope.image;
+          }else{
+            result_img_width = scope.originalData.width;
+            result_img_height = scope.originalData.height;
 
             setNewData();
-          };
+          }
           result_img.src = scope.image;
         }else{
           setNewData();
