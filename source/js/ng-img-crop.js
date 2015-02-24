@@ -67,14 +67,15 @@ crop.directive('imgCrop', ['$timeout', 'cropHost', 'cropPubSub', function($timeo
               height: imgHeight
             };
           }
-          
-          var resultImage=cropHost.getResultImageDataURI();
-          if(storedResultImage!==resultImage) {
-            storedResultImage=resultImage;
-            if(angular.isDefined(scope.resultImage)) {
-              scope.resultImage=resultImage;
+          if(angular.isDefined(scope.resultImage)){
+            var resultImage=cropHost.getResultImageDataURI();
+            if(storedResultImage!==resultImage) {
+              storedResultImage=resultImage;
+              if(angular.isDefined(scope.resultImage)) {
+                scope.resultImage=resultImage;
+              }
+              scope.onChange({$dataURI: scope.resultImage});
             }
-            scope.onChange({$dataURI: scope.resultImage});
           }
         }
       };
@@ -177,3 +178,84 @@ crop.directive('imgCrop', ['$timeout', 'cropHost', 'cropPubSub', function($timeo
     }
   };
 }]);
+
+crop.directive('imgCropResult', function() {
+  return {
+    restrict: 'A',
+    scope: {
+      image: '=',
+      cropData: '=',
+      width: '@'
+    },
+    template: '<div class="imgCropResultContainer"><img /></div>',
+    link: function(scope, element, attrs) {
+      var result_div = angular.element(element[0].querySelector('.imgCropResultContainer'));
+      var result_img = element.find('img')[0];
+      var result_img_width = 0;
+      var result_img_height = 0;
+      var div_height = 0;
+      var current_source;
+      var cur_aspect;
+
+      var watch_triggered = function() {
+        // only update the resulting image, if both the image path and dimensions are set
+        if(angular.isDefined(scope.image) && scope.image !== '' && angular.isDefined(scope.cropData) && typeof scope.cropData.width !== 'undefined') {
+          updateImage();
+        }
+      };
+
+      var updateImage = function(){
+        var new_aspect = Math.round( 100 * scope.cropData.width / scope.cropData.height );
+        // only change the div's height if the aspect ratio is adjusted
+        if(new_aspect !== cur_aspect){
+          cur_aspect = new_aspect;
+          div_height = Math.round( 100000 * scope.cropData.height / scope.cropData.width ) / 1000;
+          // padding scales proportionately with width, height scales to the window
+          result_div.css({'padding-top': div_height+'%'});
+        }
+        // if the image path changes, we need to wait for it to load before updating the result
+        if(scope.image !== current_source){
+          current_source = scope.image;
+          // we need to gather the new image's natural dimensions
+          angular.element(result_img).css({ 'width' : 'auto' });
+          result_img.onload = function(){
+            // save the width and height of the generated img, before we adjust it
+            result_img_width = result_img.width;
+            result_img_height = result_img.height;
+
+            setNewData();
+          };
+          result_img.src = scope.image;
+        }else{
+          setNewData();
+        }
+      };
+
+      var setNewData = function(){
+        // round all percentages to the nearest thousandth (pretty accurate even on larger images)
+        var w = Math.round( 100000 * result_img_width / scope.cropData.width ) / 1000,
+        h = Math.round( 100000 * result_img_height / scope.cropData.height ) / 1000,
+        x = Math.floor( 1000 * w * scope.cropData.x / result_img_width ) * -1 / 1000,
+        y = Math.floor( 1000 * h * scope.cropData.y  / result_img_height ) * -1 / 1000;
+        
+        angular.element(result_img).css({
+          'width' : w+'%',
+          'left' : x+'%',
+          'top' : y+'%'
+        });
+      };
+
+      scope.$watch('image', function(){
+        watch_triggered();
+      });
+      scope.$watch('cropData', function(){
+        watch_triggered();
+      });
+      scope.$watch('width', function(){
+        // if it's an integer, append 'px' to the value
+        var px = ((parseFloat(scope.width) === parseInt(scope.width)) && !isNaN(scope.width))? 'px' : '';
+        element.css({ 'width' : scope.width+px });
+      });
+    }
+  };
+});
