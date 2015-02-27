@@ -30,6 +30,7 @@ crop.directive('imgCrop', ['$timeout', 'cropHost', 'cropPubSub', function($timeo
     link: function(scope, element, attrs) {
       // Init Events Manager
       var events = scope.events;
+      var initialMax = true;
 
       // Init Crop Host
       var cropHost=new CropHost(element.find('canvas'), {}, events);
@@ -154,8 +155,12 @@ crop.directive('imgCrop', ['$timeout', 'cropHost', 'cropPubSub', function($timeo
       });
       scope.$watch('maximizeCrop',function(){
         var setToMaximum = (!!scope.maximizeCrop)? true : false;
-        if(angular.isDefined(scope.image)){
+        // the 'image' watcher will maximizeCrop, so we only want to setNewImageSource
+        // if 'maxmizeCrop' is changed after the initial load
+        if (angular.isDefined(scope.image) && !initialMax) {
           cropHost.setNewImageSource(scope.image, setToMaximum);
+        } else {
+          initialMax = false;
         }
       });
 
