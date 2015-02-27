@@ -5,7 +5,7 @@
  * Copyright (c) 2015 Alex Kaul
  * License: MIT
  *
- * Generated at Friday, February 27th, 2015, 9:34:24 AM
+ * Generated at Friday, February 27th, 2015, 12:44:49 PM
  */
 (function() {
 'use strict';
@@ -2081,11 +2081,15 @@ crop.directive('imgCrop', ['$timeout', 'cropHost', 'cropPubSub', function($timeo
       // Sync CropHost with Directive's options
       scope.$watch('image',function(){
         var initCrop = {};
-        var setToMaximum = (!!scope.maximizeCrop)? true : false;
-        if(angular.isDefined(scope.cropData)){
-          initCrop = scope.cropData;
-        }
-        cropHost.setNewImageSource(scope.image, setToMaximum, initCrop);
+
+        // sometimes the image watcher is fired before the other scope variables are defined        
+        $timeout(function(){
+          var setToMaximum = (!!scope.maximizeCrop)? true : false;
+          if(angular.isDefined(scope.cropData)){
+            initCrop = scope.cropData;
+          }
+          cropHost.setNewImageSource(scope.image, setToMaximum, initCrop);
+        }, 100);
       });
       scope.$watch('areaType',function(){
         cropHost.setAreaType(scope.areaType);
