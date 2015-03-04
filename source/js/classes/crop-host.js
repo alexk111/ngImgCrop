@@ -139,7 +139,6 @@ crop.factory('cropHost', ['$document', 'cropAreaCircle', 'cropAreaSquare', 'crop
 
     var onMouseDown=function(e) {
       e.preventDefault();
-      e.stopPropagation();
       if(image!==null) {
         var offset=getElementOffset(ctx.canvas),
             pageX, pageY;
