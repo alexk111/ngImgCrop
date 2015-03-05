@@ -5,7 +5,7 @@
  * Copyright (c) 2015 Alex Kaul
  * License: MIT
  *
- * Generated at Tuesday, February 17th, 2015, 8:49:13 PM
+ * Generated at Wednesday, March 4th, 2015, 2:45:36 PM
  */
 (function() {
 'use strict';
@@ -303,11 +303,13 @@ crop.factory('cropAreaSquare', ['cropArea', function(CropArea) {
       var wasSize=this._size;
       this._size = Math.max(this._minSize, iFR);
       var posModifier=(this._size-wasSize)/2;
-      this._x+=posModifier*xMulti;
-      this._y+=posModifier*yMulti;
       position.size = this._size;
-      position.x = this._x;
-      position.y = this._y;
+      if(position.size <= this._ctx.canvas.height){
+        this._x+=posModifier*xMulti;
+        this._y+=posModifier*yMulti;
+        position.x = this._x;
+        position.y = this._y;
+      }
       this._resizeCtrlIsHover = this._resizeCtrlIsDragging;
       res=true;
       this._events.trigger('area-resize');
@@ -1515,7 +1517,6 @@ crop.factory('cropHost', ['$document', 'cropAreaCircle', 'cropAreaSquare', 'crop
 
     var onMouseDown=function(e) {
       e.preventDefault();
-      e.stopPropagation();
       if(image!==null) {
         var offset=getElementOffset(ctx.canvas),
             pageX, pageY;
