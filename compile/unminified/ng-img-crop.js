@@ -5,7 +5,7 @@
  * Copyright (c) 2015 Alex Kaul
  * License: MIT
  *
- * Generated at Wednesday, March 11th, 2015, 1:13:27 PM
+ * Generated at Wednesday, March 11th, 2015, 1:19:07 PM
  */
 (function() {
 'use strict';
@@ -261,7 +261,7 @@ crop.factory('cropAreaSquare', ['cropArea', function(CropArea) {
       this._areaIsHover = true;
       cursor='move';
       res=true;
-      this._events.trigger('area-move');
+      this._events.trigger('area-move', this);
     } else if (this._resizeCtrlIsDragging>-1) {
       var xMulti, yMulti;
       switch(this._resizeCtrlIsDragging) {
@@ -301,7 +301,7 @@ crop.factory('cropAreaSquare', ['cropArea', function(CropArea) {
       this._y+=posModifier*yMulti;
       this._resizeCtrlIsHover = this._resizeCtrlIsDragging;
       res=true;
-      this._events.trigger('area-resize');
+      this._events.trigger('area-resize', this);
     } else {
       var hoveredResizeBox=this._isCoordWithinResizeCtrl([mouseCurX,mouseCurY]);
       if (hoveredResizeBox>-1) {
