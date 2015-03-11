@@ -76,7 +76,7 @@ crop.factory('cropAreaCircle', ['cropArea', function(CropArea) {
       this._areaIsHover = true;
       cursor='move';
       res=true;
-      this._events.trigger('area-move');
+      this._events.trigger('area-move', this);
     } else if (this._boxResizeIsDragging) {
         cursor = 'nesw-resize';
         var iFR, iFX, iFY;
@@ -91,7 +91,7 @@ crop.factory('cropAreaCircle', ['cropArea', function(CropArea) {
         this._size = Math.max(this._minSize, iFR);
         this._boxResizeIsHover = true;
         res=true;
-        this._events.trigger('area-resize');
+        this._events.trigger('area-resize', this);
     } else if (this._isCoordWithinBoxResize([mouseCurX,mouseCurY])) {
         cursor = 'nesw-resize';
         this._areaIsHover = false;

@@ -14,9 +14,11 @@ crop.factory('cropPubSub', [function() {
       return this;
     };
     // Publish
-    this.trigger = function(name, args) {
+    this.trigger = function() {
+      var args = Array.prototype.slice.call(arguments);
+      var name = args.shift();
       angular.forEach(events[name], function(handler) {
-        handler.call(null, args);
+        handler.apply(null, args);
       });
       return this;
     };
