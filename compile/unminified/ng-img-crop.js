@@ -5,7 +5,7 @@
  * Copyright (c) 2015 Alex Kaul
  * License: MIT
  *
- * Generated at Wednesday, March 11th, 2015, 1:19:07 PM
+ * Generated at Wednesday, March 11th, 2015, 1:37:01 PM
  */
 (function() {
 'use strict';
@@ -1829,7 +1829,17 @@ crop.directive('imgCrop', ['$timeout', 'cropHost', 'cropPubSub', function($timeo
         }))
         .on('area-move area-resize', fnSafeApply(function( area ){
 
-          this.onAreaChange({$x: area._x, $y: area._y, $size: area._size});
+          var resizeEvent = {
+            x: area._x,
+            y: area._y,
+            size: area._size,
+            image: {
+              width: area._ctx.canvas.width,
+              height: area._ctx.canvas.height,
+            }
+          };
+
+          this.onAreaChange({$event:resizeEvent});
 
           if(!!this.changeOnFly) {
             updateResultImage(this);
