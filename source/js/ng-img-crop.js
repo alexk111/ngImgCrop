@@ -68,6 +68,19 @@ crop.directive('imgCrop', ['$timeout', 'cropHost', 'cropPubSub', function($timeo
         .on('load-error', fnSafeApply(function(){
           this.onLoadError({});
         }))
+        .on('area-init', fnSafeApply(function(area){
+          var resizeEvent = {
+            x: area._x,
+            y: area._y,
+            size: area._size,
+            image: {
+              width: area._ctx.canvas.width,
+              height: area._ctx.canvas.height,
+            }
+          };
+
+          this.onAreaChange({$event:resizeEvent});
+        }))
         .on('area-move area-resize', fnSafeApply(function( area ){
 
           var resizeEvent = {

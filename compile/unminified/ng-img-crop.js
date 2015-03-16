@@ -5,7 +5,7 @@
  * Copyright (c) 2015 Alex Kaul
  * License: MIT
  *
- * Generated at Wednesday, March 11th, 2015, 1:37:01 PM
+ * Generated at Monday, March 16th, 2015, 11:39:51 AM
  */
 (function() {
 'use strict';
@@ -1597,6 +1597,7 @@ crop.factory('cropHost', ['$document', 'cropAreaCircle', 'cropAreaSquare', 'crop
             }
             resetCropHost();
             events.trigger('image-updated');
+            events.trigger('area-init', theArea);
           });
         };
         newImage.onerror=function() {
@@ -1690,6 +1691,7 @@ crop.factory('cropHost', ['$document', 'cropAreaCircle', 'cropAreaSquare', 'crop
       theArea.setSize(curSize);
       theArea.setX(curX);
       theArea.setY(curY);
+      
 
       // resetCropHost();
       if(image!==null) {
@@ -1697,6 +1699,7 @@ crop.factory('cropHost', ['$document', 'cropAreaCircle', 'cropAreaSquare', 'crop
       }
 
       drawScene();
+      
     };
 
     /* Life Cycle begins */
@@ -1826,6 +1829,19 @@ crop.directive('imgCrop', ['$timeout', 'cropHost', 'cropPubSub', function($timeo
         }))
         .on('load-error', fnSafeApply(function(){
           this.onLoadError({});
+        }))
+        .on('area-init', fnSafeApply(function(area){
+          var resizeEvent = {
+            x: area._x,
+            y: area._y,
+            size: area._size,
+            image: {
+              width: area._ctx.canvas.width,
+              height: area._ctx.canvas.height,
+            }
+          };
+
+          this.onAreaChange({$event:resizeEvent});
         }))
         .on('area-move area-resize', fnSafeApply(function( area ){
 
