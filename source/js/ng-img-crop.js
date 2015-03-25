@@ -20,9 +20,9 @@ crop.directive('imgCrop', ['$timeout', 'cropHost', 'cropPubSub', function($timeo
       onLoadError: '&'
     },
     template: '<canvas></canvas>',
-    controller: function($scope/*, $attrs, $element*/) {
+    controller: ['$scope', function($scope/*, $attrs, $element*/) {
       $scope.events = new CropPubSub();
-    },
+    }],
     link: function(scope, element/*, attrs*/) {
       // Init Events Manager
       var events = scope.events;

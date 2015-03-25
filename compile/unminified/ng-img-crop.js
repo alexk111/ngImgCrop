@@ -2,10 +2,10 @@
  * ngImgCrop v0.2.0
  * https://github.com/alexk111/ngImgCrop
  *
- * Copyright (c) 2014 Alex Kaul
+ * Copyright (c) 2015 Alex Kaul
  * License: MIT
  *
- * Generated at Wednesday, August 13th, 2014, 10:55:49 AM
+ * Generated at Wednesday, March 25th, 2015, 12:41:18 PM
  */
 (function() {
 'use strict';
@@ -1119,9 +1119,9 @@ crop.directive('imgCrop', ['$timeout', 'cropHost', 'cropPubSub', function($timeo
       onLoadError: '&'
     },
     template: '<canvas></canvas>',
-    controller: function($scope/*, $attrs, $element*/) {
+    controller: ['$scope', function($scope/*, $attrs, $element*/) {
       $scope.events = new CropPubSub();
-    },
+    }],
     link: function(scope, element/*, attrs*/) {
       // Init Events Manager
       var events = scope.events;
