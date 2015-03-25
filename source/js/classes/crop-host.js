@@ -1,6 +1,6 @@
 'use strict';
 
-crop.factory('cropHost', ['$document', 'cropAreaCircle', 'cropAreaSquare', 'cropAreaRectangle', function($document, CropAreaCircle, CropAreaSquare, CropAreaRectangle) {
+crop.factory('cropHost', ['$document', 'cropAreaCircle', 'cropAreaSquare', 'cropAreaRectangle', 'cropEXIF', function($document, CropAreaCircle, CropAreaSquare, CropAreaRectangle, cropEXIF) {
   /* STATIC FUNCTIONS */
 
   // Get Element's Offset
@@ -36,6 +36,12 @@ crop.factory('cropHost', ['$document', 'cropAreaCircle', 'cropAreaSquare', 'crop
 
     // Result Image size
     var resImgSize={w: 200, h: 200};
+
+    // Result Image type
+    var resImgFormat='image/png';
+
+    // Result Image quality
+    var resImgQuality=null;
 
     /* PRIVATE FUNCTIONS */
 
@@ -98,13 +104,25 @@ crop.factory('cropHost', ['$document', 'cropAreaCircle', 'cropAreaSquare', 'crop
       drawScene();
     };
 
+    /**
+     * Returns event.changedTouches directly if event is a TouchEvent.
+     * If event is a jQuery event, return changedTouches of event.originalEvent
+     */
+    var getChangedTouches=function(event){
+      if(angular.isDefined(event.changedTouches)){
+        return event.changedTouches;
+      }else{
+        return event.originalEvent.changedTouches;
+      }
+    };
+
     var onMouseMove=function(e) {
       if(image!==null) {
         var offset=getElementOffset(ctx.canvas),
             pageX, pageY;
         if(e.type === 'touchmove') {
-          pageX=e.changedTouches[0].pageX;
-          pageY=e.changedTouches[0].pageY;
+          pageX=getChangedTouches(e)[0].pageX;
+          pageY=getChangedTouches(e)[0].pageY;
         } else {
           pageX=e.pageX;
           pageY=e.pageY;
@@ -121,8 +139,8 @@ crop.factory('cropHost', ['$document', 'cropAreaCircle', 'cropAreaSquare', 'crop
         var offset=getElementOffset(ctx.canvas),
             pageX, pageY;
         if(e.type === 'touchstart') {
-          pageX=e.changedTouches[0].pageX;
-          pageY=e.changedTouches[0].pageY;
+          pageX=getChangedTouches(e)[0].pageX;
+          pageY=getChangedTouches(e)[0].pageY;
         } else {
           pageX=e.pageX;
           pageY=e.pageY;
@@ -137,8 +155,8 @@ crop.factory('cropHost', ['$document', 'cropAreaCircle', 'cropAreaSquare', 'crop
         var offset=getElementOffset(ctx.canvas),
             pageX, pageY;
         if(e.type === 'touchend') {
-          pageX=e.changedTouches[0].pageX;
-          pageY=e.changedTouches[0].pageY;
+          pageX=getChangedTouches(e)[0].pageX;
+          pageY=getChangedTouches(e)[0].pageY;
         } else {
           pageX=e.pageX;
           pageY=e.pageY;
@@ -177,11 +195,52 @@ crop.factory('cropHost', ['$document', 'cropAreaCircle', 'cropAreaSquare', 'crop
       events.trigger('image-updated');
       if(!!imageSource) {
         var newImage = new Image();
+        if(imageSource.substring(0,4).toLowerCase()==='http') {
+          newImage.crossOrigin = 'anonymous';
+        }
         newImage.onload = function(){
           events.trigger('load-done');
-          image=newImage;
-          resetCropHost();
-          events.trigger('image-updated');
+
+          cropEXIF.getData(newImage,function(){
+            var orientation=cropEXIF.getTag(newImage,'Orientation');
+
+            if([3,6,8].indexOf(orientation)>-1) {
+              var canvas = document.createElement("canvas"),
+                  ctx=canvas.getContext("2d"),
+                  cw = newImage.width, ch = newImage.height, cx = 0, cy = 0, deg=0;
+              switch(orientation) {
+                case 3:
+                  cx=-newImage.width;
+                  cy=-newImage.height;
+                  deg=180;
+                  break;
+                case 6:
+                  cw = newImage.height;
+                  ch = newImage.width;
+                  cy=-newImage.height;
+                  deg=90;
+                  break;
+                case 8:
+                  cw = newImage.height;
+                  ch = newImage.width;
+                  cx=-newImage.width;
+                  deg=270;
+                  break;
+              }
+
+              canvas.width = cw;
+              canvas.height = ch;
+              ctx.rotate(deg*Math.PI/180);
+              ctx.drawImage(newImage, cx, cy);
+
+              image=new Image();
+              image.src = canvas.toDataURL("image/png");
+            } else {
+              image=newImage;
+            }
+            resetCropHost();
+            events.trigger('image-updated');
+          });
         };
         newImage.onerror=function() {
           events.trigger('load-error');
@@ -283,6 +342,17 @@ crop.factory('cropHost', ['$document', 'cropAreaCircle', 'cropAreaSquare', 'crop
       if(!isNaN(size.w) && !isNaN(size.h)) {
         resImgSize=size;
         drawScene();
+      }
+    };
+
+    this.setResultImageFormat=function(format) {
+      resImgFormat = format;
+    };
+
+    this.setResultImageQuality=function(quality){
+      quality = parseFloat(quality);
+      if (!isNaN(quality) && quality>=0 && quality<=1){
+        resImgQuality = quality;
       }
     };
 

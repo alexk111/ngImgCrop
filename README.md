@@ -114,6 +114,8 @@ The following code enables to select an image using a file input and crop it. Th
    [area-type="{circle|square}"]
    [area-min-size="{number}"]
    [result-image-size="{number}"]
+   [result-image-format="{string}"]
+   [result-image-quality="{number}"]
    [on-change="{expression}"]
    [on-load-begin="{expression"]
    [on-load-done="{expression"]
@@ -144,6 +146,14 @@ Assignable angular expression to data-bind to. NgImgCrop puts a data uri of a cr
 ### result-image-size
 
 *Optional*. Width/height of the result image (in pixels). Default: 200.
+
+### result-image-format
+
+*Optional*. Format of result image. Possible values include image/jpeg, image/png, and image/webp. Browser support varies. Default: image/png.
+
+### result-image-quality
+
+*Optional*. Quality of result image. Possible values between 0.0 and 1.0 inclusive. Default: browser default.
 
 ### on-change
 
