@@ -332,6 +332,16 @@ crop.factory('cropHost', ['$document', 'cropAreaCircle', 'cropAreaSquare', 'crop
       drawScene();
     };
 
+    this.getAreaDetails = function() {
+      return {
+        x: theArea.getX(),
+        y: theArea.getY(),
+        size: theArea.getSize(),
+        image: {width: theArea.getImage().width, height: theArea.getImage().height},
+        canvas: {width: ctx.canvas.width, height: ctx.canvas.height}
+      };
+    };
+
     /* Life Cycle begins */
 
     // Init Context var

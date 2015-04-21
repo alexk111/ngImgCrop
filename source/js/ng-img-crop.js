@@ -10,6 +10,7 @@ crop.directive('imgCrop', ['$timeout', 'cropHost', 'cropPubSub', function($timeo
       changeOnFly: '=',
       areaType: '@',
       areaMinSize: '=',
+      areaDetails: '=',
       resultImageSize: '=',
       resultImageFormat: '@',
       resultImageQuality: '=',
@@ -73,6 +74,7 @@ crop.directive('imgCrop', ['$timeout', 'cropHost', 'cropPubSub', function($timeo
         }))
         .on('area-move-end area-resize-end image-updated', fnSafeApply(function(scope){
           updateResultImage(scope);
+          scope.areaDetails = cropHost.getAreaDetails();
         }));
 
       // Sync CropHost with Directive's options
