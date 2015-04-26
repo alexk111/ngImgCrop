@@ -93,10 +93,10 @@ crop.factory('cropAreaSquare', ['cropArea', function(CropArea) {
     this._areaIsHover = false;
 
     if (this._areaIsDragging) {
+      position.x = this.getX();
+      position.y = this.getY();
       this._x = mouseCurX - this._posDragStartX;
       this._y = mouseCurY - this._posDragStartY;
-      position.x = this._x;
-      position.y = this._y;
       this._areaIsHover = true;
       cursor='move';
       res=true;

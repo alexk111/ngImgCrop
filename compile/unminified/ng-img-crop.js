@@ -5,7 +5,7 @@
  * Copyright (c) 2015 Alex Kaul
  * License: MIT
  *
- * Generated at Wednesday, March 4th, 2015, 2:45:36 PM
+ * Generated at Sunday, April 26th, 2015, 10:06:48 AM
  */
 (function() {
 'use strict';
@@ -83,10 +83,10 @@ crop.factory('cropAreaCircle', ['cropArea', function(CropArea) {
     this._areaIsHover = false;
 
     if (this._areaIsDragging) {
+      position.x = this.getX();
+      position.y = this.getY();
       this._x = mouseCurX - this._posDragStartX;
       this._y = mouseCurY - this._posDragStartY;
-      position.x = this._x;
-      position.y = this._y;
       this._areaIsHover = true;
       cursor='move';
       res=true;
@@ -260,10 +260,10 @@ crop.factory('cropAreaSquare', ['cropArea', function(CropArea) {
     this._areaIsHover = false;
 
     if (this._areaIsDragging) {
+      position.x = this.getX();
+      position.y = this.getY();
       this._x = mouseCurX - this._posDragStartX;
       this._y = mouseCurY - this._posDragStartY;
-      position.x = this._x;
-      position.y = this._y;
       this._areaIsHover = true;
       cursor='move';
       res=true;
