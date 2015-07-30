@@ -19,7 +19,7 @@
     "type": "git",
     "url": "https://github.com/marciovsena/ngImgCrop"
   },
-  "description": "Image crop directive for AngularJS",
+  "description": "Image crop directive for AngularJS add rectangle",
   "main": [
     "compile/minified/ng-img-crop.js",
     "compile/minified/ng-img-crop.css"

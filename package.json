@@ -15,7 +15,7 @@
   "name": "ng-img-crop-add-rectangle",
   "prettyName": "ngImgCropAddRectangle",
   "version": "0.3.3",
-  "description": "Image crop directive for AngularJS",
+  "description": "Image crop directive for AngularJS add rectangle",
   "license": "MIT",
   "homepage": "https://github.com/marciovsena/ngImgCrop/",
   "repository": {
