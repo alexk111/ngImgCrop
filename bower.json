@@ -1,9 +1,19 @@
 {
-  "name": "ng-img-crop-with-rectangle",
+  "name": "ng-img-crop-add-rectangle",
+  "prettyName": "ngImgCropAddRectangle",
   "version": "0.3.2",
   "authors": [
-    "Alex Kaul <alexkaul@googlemail.com>",
-    "Marcio Sena <marciosena.inf@gmail.com>"
+    {
+      "name": "Alex Kaul",
+      "email": "alexkaul@googlemail.com"
+    },
+    {
+      "name": "Jodonnell-broadsoft"
+    },
+    {
+      "name": "Marcio Sena",
+      "email": "marciosena.inf@gmail.com"
+    }
   ],
   "repository": {
     "type": "git",
@@ -21,7 +31,7 @@
     "cropper"
   ],
   "license": "MIT",
-  "homepage": "https://github.com/alexk111/ngImgCrop",
+  "homepage": "https://github.com/marciovsena/ngImgCrop/",
   "ignore": [
     "node_modules",
     "bower_components",
