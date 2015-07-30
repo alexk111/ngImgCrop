@@ -1,11 +1,11 @@
 /*!
- * ngImgCrop v0.3.2
- * https://github.com/alexk111/ngImgCrop
+ * ngImgCropAddRectangle v0.3.3
+ * https://github.com/marciovsena/ngImgCrop/
  *
- * Copyright (c) 2015 Alex Kaul
+ * Copyright (c) 2015 undefined
  * License: MIT
  *
- * Generated at Thursday, July 30th, 2015, 12:35:28 PM
+ * Generated at Thursday, July 30th, 2015, 3:03:59 PM
  */
 (function() {
 'use strict';
