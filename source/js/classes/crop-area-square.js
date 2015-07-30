@@ -166,7 +166,7 @@ crop.factory('cropAreaSquare', ['cropArea', function(CropArea) {
       }
     }
 
-    this._dontDragOutside();
+    //this._dontDragOutside();
     angular.element(this._ctx.canvas).css({'cursor': cursor});
 
     return res;
