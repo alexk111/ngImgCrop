@@ -3,7 +3,6 @@
 <head>
   <title>ngImgCrop Test Page</title>
   <script type="text/javascript" src="../bower_components/angular/angular.min.js"></script>
-  <!--<script src="//ajax.googleapis.com/ajax/libs/angularjs/1.3.0/angular.min.js"></script>-->
   <script type="text/javascript" src="../compile/unminified/ng-img-crop.js"></script>
   <link rel="stylesheet" href="../compile/unminified/ng-img-crop.css"/>
   <style>
@@ -40,7 +39,7 @@
     Area type:
     <label><input type="radio" ng-model="type" value="circle" /> Circle</label>
     <label><input type="radio" ng-model="type" value="square" /> Square</label>
-    <!--<label><input type="radio" ng-model="type" value="rectangle" /> Rectangle</label>-->
+    <label><input type="radio" ng-model="type" value="rectangle" /> Rectangle</label>
   </div>
   <div>
     <label><input type="checkbox" ng-model="changeOnFly" /> Change On Fly</label>
@@ -92,6 +91,7 @@
               on-load-begin="onLoadBegin()"
               on-load-done="onLoadDone()"
               on-load-error="onLoadError()"
+              area-coords="myAreaCoords"
     ></img-crop>
               <!--aspect-ratio="aspectRatio"-->
   </div>
@@ -107,12 +107,12 @@
     angular.module('app', ['ngImgCrop'])
       .controller('Ctrl', function($scope) {
         $scope.size='small';
-        $scope.type='circle';
+        $scope.type='rectangle';
         $scope.imageDataURI='';
         $scope.resImageDataURI='';
         $scope.resImgFormat='image/png';
         $scope.resImgQuality=1;
-        $scope.selMinSize=100;
+        $scope.selMinSize=10;
         $scope.resImgSize=200;
         //$scope.aspectRatio=1.2;
         $scope.onChange=function($dataURI) {
