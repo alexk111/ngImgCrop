@@ -4,9 +4,11 @@ Simple Image Crop directive for AngularJS. Enables to crop a circle or a square 
 
 ## Screenshots
 
-![Circle Crop](https://raw.github.com/alexk111/ngImgCrop/master/screenshots/circle_1.jpg "Circle Crop")
+![Circle Crop](https://raw.github.com/alexk111/ngImgCrop/master/screenshots/circle.jpg "Circle Crop")
 
-![Square Crop](https://raw.github.com/alexk111/ngImgCrop/master/screenshots/square_1.jpg "Square Crop")
+![Square Crop](https://raw.github.com/alexk111/ngImgCrop/master/screenshots/square.jpg "Square Crop")
+
+![Rectangle Crop](https://raw.github.com/alexk111/ngImgCrop/master/screenshots/rectangle.jpg "Rectangle Crop")
 
 ## Live demo
 
@@ -110,8 +112,9 @@ The following code enables to select an image using a file input and crop it. Th
 <img-crop
     image="{string}"
     result-image="{string}"
+    area-coords="myAreaCoords"
    [change-on-fly="{boolean}"]
-   [area-type="{circle|square}"]
+   [area-type="{circle|square|rectangle}"]
    [area-min-size="{number}"]
    [result-image-size="{number}"]
    [result-image-format="{string}"]
@@ -137,7 +140,7 @@ Assignable angular expression to data-bind to. NgImgCrop puts a data uri of a cr
 
 ### area-type
 
-*Optional*. Type of the crop area. Possible values: circle|square. Default: circle.
+*Optional*. Type of the crop area. Possible values: circle|square|rectangle. Default: circle.
 
 ### area-min-size
 
