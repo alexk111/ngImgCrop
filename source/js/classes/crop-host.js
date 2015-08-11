@@ -166,12 +166,28 @@ crop.factory('cropHost', ['$document', 'cropAreaCircle', 'cropAreaSquare', 'crop
 
     this.getResultImageDataURI=function() {
       var temp_ctx, temp_canvas;
+      var ratio = theArea.getRatio();
+      var size = theArea.getSize();
+      var hSize = size / 2;
+      var hSizeY = (size * ratio) / 2;
+
       temp_canvas = angular.element('<canvas></canvas>')[0];
       temp_ctx = temp_canvas.getContext('2d');
       temp_canvas.width = resImgSize;
-      temp_canvas.height = resImgSize;
+      temp_canvas.height = resImgSize * ratio;
+
       if(image!==null){
-        temp_ctx.drawImage(image, (theArea.getX()-theArea.getSize()/2)*(image.width/ctx.canvas.width), (theArea.getY()-theArea.getSize()/2)*(image.height/ctx.canvas.height), theArea.getSize()*(image.width/ctx.canvas.width), theArea.getSize()*(image.height/ctx.canvas.height), 0, 0, resImgSize, resImgSize);
+        // void ctx.drawImage(image, sx, sy, sWidth, sHeight, dx, dy, dWidth, dHeight);
+        var sx = (theArea.getX() - hSize) * (image.width / ctx.canvas.width);
+        var sy = (theArea.getY() - hSizeY) * (image.height / ctx.canvas.height);
+        var sWidth = size * (image.width / ctx.canvas.width);
+        var sHeight = (size * ratio) * (image.height / ctx.canvas.height);
+        var dx = 0;
+        var dy = 0;
+        var dWidth = resImgSize;
+        var dHeight = resImgSize * ratio;
+
+        temp_ctx.drawImage(image, sx, sy, sWidth, sHeight, dx, dy, dWidth, dHeight);
       }
       if (resImgQuality!==null ){
         return temp_canvas.toDataURL(resImgFormat, resImgQuality);
@@ -286,6 +302,14 @@ crop.factory('cropHost', ['$document', 'cropAreaCircle', 'cropAreaSquare', 'crop
       size=parseInt(size,10);
       if(!isNaN(size)) {
         theArea.setMinSize(size);
+        drawScene();
+      }
+    };
+
+    this.setRatio=function(ratio) {
+      ratio=parseFloat(ratio);
+      if(!isNaN(ratio)) {
+        theArea.setRatio(ratio);
         drawScene();
       }
     };

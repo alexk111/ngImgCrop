@@ -13,6 +13,7 @@ crop.factory('cropArea', ['cropCanvas', function(CropCanvas) {
     this._x = 0;
     this._y = 0;
     this._size = 200;
+    this._ratio = 1;
   };
 
   /* GETTERS/SETTERS */
@@ -48,6 +49,14 @@ crop.factory('cropArea', ['cropCanvas', function(CropCanvas) {
     this._dontDragOutside();
   };
 
+  CropArea.prototype.getRatio = function () {
+    return this._ratio;
+  };
+  CropArea.prototype.setRatio = function (ratio) {
+    this._ratio = ratio
+    this._dontDragOutside();
+  };
+
   CropArea.prototype.getMinSize = function () {
     return this._minSize;
   };
@@ -57,23 +66,51 @@ crop.factory('cropArea', ['cropCanvas', function(CropCanvas) {
     this._dontDragOutside();
   };
 
+  CropArea.prototype._dontResizeOutside = function() {
+    var h = this._ctx.canvas.height;
+    var w = this._ctx.canvas.width;
+
+    var posX = this._x - (this._size / 2);
+    var posY = this._y - ((this._size * this._ratio) / 2);
+
+    if(this._size > w - posX) {
+      this._size = w - posX;
+    }
+    if((this._size * this._ratio) > (h - posY)) {
+      this._size = (h - posY) / this._ratio;
+    }
+  }
+
   /* FUNCTIONS */
   CropArea.prototype._dontDragOutside=function() {
-    var h=this._ctx.canvas.height,
-        w=this._ctx.canvas.width;
-    if(this._size>w) { this._size=w; }
-    if(this._size>h) { this._size=h; }
-    if(this._x<this._size/2) { this._x=this._size/2; }
-    if(this._x>w-this._size/2) { this._x=w-this._size/2; }
-    if(this._y<this._size/2) { this._y=this._size/2; }
-    if(this._y>h-this._size/2) { this._y=h-this._size/2; }
+    var h = this._ctx.canvas.height;
+    var w = this._ctx.canvas.width;
+
+
+    // var sizeY = this._size * this._ratio;
+    var hSize = this._size / 2;
+    var hSizeY = (this._size * this._ratio) / 2;
+
+    if(this._x < hSize) {
+      this._x = hSize;
+    }
+    if(this._x > w - hSize) {
+      this._x = w - hSize;
+    }
+
+    if(this._y < hSizeY) {
+      this._y = hSizeY;
+    }
+    if(this._y > h - hSizeY) {
+      this._y = h - hSizeY;
+    }
   };
 
   CropArea.prototype._drawArea=function() {};
 
   CropArea.prototype.draw=function() {
     // draw crop area
-    this._cropCanvas.drawCropArea(this._image,[this._x,this._y],this._size,this._drawArea);
+    this._cropCanvas.drawCropArea(this._image,[this._x,this._y],this._size,this._ratio,this._drawArea);
   };
 
   CropArea.prototype.processMouseMove=function() {};

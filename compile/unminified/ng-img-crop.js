@@ -2,10 +2,10 @@
  * ngImgCrop v0.3.2
  * https://github.com/alexk111/ngImgCrop
  *
- * Copyright (c) 2014 Alex Kaul
+ * Copyright (c) 2015 Alex Kaul
  * License: MIT
  *
- * Generated at Wednesday, December 3rd, 2014, 3:54:12 PM
+ * Generated at Tuesday, August 11th, 2015, 5:14:36 PM
  */
 (function() {
 'use strict';
@@ -191,22 +191,24 @@ crop.factory('cropAreaSquare', ['cropArea', function(CropArea) {
   CropAreaSquare.prototype = new CropArea();
 
   CropAreaSquare.prototype._calcSquareCorners=function() {
-    var hSize=this._size/2;
+    var hSizeX=this._size/2;
+    var hsizeY=(this._size * this._ratio)/2;
     return [
-      [this._x-hSize, this._y-hSize],
-      [this._x+hSize, this._y-hSize],
-      [this._x-hSize, this._y+hSize],
-      [this._x+hSize, this._y+hSize]
+      [this._x-hSizeX, this._y-hsizeY],
+      [this._x+hSizeX, this._y-hsizeY],
+      [this._x-hSizeX, this._y+hsizeY],
+      [this._x+hSizeX, this._y+hsizeY]
     ];
   };
 
   CropAreaSquare.prototype._calcSquareDimensions=function() {
-    var hSize=this._size/2;
+    var hSize = this._size / 2;
+    var hSizeY = (this._size * this._ratio) / 2;
     return {
-      left: this._x-hSize,
-      top: this._y-hSize,
-      right: this._x+hSize,
-      bottom: this._y+hSize
+      left: this._x - hSize,
+      top: this._y - hSizeY,
+      right: this._x + hSize,
+      bottom: this._y + hSizeY
     };
   };
 
@@ -229,9 +231,11 @@ crop.factory('cropAreaSquare', ['cropArea', function(CropArea) {
     return res;
   };
 
-  CropAreaSquare.prototype._drawArea=function(ctx,centerCoords,size){
-    var hSize=size/2;
-    ctx.rect(centerCoords[0]-hSize,centerCoords[1]-hSize,size,size);
+  CropAreaSquare.prototype._drawArea=function(ctx,centerCoords,size, ratio){
+    var hSizeX = size/2;
+    var sizeY = size * ratio;
+    var hSizeY = sizeY/2;
+    ctx.rect(centerCoords[0]-hSizeX,centerCoords[1]-hSizeY,size,sizeY);
   };
 
   CropAreaSquare.prototype.draw=function() {
@@ -262,7 +266,9 @@ crop.factory('cropAreaSquare', ['cropArea', function(CropArea) {
       cursor='move';
       res=true;
       this._events.trigger('area-move');
-    } else if (this._resizeCtrlIsDragging>-1) {
+
+    } else if (this._resizeCtrlIsDragging > -1) {
+
       var xMulti, yMulti;
       switch(this._resizeCtrlIsDragging) {
         case 0: // Top Left
@@ -270,39 +276,41 @@ crop.factory('cropAreaSquare', ['cropArea', function(CropArea) {
           yMulti=-1;
           cursor = 'nwse-resize';
           break;
+
         case 1: // Top Right
           xMulti=1;
           yMulti=-1;
           cursor = 'nesw-resize';
           break;
+
         case 2: // Bottom Left
           xMulti=-1;
           yMulti=1;
           cursor = 'nesw-resize';
           break;
+
         case 3: // Bottom Right
           xMulti=1;
           yMulti=1;
           cursor = 'nwse-resize';
           break;
       }
-      var iFX = (mouseCurX - this._posResizeStartX)*xMulti;
-      var iFY = (mouseCurY - this._posResizeStartY)*yMulti;
-      var iFR;
-      if(iFX>iFY) {
-        iFR = this._posResizeStartSize + iFY;
-      } else {
-        iFR = this._posResizeStartSize + iFX;
-      }
-      var wasSize=this._size;
-      this._size = Math.max(this._minSize, iFR);
-      var posModifier=(this._size-wasSize)/2;
-      this._x+=posModifier*xMulti;
-      this._y+=posModifier*yMulti;
+
+      var distance = getDistance({x: mouseCurX, y: mouseCurY}, {x: this._x, y: this._y});
+      var sizeChange = (distance - this._distance);
+      var wasWidth = this._size;
+
+      this._size = Math.max(this._minSize, (wasWidth + sizeChange));
+      this._x += (sizeChange / 2) * xMulti;
+      this._y += ((sizeChange * this._ratio) / 2) * yMulti;
       this._resizeCtrlIsHover = this._resizeCtrlIsDragging;
-      res=true;
+      res = true;
       this._events.trigger('area-resize');
+
+      this._dontResizeOutside();
+
     } else {
+
       var hoveredResizeBox=this._isCoordWithinResizeCtrl([mouseCurX,mouseCurY]);
       if (hoveredResizeBox>-1) {
         switch(hoveredResizeBox) {
@@ -342,8 +350,9 @@ crop.factory('cropAreaSquare', ['cropArea', function(CropArea) {
       this._areaIsHover = false;
       this._resizeCtrlIsDragging = isWithinResizeCtrl;
       this._resizeCtrlIsHover = isWithinResizeCtrl;
-      this._posResizeStartX=mouseDownX;
-      this._posResizeStartY=mouseDownY;
+      this._posResizeStartX = mouseDownX;
+      this._posResizeStartY = mouseDownY;
+      this._distance = getDistance({x: mouseDownX, y: mouseDownY}, {x: this._x, y: this._y});
       this._posResizeStartSize = this._size;
       this._events.trigger('area-resize-start');
     } else if (this._isCoordWithinArea([mouseDownX,mouseDownY])) {
@@ -356,6 +365,19 @@ crop.factory('cropAreaSquare', ['cropArea', function(CropArea) {
       this._events.trigger('area-move-start');
     }
   };
+
+  function getDistance ( point1, point2 ) {
+    var xs = 0;
+    var ys = 0;
+
+    xs = point2.x - point1.x;
+    xs = xs * xs;
+
+    ys = point2.y - point1.y;
+    ys = ys * ys;
+
+    return Math.sqrt( xs + ys );
+  }
 
   CropAreaSquare.prototype.processMouseUp=function(/*mouseUpX, mouseUpY*/) {
     if(this._areaIsDragging) {
@@ -376,6 +398,7 @@ crop.factory('cropAreaSquare', ['cropArea', function(CropArea) {
   return CropAreaSquare;
 }]);
 
+
 crop.factory('cropArea', ['cropCanvas', function(CropCanvas) {
   var CropArea = function(ctx, events) {
     this._ctx=ctx;
@@ -389,6 +412,7 @@ crop.factory('cropArea', ['cropCanvas', function(CropCanvas) {
     this._x = 0;
     this._y = 0;
     this._size = 200;
+    this._ratio = 1;
   };
 
   /* GETTERS/SETTERS */
@@ -424,6 +448,14 @@ crop.factory('cropArea', ['cropCanvas', function(CropCanvas) {
     this._dontDragOutside();
   };
 
+  CropArea.prototype.getRatio = function () {
+    return this._ratio;
+  };
+  CropArea.prototype.setRatio = function (ratio) {
+    this._ratio = ratio
+    this._dontDragOutside();
+  };
+
   CropArea.prototype.getMinSize = function () {
     return this._minSize;
   };
@@ -433,23 +465,50 @@ crop.factory('cropArea', ['cropCanvas', function(CropCanvas) {
     this._dontDragOutside();
   };
 
+  CropArea.prototype._dontResizeOutside = function() {
+    var h = this._ctx.canvas.height;
+    var w = this._ctx.canvas.width;
+
+    var posX = this._x - (this._size / 2);
+    var posY = this._y - ((this._size * this._ratio) / 2);
+
+    if(this._size > w - posX) {
+      this._size = w - posX;
+    }
+    if((this._size * this._ratio) > (h - posY)) {
+      this._size = (h - posY) / this._ratio;
+    }
+  }
+
   /* FUNCTIONS */
   CropArea.prototype._dontDragOutside=function() {
-    var h=this._ctx.canvas.height,
-        w=this._ctx.canvas.width;
-    if(this._size>w) { this._size=w; }
-    if(this._size>h) { this._size=h; }
-    if(this._x<this._size/2) { this._x=this._size/2; }
-    if(this._x>w-this._size/2) { this._x=w-this._size/2; }
-    if(this._y<this._size/2) { this._y=this._size/2; }
-    if(this._y>h-this._size/2) { this._y=h-this._size/2; }
+    var h = this._ctx.canvas.height;
+    var w = this._ctx.canvas.width;
+
+    // var sizeY = this._size * this._ratio;
+    var hSize = this._size / 2;
+    var hSizeY = (this._size * this._ratio) / 2;
+
+    if(this._x < hSize) {
+      this._x = hSize;
+    }
+    if(this._x > w - hSize) {
+      this._x = w - hSize;
+    }
+
+    if(this._y < hSizeY) {
+      this._y = hSizeY;
+    }
+    if(this._y > h - hSizeY) {
+      this._y = h - hSizeY;
+    }
   };
 
   CropArea.prototype._drawArea=function() {};
 
   CropArea.prototype.draw=function() {
     // draw crop area
-    this._cropCanvas.drawCropArea(this._image,[this._x,this._y],this._size,this._drawArea);
+    this._cropCanvas.drawCropArea(this._image,[this._x,this._y],this._size,this._ratio,this._drawArea);
   };
 
   CropArea.prototype.processMouseMove=function() {};
@@ -460,6 +519,7 @@ crop.factory('cropArea', ['cropCanvas', function(CropCanvas) {
 
   return CropArea;
 }]);
+
 
 crop.factory('cropCanvas', [function() {
   // Shape = Array of [x,y]; [0, 0] - center
@@ -559,7 +619,7 @@ crop.factory('cropCanvas', [function() {
 
     /* Crop Area */
 
-    this.drawCropArea=function(image, centerCoords, size, fnDrawClipPath) {
+    this.drawCropArea=function(image, centerCoords, size, ratio, fnDrawClipPath) {
       var xRatio=image.width/ctx.canvas.width,
           yRatio=image.height/ctx.canvas.height,
           xLeft=centerCoords[0]-size/2,
@@ -569,7 +629,7 @@ crop.factory('cropCanvas', [function() {
       ctx.strokeStyle = colors.areaOutline;
       ctx.lineWidth = 2;
       ctx.beginPath();
-      fnDrawClipPath(ctx, centerCoords, size);
+      fnDrawClipPath(ctx, centerCoords, size, ratio);
       ctx.stroke();
       ctx.clip();
 
@@ -579,7 +639,7 @@ crop.factory('cropCanvas', [function() {
       }
 
       ctx.beginPath();
-      fnDrawClipPath(ctx, centerCoords, size);
+      fnDrawClipPath(ctx, centerCoords, size, ratio);
       ctx.stroke();
       ctx.clip();
 
@@ -588,6 +648,7 @@ crop.factory('cropCanvas', [function() {
 
   };
 }]);
+
 
 /**
  * EXIF service is based on the exif-js library (https://github.com/jseidelin/exif-js)
@@ -1533,12 +1594,28 @@ crop.factory('cropHost', ['$document', 'cropAreaCircle', 'cropAreaSquare', 'crop
 
     this.getResultImageDataURI=function() {
       var temp_ctx, temp_canvas;
+      var ratio = theArea.getRatio();
+      var size = theArea.getSize();
+      var hSize = size / 2;
+      var hSizeY = (size * ratio) / 2;
+
       temp_canvas = angular.element('<canvas></canvas>')[0];
       temp_ctx = temp_canvas.getContext('2d');
       temp_canvas.width = resImgSize;
-      temp_canvas.height = resImgSize;
+      temp_canvas.height = resImgSize * ratio;
+
       if(image!==null){
-        temp_ctx.drawImage(image, (theArea.getX()-theArea.getSize()/2)*(image.width/ctx.canvas.width), (theArea.getY()-theArea.getSize()/2)*(image.height/ctx.canvas.height), theArea.getSize()*(image.width/ctx.canvas.width), theArea.getSize()*(image.height/ctx.canvas.height), 0, 0, resImgSize, resImgSize);
+        // void ctx.drawImage(image, sx, sy, sWidth, sHeight, dx, dy, dWidth, dHeight);
+        var sx = (theArea.getX() - hSize) * (image.width / ctx.canvas.width);
+        var sy = (theArea.getY() - hSizeY) * (image.height / ctx.canvas.height);
+        var sWidth = size * (image.width / ctx.canvas.width);
+        var sHeight = (size * ratio) * (image.height / ctx.canvas.height);
+        var dx = 0;
+        var dy = 0;
+        var dWidth = resImgSize;
+        var dHeight = resImgSize * ratio;
+
+        temp_ctx.drawImage(image, sx, sy, sWidth, sHeight, dx, dy, dWidth, dHeight);
       }
       if (resImgQuality!==null ){
         return temp_canvas.toDataURL(resImgFormat, resImgQuality);
@@ -1657,6 +1734,14 @@ crop.factory('cropHost', ['$document', 'cropAreaCircle', 'cropAreaSquare', 'crop
       }
     };
 
+    this.setRatio=function(ratio) {
+      ratio=parseFloat(ratio);
+      if(!isNaN(ratio)) {
+        theArea.setRatio(ratio);
+        drawScene();
+      }
+    };
+
     this.setResultImageSize=function(size) {
       size=parseInt(size,10);
       if(!isNaN(size)) {
@@ -1767,6 +1852,7 @@ crop.directive('imgCrop', ['$timeout', 'cropHost', 'cropPubSub', function($timeo
       changeOnFly: '=',
       areaType: '@',
       areaMinSize: '=',
+      areaRatio: '=',
       resultImageSize: '=',
       resultImageFormat: '@',
       resultImageQuality: '=',
@@ -1844,6 +1930,10 @@ crop.directive('imgCrop', ['$timeout', 'cropHost', 'cropPubSub', function($timeo
         cropHost.setAreaMinSize(scope.areaMinSize);
         updateResultImage(scope);
       });
+      scope.$watch('areaRatio',function(){
+        cropHost.setRatio(scope.areaRatio);
+        updateResultImage(scope);
+      });
       scope.$watch('resultImageSize',function(){
         cropHost.setResultImageSize(scope.resultImageSize);
         updateResultImage(scope);
@@ -1876,4 +1966,5 @@ crop.directive('imgCrop', ['$timeout', 'cropHost', 'cropPubSub', function($timeo
     }
   };
 }]);
+
 }());
