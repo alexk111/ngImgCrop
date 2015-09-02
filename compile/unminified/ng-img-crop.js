@@ -5,7 +5,7 @@
  * Copyright (c) 2015 Alex Kaul
  * License: MIT
  *
- * Generated at Tuesday, August 11th, 2015, 5:14:36 PM
+ * Generated at Wednesday, September 2nd, 2015, 6:00:16 PM
  */
 (function() {
 'use strict';
@@ -475,8 +475,17 @@ crop.factory('cropArea', ['cropCanvas', function(CropCanvas) {
     if(this._size > w - posX) {
       this._size = w - posX;
     }
+
     if((this._size * this._ratio) > (h - posY)) {
       this._size = (h - posY) / this._ratio;
+    }
+
+    if (this._size > w) {
+      this._size = w;
+    }
+
+    if((this._size * this._ratio) > h){
+      this._size = h / this._ratio;
     }
   }
 
@@ -620,10 +629,11 @@ crop.factory('cropCanvas', [function() {
     /* Crop Area */
 
     this.drawCropArea=function(image, centerCoords, size, ratio, fnDrawClipPath) {
+      var sizeY = size * ratio;
       var xRatio=image.width/ctx.canvas.width,
           yRatio=image.height/ctx.canvas.height,
           xLeft=centerCoords[0]-size/2,
-          yTop=centerCoords[1]-size/2;
+          ytop=centerCoords[1]-sizeY/2;
 
       ctx.save();
       ctx.strokeStyle = colors.areaOutline;
@@ -632,10 +642,15 @@ crop.factory('cropCanvas', [function() {
       fnDrawClipPath(ctx, centerCoords, size, ratio);
       ctx.stroke();
       ctx.clip();
-
       // draw part of original image
       if (size > 0) {
-          ctx.drawImage(image, xLeft*xRatio, yTop*yRatio, size*xRatio, size*yRatio, xLeft, yTop, size, size);
+          // var hSizeX = size/2;
+          // var sizeY = size * ratio;
+          // var hSizeY = sizeY/2;
+          // ctx.rect(centerCoords[0]-hSizeX,centerCoords[1]-hSizeY,size,sizeY);
+          // ctx.drawImage(image, sx, sy, sWidth, sHeight, dx, dy, dWidth, dHeight);
+
+          ctx.drawImage(image, xLeft*xRatio, ytop*yRatio, size*xRatio, sizeY*yRatio, xLeft, ytop, size, sizeY);
       }
 
       ctx.beginPath();
@@ -1735,6 +1750,7 @@ crop.factory('cropHost', ['$document', 'cropAreaCircle', 'cropAreaSquare', 'crop
     };
 
     this.setRatio=function(ratio) {
+      ratio=ratio || 1;
       ratio=parseFloat(ratio);
       if(!isNaN(ratio)) {
         theArea.setRatio(ratio);

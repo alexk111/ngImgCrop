@@ -100,10 +100,11 @@ crop.factory('cropCanvas', [function() {
     /* Crop Area */
 
     this.drawCropArea=function(image, centerCoords, size, ratio, fnDrawClipPath) {
+      var sizeY = size * ratio;
       var xRatio=image.width/ctx.canvas.width,
           yRatio=image.height/ctx.canvas.height,
           xLeft=centerCoords[0]-size/2,
-          yTop=centerCoords[1]-size/2;
+          ytop=centerCoords[1]-sizeY/2;
 
       ctx.save();
       ctx.strokeStyle = colors.areaOutline;
@@ -112,10 +113,15 @@ crop.factory('cropCanvas', [function() {
       fnDrawClipPath(ctx, centerCoords, size, ratio);
       ctx.stroke();
       ctx.clip();
-
       // draw part of original image
       if (size > 0) {
-          ctx.drawImage(image, xLeft*xRatio, yTop*yRatio, size*xRatio, size*yRatio, xLeft, yTop, size, size);
+          // var hSizeX = size/2;
+          // var sizeY = size * ratio;
+          // var hSizeY = sizeY/2;
+          // ctx.rect(centerCoords[0]-hSizeX,centerCoords[1]-hSizeY,size,sizeY);
+          // ctx.drawImage(image, sx, sy, sWidth, sHeight, dx, dy, dWidth, dHeight);
+
+          ctx.drawImage(image, xLeft*xRatio, ytop*yRatio, size*xRatio, sizeY*yRatio, xLeft, ytop, size, sizeY);
       }
 
       ctx.beginPath();

@@ -76,8 +76,17 @@ crop.factory('cropArea', ['cropCanvas', function(CropCanvas) {
     if(this._size > w - posX) {
       this._size = w - posX;
     }
+
     if((this._size * this._ratio) > (h - posY)) {
       this._size = (h - posY) / this._ratio;
+    }
+
+    if (this._size > w) {
+      this._size = w;
+    }
+
+    if((this._size * this._ratio) > h){
+      this._size = h / this._ratio;
     }
   }
 

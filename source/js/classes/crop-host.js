@@ -307,6 +307,7 @@ crop.factory('cropHost', ['$document', 'cropAreaCircle', 'cropAreaSquare', 'crop
     };
 
     this.setRatio=function(ratio) {
+      ratio=ratio || 1;
       ratio=parseFloat(ratio);
       if(!isNaN(ratio)) {
         theArea.setRatio(ratio);
