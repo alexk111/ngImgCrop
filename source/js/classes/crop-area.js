@@ -113,6 +113,13 @@ crop.factory('cropArea', ['cropCanvas', function(CropCanvas) {
     if(this._y > h - hSizeY) {
       this._y = h - hSizeY;
     }
+
+    if (this._size > w) {
+      this._size = w;
+    }
+    if((this._size * this._ratio) > h){
+      this._size = h / this._ratio;
+    }
   };
 
   CropArea.prototype._drawArea=function() {};

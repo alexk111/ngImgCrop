@@ -5,7 +5,7 @@
  * Copyright (c) 2015 Alex Kaul
  * License: MIT
  *
- * Generated at Wednesday, September 2nd, 2015, 6:00:16 PM
+ * Generated at Wednesday, September 2nd, 2015, 6:34:16 PM
  */
 (function() {
 'use strict';
@@ -510,6 +510,13 @@ crop.factory('cropArea', ['cropCanvas', function(CropCanvas) {
     }
     if(this._y > h - hSizeY) {
       this._y = h - hSizeY;
+    }
+
+    if (this._size > w) {
+      this._size = w;
+    }
+    if((this._size * this._ratio) > h){
+      this._size = h / this._ratio;
     }
   };
 
