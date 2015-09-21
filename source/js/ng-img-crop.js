@@ -38,9 +38,8 @@ crop.directive('imgCrop', ['$timeout', 'cropHost', 'cropPubSub', function($timeo
         var resultImage = resultImageObj.dataURI;
         if(storedResultImage!==resultImage) {
           storedResultImage=resultImage;
-          if(angular.isDefined(scope.resultImage)) {
-            scope.resultImage=resultImage;
-          }
+          scope.resultImage=resultImage;
+
           if(angular.isDefined(scope.resultImageData)) {
             scope.resultImageData=resultImageObj.imageData;
           }
@@ -50,7 +49,6 @@ crop.directive('imgCrop', ['$timeout', 'cropHost', 'cropPubSub', function($timeo
             $dataURI: scope.resultImage,
             $imageData: scope.resultImageData
           });
-
         }
       };
 
