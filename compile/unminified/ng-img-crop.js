@@ -5,7 +5,7 @@
  * Copyright (c) 2015 undefined
  * License: MIT
  *
- * Generated at Thursday, July 30th, 2015, 3:03:59 PM
+ * Generated at Monday, September 21st, 2015, 11:36:35 AM
  */
 (function() {
 'use strict';
@@ -2099,9 +2099,8 @@ crop.directive('imgCrop', ['$timeout', 'cropHost', 'cropPubSub', function($timeo
         var resultImage = resultImageObj.dataURI;
         if(storedResultImage!==resultImage) {
           storedResultImage=resultImage;
-          if(angular.isDefined(scope.resultImage)) {
-            scope.resultImage=resultImage;
-          }
+          scope.resultImage=resultImage;
+
           if(angular.isDefined(scope.resultImageData)) {
             scope.resultImageData=resultImageObj.imageData;
           }
@@ -2111,7 +2110,6 @@ crop.directive('imgCrop', ['$timeout', 'cropHost', 'cropPubSub', function($timeo
             $dataURI: scope.resultImage,
             $imageData: scope.resultImageData
           });
-
         }
       };
 
@@ -2187,4 +2185,5 @@ crop.directive('imgCrop', ['$timeout', 'cropHost', 'cropPubSub', function($timeo
     }
   };
 }]);
+
 }());
