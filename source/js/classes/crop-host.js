@@ -207,7 +207,13 @@ crop.factory('cropHost', ['$document', '$q', 'cropAreaCircle', 'cropAreaSquare',
             temp_canvas.width = theArea.getSize().w;
             temp_canvas.height = theArea.getSize().h;
             if (image !== null) {
-                temp_ctx.drawImage(image, (center.x - theArea.getSize().w / 2) * (image.width / ctx.canvas.width), (center.y - theArea.getSize().h / 2) * (image.height / ctx.canvas.height), theArea.getSize().w * (image.width / ctx.canvas.width), theArea.getSize().h * (image.height / ctx.canvas.height), 0, 0, resImgSize, resImgSize);
+                temp_ctx.drawImage(image, (center.x - theArea.getSize().w / 2) * (image.width / ctx.canvas.width), (center.y - theArea.getSize().h / 2) * (image.height / ctx.canvas.height),
+                    theArea.getSize().w * (image.width / ctx.canvas.width),
+                    theArea.getSize().h * (image.height / ctx.canvas.height),
+                    0,
+                    0,
+                    theArea.getSize().w,
+                    theArea.getSize().h);
             }
             temp_canvas.toBlob(function(blob) {
                 _p.resolve(blob);
