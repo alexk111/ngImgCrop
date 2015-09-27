@@ -1,11 +1,11 @@
 /*!
  * ngImgCropExtended v0.3.4
- * https://github.com/vogloblinsky/ngImgCrop/
+ * https://github.com/vogloblinsky/ngImgCropExtended/
  *
  * Copyright (c) 2015 undefined
  * License: MIT
  *
- * Generated at Sunday, September 27th, 2015, 11:03:00 PM
+ * Generated at Monday, September 28th, 2015, 1:40:19 AM
  */
 (function() {
 'use strict';
@@ -2101,7 +2101,13 @@ crop.factory('cropHost', ['$document', '$q', 'cropAreaCircle', 'cropAreaSquare',
             temp_canvas.width = theArea.getSize().w;
             temp_canvas.height = theArea.getSize().h;
             if (image !== null) {
-                temp_ctx.drawImage(image, (center.x - theArea.getSize().w / 2) * (image.width / ctx.canvas.width), (center.y - theArea.getSize().h / 2) * (image.height / ctx.canvas.height), theArea.getSize().w * (image.width / ctx.canvas.width), theArea.getSize().h * (image.height / ctx.canvas.height), 0, 0, resImgSize, resImgSize);
+                temp_ctx.drawImage(image, (center.x - theArea.getSize().w / 2) * (image.width / ctx.canvas.width), (center.y - theArea.getSize().h / 2) * (image.height / ctx.canvas.height),
+                    theArea.getSize().w * (image.width / ctx.canvas.width),
+                    theArea.getSize().h * (image.height / ctx.canvas.height),
+                    0,
+                    0,
+                    theArea.getSize().w,
+                    theArea.getSize().h);
             }
             temp_canvas.toBlob(function(blob) {
                 _p.resolve(blob);
