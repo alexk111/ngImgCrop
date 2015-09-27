@@ -6,6 +6,7 @@ crop.directive('imgCrop', ['$timeout', 'cropHost', 'cropPubSub', function($timeo
         scope: {
             image: '=',
             resultImage: '=',
+            resultBlob: '=',
             resultImageData: '=',
 
             changeOnFly: '=',
@@ -43,6 +44,10 @@ crop.directive('imgCrop', ['$timeout', 'cropHost', 'cropPubSub', function($timeo
                     if (angular.isDefined(scope.resultImageData)) {
                         scope.resultImageData = resultImageObj.imageData;
                     }
+
+                    cropHost.getResultImageDataBlob().then(function(blob) {
+                        scope.resultBlob = blob;
+                    });
 
                     updateAreaCoords(scope);
                     scope.onChange({
