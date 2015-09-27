@@ -1,4 +1,4 @@
-crop.factory('cropHost', ['$document', 'cropAreaCircle', 'cropAreaSquare', 'cropAreaRectangle', function($document, CropAreaCircle, CropAreaSquare, CropAreaRectangle) {
+crop.factory('cropHost', ['$document', '$q', 'cropAreaCircle', 'cropAreaSquare', 'cropAreaRectangle', function($document, $q, CropAreaCircle, CropAreaSquare, CropAreaRectangle) {
     /* STATIC FUNCTIONS */
 
     // Get Element's Offset
@@ -99,7 +99,7 @@ crop.factory('cropHost', ['$document', 'cropAreaCircle', 'cropAreaSquare', 'crop
                 var areaType = self.getAreaType();
                 // enforce 1:1 aspect ratio for square-like selections
                 if ((areaType === 'circle') || (areaType === 'square')) {
-
+                    ch = cw;
                 }
 
                 theArea.setSize({
@@ -185,10 +185,6 @@ crop.factory('cropHost', ['$document', 'cropAreaCircle', 'cropAreaSquare', 'crop
             };
             if (image !== null) {
 
-                console.log(temp_canvas);
-                console.log(ris);
-                console.log(theArea.getSize());
-
                 temp_ctx.drawImage(image, (center.x - theArea.getSize().w / 2) * (image.width / ctx.canvas.width), (center.y - theArea.getSize().h / 2) * (image.height / ctx.canvas.height),
                     theArea.getSize().w * (image.width / ctx.canvas.width),
                     theArea.getSize().h * (image.height / ctx.canvas.height),
@@ -196,11 +192,27 @@ crop.factory('cropHost', ['$document', 'cropAreaCircle', 'cropAreaSquare', 'crop
                     0,
                     theArea.getSize().w,
                     theArea.getSize().h);
-                //temp_ctx.drawImage(image, 0, 0, theArea.getSize().w, theArea.getSize().h);
                 retObj.dataURI = temp_canvas.toDataURL();
                 retObj.imageData = temp_canvas.getContext("2d").getImageData(0, 0, theArea.getSize().w, theArea.getSize().h);
             }
             return retObj;
+        };
+
+        this.getResultImageDataBlob = function() {
+            var temp_ctx, temp_canvas, _p,
+                center = theArea.getCenterPoint(),
+                _p = $q.defer();
+            temp_canvas = angular.element('<canvas></canvas>')[0];
+            temp_ctx = temp_canvas.getContext('2d');
+            temp_canvas.width = theArea.getSize().w;
+            temp_canvas.height = theArea.getSize().h;
+            if (image !== null) {
+                temp_ctx.drawImage(image, (center.x - theArea.getSize().w / 2) * (image.width / ctx.canvas.width), (center.y - theArea.getSize().h / 2) * (image.height / ctx.canvas.height), theArea.getSize().w * (image.width / ctx.canvas.width), theArea.getSize().h * (image.height / ctx.canvas.height), 0, 0, resImgSize, resImgSize);
+            }
+            temp_canvas.toBlob(function(blob) {
+                _p.resolve(blob);
+            });
+            return _p.promise;
         };
 
         this.getAreaCoords = function() {
