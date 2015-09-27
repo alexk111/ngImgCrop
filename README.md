@@ -1,4 +1,4 @@
-# ngImgCrop
+# ngImgCropExtended
 
 Simple Image Crop directive for AngularJS. Enables to crop a circle or a square out of an image.
 
@@ -24,8 +24,8 @@ Simple Image Crop directive for AngularJS. Enables to crop a circle or a square 
 ### Download
 
 You have two options to get the files:
-- [Download ngImgCrop](https://github.com/alexk111/ngImgCrop/archive/master.zip) files from GitHub.
-- Use Bower to download the files. Just run `bower install ngImgCrop`.
+- [Download ngImgCropExtended](https://github.com/vogloblinsky/ngImgCropExtended/archive/master.zip) files from GitHub.
+- Use Bower to download the files. Just run `bower install ngImgCropExtended`.
 
 ### Add files
 
@@ -134,6 +134,10 @@ Assignable angular expression to data-bind to. NgImgCrop gets an image for cropp
 
 Assignable angular expression to data-bind to. NgImgCrop puts a data uri of a cropped image into it.
 
+### result-blob
+
+Assignable angular expression to data-bind to. NgImgCrop puts a blob of a cropped image into it.
+
 ### change-on-fly
 
 *Optional*. By default, to reduce CPU usage, when a user drags/resizes the crop area, the result image is only updated after the user stops dragging/resizing. Set true to always update the result image as the user drags/resizes the crop area.
@@ -177,5 +181,5 @@ Assignable angular expression to data-bind to. NgImgCrop puts a data uri of a cr
 
 ## License
 
-See the [LICENSE](https://github.com/alexk111/ngImgCrop/blob/master/LICENSE) file.
+See the [LICENSE](https://github.com/alexk111/vogloblinsky/blob/master/LICENSE) file.
 
