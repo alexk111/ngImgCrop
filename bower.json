@@ -19,7 +19,7 @@
     }],
     "repository": {
         "type": "git",
-        "url": "https://github.com/vogloblinsky/ngImgCrop"
+        "url": "https://github.com/vogloblinsky/ngImgCropExtended"
     },
     "description": "Image crop directive for AngularJS, square, circle and rectangle areas",
     "main": [
@@ -33,7 +33,7 @@
         "cropper"
     ],
     "license": "MIT",
-    "homepage": "https://github.com/vogloblinsky/ngImgCrop/",
+    "homepage": "https://github.com/vogloblinsky/ngImgCropExtended/",
     "ignore": [
         "node_modules",
         "bower_components",
