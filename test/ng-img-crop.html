@@ -111,6 +111,9 @@
         <div>
             <img ng-src="{{resImageDataURI}}" />
         </div>
+        <div>
+            <img id="blob-result"/>
+        </div>
     </div>
     <script type="text/javascript">
     angular.module('app', ['ngImgCrop'])
@@ -139,6 +142,11 @@
             };
             $scope.getBlob = function() {
                 console.log($scope.resBlob);
+                var reader = new FileReader();
+                reader.onload = function(e) {
+                    document.getElementById('blob-result').src = e.target.result;
+                };
+                reader.readAsDataURL($scope.resBlob);
             };
             var handleFileSelect = function(evt) {
                 var file = evt.currentTarget.files[0];
