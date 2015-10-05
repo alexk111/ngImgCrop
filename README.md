@@ -1,5 +1,7 @@
 # ngImgCropExtended
 
+[![Bower version](https://badge.fury.io/bo/ngImgCropExtended.svg)](http://badge.fury.io/bo/ngImgCropExtended)
+
 Simple Image Crop directive for AngularJS. Enables to crop a circle, a square or a rectangle out of an image.
 
 ## Screenshots
@@ -12,7 +14,7 @@ Simple Image Crop directive for AngularJS. Enables to crop a circle, a square or
 
 ## Live demo
 
-[Live demo on JSFiddle](http://jsfiddle.net/alexk111/rw6q9/)
+[Live demo on JSFiddle](http://jsfiddle.net/vogloblinsky/dnuwmkft/)
 
 ## Requirements
 
