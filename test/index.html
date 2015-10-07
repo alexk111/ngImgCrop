@@ -3,8 +3,6 @@
 
 <head>
     <title>ngImgCrop Test Page</title>
-    <script type="text/javascript" src="../bower_components/angular/angular.min.js"></script>
-    <script type="text/javascript" src="../compile/unminified/ng-img-crop.js"></script>
     <link rel="stylesheet" href="../compile/unminified/ng-img-crop.css" />
     <style>
     .cropArea {
@@ -31,6 +29,20 @@
 </head>
 
 <body ng-controller="Ctrl">
+    <div style="float:right">
+        <h3>Crop Data:</h3>
+        <ul>
+            <li><b>Width</b>: {{image.cropInfo.width}}</li>
+            <li><b>Height</b>: {{image.cropInfo.height}}</li>
+            <li><b>X</b>: {{image.cropInfo.x}}</li>
+            <li><b>Y</b>: {{image.cropInfo.y}}</li>
+        </ul>
+        <h3>Original Image Data:</h3>
+        <ul>
+            <li><b>Width</b>: {{image.originalInfo.width}}</li>
+            <li><b>Height</b>: {{image.originalInfo.height}}</li>
+        </ul>
+    </div>
     <div>
         <label>
             <input type="checkbox" ng-model="enableCrop" ng-init="enableCrop=true" /> Add ngImgCrop to Page</label>
@@ -102,8 +114,23 @@
         <button ng-click="imageDataURI=''">Reset Image</button>
         <button ng-click="getBlob();">Get blob (show JS console)</button>
     </div>
+
     <div ng-if="enableCrop" class="cropArea" ng-class="{'big':size=='big', 'medium':size=='medium', 'small':size=='small'}">
-        <img-crop image="imageDataURI" result-image="$parent.resImageDataURI" result-blob="$parent.resBlob" change-on-fly="changeOnFly" area-type="{{type}}" area-min-size="selMinSize" result-image-format="{{resImgFormat}}" result-image-quality="resImgQuality" result-image-size="resImgSize" on-change="onChange($dataURI)" on-load-begin="onLoadBegin()" on-load-done="onLoadDone()" on-load-error="onLoadError()" area-coords="myAreaCoords"></img-crop>
+        <img-crop 
+            image="imageDataURI" 
+            result-image="$parent.resImageDataURI" 
+            result-blob="$parent.resBlob" 
+            change-on-fly="changeOnFly" 
+            area-type="{{type}}" 
+            area-min-size="selMinSize" 
+            result-image-format="{{resImgFormat}}" 
+            result-image-quality="resImgQuality" 
+            result-image-size="resImgSize" 
+            on-change="onChange($dataURI)" 
+            on-load-begin="onLoadBegin()" 
+            on-load-done="onLoadDone()" 
+            on-load-error="onLoadError()" 
+            area-coords="myAreaCoords"></img-crop>
         <!--aspect-ratio="aspectRatio"-->
     </div>
     <div style="text-align:center">
@@ -115,17 +142,19 @@
             <img id="blob-result"/>
         </div>
     </div>
+    <script type="text/javascript" src="../bower_components/angular/angular.min.js"></script>
+    <script type="text/javascript" src="../compile/unminified/ng-img-crop.js?1"></script>
     <script type="text/javascript">
     angular.module('app', ['ngImgCrop'])
         .controller('Ctrl', function($scope) {
             $scope.size = 'small';
-            $scope.type = 'rectangle';
+            $scope.type = 'circle';
             $scope.imageDataURI = '';
             $scope.resImageDataURI = '';
             $scope.resBlob = {};
             $scope.resImgFormat = 'image/png';
             $scope.resImgQuality = 1;
-            $scope.selMinSize = 10;
+            $scope.selMinSize = 100;
             $scope.resImgSize = 200;
             //$scope.aspectRatio=1.2;
             $scope.onChange = function($dataURI) {
