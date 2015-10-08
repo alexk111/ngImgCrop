@@ -18,8 +18,8 @@ Simple Image Crop directive for AngularJS. Enables to crop a circle, a square or
 
 ## Requirements
 
- - AngularJS
- - Modern Browser supporting <canvas>
+- AngularJS
+- Modern Browser supporting <canvas>
 
 ## Installing
 
@@ -58,6 +58,10 @@ var myAppModule = angular.module('MyApp', ['ngImgCrop']);
 ## Result image
 
 The result image will always be a square for the both circle and square area types. It's highly recommended to store the image as a square on your back-end, because this will enable you to easily update your pics later, if you decide to implement some design changes. Showing a square image as a circle on the front-end is not a problem - it is as easy as adding a *border-radius* style for that image in a css.
+
+* Notice for mobile device:
+Using Data URI is very slow on mobile device, 6x slower. (http://www.mobify.com/blog/data-uris-are-slow-on-mobile/)
+Use instead blobUrl.
 
 ## Example code
 
