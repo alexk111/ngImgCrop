@@ -45,6 +45,7 @@
         "gulp-util": "^2.2.19",
         "jshint-stylish": "^0.2.0",
         "minimist": "^0.2.0",
+        "run-sequence": "^1.1.0",
         "opn": "^0.1.2",
         "tiny-lr": "0.0.7"
     }
