@@ -120,6 +120,7 @@
             image="imageDataURI" 
             result-image="$parent.resImageDataURI" 
             result-blob="$parent.resBlob" 
+            url-blob="$parent.urlBlob"
             change-on-fly="changeOnFly" 
             area-type="{{type}}" 
             area-min-size="selMinSize" 
@@ -134,14 +135,16 @@
         <!--aspect-ratio="aspectRatio"-->
     </div>
     <div style="text-align:center">
-        <h3>Result</h3>
+        <h3>Result with uri</h3>
         <div>
             <img ng-src="{{resImageDataURI}}" />
         </div>
+        <h3>Result with blob in url</h3>
         <div>
-            <img id="blob-result"/>
+            <img ng-src="{{urlBlob}}"/>
         </div>
     </div>
+
     <script type="text/javascript" src="../bower_components/angular/angular.min.js"></script>
     <script type="text/javascript" src="../compile/unminified/ng-img-crop.js?1"></script>
     <script type="text/javascript">
@@ -152,6 +155,7 @@
             $scope.imageDataURI = '';
             $scope.resImageDataURI = '';
             $scope.resBlob = {};
+            $scope.urlBlob = {};
             $scope.resImgFormat = 'image/png';
             $scope.resImgQuality = 1;
             $scope.selMinSize = 100;
@@ -171,21 +175,40 @@
             };
             $scope.getBlob = function() {
                 console.log($scope.resBlob);
-                var reader = new FileReader();
-                reader.onload = function(e) {
-                    document.getElementById('blob-result').src = e.target.result;
-                };
-                reader.readAsDataURL($scope.resBlob);
             };
             var handleFileSelect = function(evt) {
-                var file = evt.currentTarget.files[0];
-                var reader = new FileReader();
-                reader.onload = function(evt) {
-                    $scope.$apply(function($scope) {
-                        $scope.imageDataURI = evt.target.result;
+                var file = evt.currentTarget.files[0],
+                    reader = new FileReader();
+                if(navigator.userAgent.match(/iP(hone|od|ad)/i) ) {
+                    var canvas = document.createElement('canvas'),
+                        mpImg = new MegaPixImage(file);
+
+                    canvas.width = mpImg.srcImage.width;
+                    canvas.height = mpImg.srcImage.height;
+
+                    EXIF.getData(file, function() {
+                        var orientation = EXIF.getTag(this, 'Orientation');
+                    
+                        mpImg.render(canvas, {
+                            maxHeight: $scope.resImgSize,
+                            orientation: orientation
+                        });
+                        setTimeout(function(){
+                            var tt = canvas.toDataURL("image/jpeg", 1);
+                            $scope.$apply(function($scope) {
+                                $scope.imageDataURI = tt;
+                            });
+                        }, 100);
                     });
-                };
-                reader.readAsDataURL(file);
+                } else {
+                    reader.onload = function(evt) {
+                        $scope.$apply(function($scope) {
+                            console.log(evt.target.result);
+                            $scope.imageDataURI = evt.target.result;
+                        });
+                    };
+                    reader.readAsDataURL(file);
+                }
             };
             angular.element(document.querySelector('#fileInput')).on('change', handleFileSelect);
             $scope.$watch('resImageDataURI', function() {
