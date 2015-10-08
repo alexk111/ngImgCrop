@@ -7,6 +7,7 @@ crop.directive('imgCrop', ['$timeout', 'cropHost', 'cropPubSub', function($timeo
             image: '=',
             resultImage: '=',
             resultBlob: '=',
+            urlBlob: '=',
             
             changeOnFly: '=',
             areaCoords: '=',
@@ -34,20 +35,24 @@ crop.directive('imgCrop', ['$timeout', 'cropHost', 'cropPubSub', function($timeo
             var storedResultImage;
 
             var updateResultImage = function(scope) {
-                var resultImageObj = cropHost.getResultImage();
-                var resultImage = resultImageObj.dataURI;
-                if (storedResultImage !== resultImage) {
-                    storedResultImage = resultImage;
-                    scope.resultImage = resultImage;
+                if (scope.image !== '') {
+                    var resultImageObj = cropHost.getResultImage(),
+                        resultImage = resultImageObj.dataURI,
+                        urlCreator = window.URL || window.webkitURL;
+                    if (storedResultImage !== resultImage) {
+                        storedResultImage = resultImage;
+                        scope.resultImage = resultImage;
 
-                    cropHost.getResultImageDataBlob().then(function(blob) {
-                        scope.resultBlob = blob;
-                    });
+                        cropHost.getResultImageDataBlob().then(function(blob) {
+                            scope.resultBlob = blob;
+                            scope.urlBlob = urlCreator.createObjectURL(blob);
+                        });
 
-                    updateAreaCoords(scope);
-                    scope.onChange({
-                        $dataURI: scope.resultImage
-                    });
+                        updateAreaCoords(scope);
+                        scope.onChange({
+                            $dataURI: scope.resultImage
+                        });
+                    }
                 }
             };
 
@@ -67,12 +72,17 @@ crop.directive('imgCrop', ['$timeout', 'cropHost', 'cropPubSub', function($timeo
                 };
             };
 
+            var displayLoading = function() {
+                element.append('<div class="loading"><span>Chargement...</span></div>')
+            };
+
             // Setup CropHost Event Handlers
             events
                 .on('load-start', fnSafeApply(function(scope) {
                     scope.onLoadBegin({});
                 }))
                 .on('load-done', fnSafeApply(function(scope) {
+                    angular.element(element.children()[element.children().length-1]).remove();
                     scope.onLoadDone({});
                 }))
                 .on('load-error', fnSafeApply(function(scope) {
@@ -88,8 +98,13 @@ crop.directive('imgCrop', ['$timeout', 'cropHost', 'cropPubSub', function($timeo
                 }));
 
             // Sync CropHost with Directive's options
-            scope.$watch('image', function() {
-                cropHost.setNewImageSource(scope.image);
+            scope.$watch('image', function(newVal) {
+                if(newVal) {
+                    displayLoading();
+                }
+                $timeout(function() {
+                    cropHost.setNewImageSource(scope.image);
+                }, 100);
             });
             scope.$watch('areaType', function() {
                 cropHost.setAreaType(scope.areaType);
