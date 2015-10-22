@@ -5,7 +5,7 @@
  * Copyright (c) 2015 undefined
  * License: MIT
  *
- * Generated at Thursday, October 22nd, 2015, 12:00:19 PM
+ * Generated at Thursday, October 22nd, 2015, 1:37:52 PM
  */
 (function() {
 var crop = angular.module('ngImgCrop', []);
@@ -565,11 +565,13 @@ crop.factory('cropAreaSquare', ['cropArea', function(CropArea) {
             switch (this._resizeCtrlIsDragging) {
                 case 0: // Top Left
                     newNO.x = se.x - newSize;
-                        newNO.y = se.y - newSize;
-                    this.setSizeByCorners(newNO, {
-                        x: se.x,
-                        y: se.y
-                    });
+                    newNO.y = se.y - newSize;
+                    if(newNO.y > 0) {
+                        this.setSizeByCorners(newNO, {
+                            x: se.x,
+                            y: se.y
+                        });
+                    }
                     cursor = 'nwse-resize';
                     break;
                 case 1: // Top Right
@@ -582,13 +584,15 @@ crop.factory('cropAreaSquare', ['cropArea', function(CropArea) {
                         newNE.x = s.x + newSize;
                         newNE.y = se.y - newSize;
                     }
-                    this.setSizeByCorners({
-                        x: s.x,
-                        y: newNE.y
-                    }, {
-                        x: newNE.x,
-                        y: se.y
-                    });
+                    if(newNE.y > 0) {
+                        this.setSizeByCorners({
+                            x: s.x,
+                            y: newNE.y
+                        }, {
+                            x: newNE.x,
+                            y: se.y
+                        });
+                    }
                     cursor = 'nesw-resize';
                     break;
                 case 2: // Bottom Left
@@ -601,13 +605,15 @@ crop.factory('cropAreaSquare', ['cropArea', function(CropArea) {
                         newSO.x = se.x - newSize;
                         newSO.y = s.y + newSize;
                     }
-                    this.setSizeByCorners({
-                        x: newSO.x,
-                        y: s.y
-                    }, {
-                        x: se.x,
-                        y: newSO.y
-                    });
+                    if(newSO.y < this._ctx.canvas.height) {
+                        this.setSizeByCorners({
+                            x: newSO.x,
+                            y: s.y
+                        }, {
+                            x: se.x,
+                            y: newSO.y
+                        });
+                    }
                     cursor = 'nesw-resize';
                     break;
                 case 3: // Bottom Right
@@ -615,10 +621,12 @@ crop.factory('cropAreaSquare', ['cropArea', function(CropArea) {
                     newSE.x = s.x + newSize;
                     newSE.y = s.y + newSize;
 
-                    this.setSizeByCorners({
-                        x: s.x,
-                        y: s.y
-                    }, newSE);
+                    if(newSE.y < this._ctx.canvas.height) {
+                        this.setSizeByCorners({
+                            x: s.x,
+                            y: s.y
+                        }, newSE);
+                    }
                     cursor = 'nwse-resize';
                     break;
             }
@@ -652,7 +660,6 @@ crop.factory('cropAreaSquare', ['cropArea', function(CropArea) {
             }
         }
 
-        //this._dontDragOutside();
         angular.element(this._ctx.canvas).css({
             'cursor': cursor
         });
