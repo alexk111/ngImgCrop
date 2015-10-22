@@ -68,12 +68,8 @@
     <div>
         <label>
             <input type="checkbox" ng-model="changeOnFly" /> Change On Fly</label>
+            <input type="checkbox" ng-model="forceAspectRatio" /> Force aspect ratio</label>
     </div>
-    <!--
-  <div>
-    <label>Aspect Ratio: <input type="text" ng-model="aspectRatio" /></label>
-  </div>
-  -->
     <div>
         <label>Area Min Size (Size = Width = Height):
             <input type="text" ng-model="selMinSize" />
@@ -100,7 +96,7 @@
     </div>
     <form ng-show="enableCrop">
         <label for="fileInput">Select Image:</label>
-        <input type="file" id="fileInput" />
+        <input type="file" id="fileInput" accept="image/*"/>
         <button type="reset">Clear</button>
         <button ng-click="imageDataURI='test.jpg'">Set Test Image</button>
     </form>
@@ -124,14 +120,16 @@
             change-on-fly="changeOnFly" 
             area-type="{{type}}" 
             area-min-size="selMinSize" 
-            result-image-format="{{resImgFormat}}" 
+            result-image-format="resImgFormat" 
             result-image-quality="resImgQuality" 
-            result-image-size="resImgSize" 
+            result-image-size="resImgSize"
+            force-aspect-ratio="forceAspectRatio"
             on-change="onChange($dataURI)" 
             on-load-begin="onLoadBegin()" 
             on-load-done="onLoadDone()" 
             on-load-error="onLoadError()" 
-            area-coords="myAreaCoords"></img-crop>
+            area-coords="myAreaCoords">
+        </img-crop>
         <!--aspect-ratio="aspectRatio"-->
     </div>
     <div style="text-align:center">
