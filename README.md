@@ -28,7 +28,7 @@ Source image by Edgaras Maselskis
 ### PC
 
 | IE | Edge | Firefox | Chrome  |
-| -- | ---- | ------- | ------- |
+| --- | ---- | ------- | ------- |
 | 11 |  12  |    44   |    45   |
 
 ### Mobile
