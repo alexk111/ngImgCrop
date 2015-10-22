@@ -12,6 +12,8 @@ crop.factory('cropArea', ['cropCanvas', function(CropCanvas) {
             h: 80
         };
 
+        this._forceAspectRatio = false;
+
         this._cropCanvas = new CropCanvas(ctx);
 
         this._image = new Image();
@@ -30,6 +32,10 @@ crop.factory('cropArea', ['cropCanvas', function(CropCanvas) {
     };
     CropArea.prototype.setImage = function(image) {
         this._image = image;
+    };
+
+    CropArea.prototype.setForceAspectRatio = function(force) {
+        this._forceAspectRatio = force;
     };
 
     CropArea.prototype.getSize = function() {
@@ -117,15 +123,18 @@ crop.factory('cropArea', ['cropCanvas', function(CropCanvas) {
             se.y = canvasH
         }
 
+        var newSizeWidth = (this._forceAspectRatio) ? size.w : se.x - nw.x,
+            newSizeHeight = (this._forceAspectRatio) ? size.h : se.y - nw.y;
+
         var newSize = {
             x: nw.x,
             y: nw.y,
-            w: se.x - nw.x,
-            h: se.y - nw.y
+            w: newSizeWidth,
+            h: newSizeHeight
         };
 
         //check size (if < min, adjust nw corner)
-        if (newSize.w < this._minSize.w) {
+        if ( (newSize.w < this._minSize.w) && !this._forceAspectRatio) {
             newSize.w = this._minSize.w;
             se = this._southEastBound(newSize);
             //adjust se corner, if it's out of bounds
@@ -142,7 +151,7 @@ crop.factory('cropArea', ['cropCanvas', function(CropCanvas) {
             }
         }
 
-        if (newSize.h < this._minSize.h) {
+        if ( (newSize.h < this._minSize.h) && !this._forceAspectRatio) {
             newSize.h = this._minSize.h;
             se = this._southEastBound(newSize);
 
@@ -159,16 +168,41 @@ crop.factory('cropArea', ['cropCanvas', function(CropCanvas) {
             }
         }
 
-        //finally, enforce 1:1 aspect ratio for sqaure-like selections
-        if (this.getType() === "circle" || this.getType() === "square") {
-            newSize = {
-                x: newSize.x,
-                y: newSize.y,
-                w: newSize.w,
-                h: newSize.h
-            };
+        if(this._forceAspectRatio) {
+            //check if outside SE bound
+            se = this._southEastBound(newSize);
+            if (se.y > canvasH) {
+                newSize.y = canvasH - newSize.h;
+            }
+            if (se.x > canvasW) {
+                newSize.x = canvasW - newSize.w;
+            }
         }
+
         return newSize;
+    };
+
+    CropArea.prototype._dontDragOutside = function() {
+        var h = this._ctx.canvas.height,
+            w = this._ctx.canvas.width;
+        if (this._width > w) {
+            this._width = w;
+        }
+        if (this._height > h) {
+            this._height = h;
+        }
+        if (this._x < this._width / 2) {
+            this._x = this._width / 2;
+        }
+        if (this._x > w - this._width / 2) {
+            this._x = w - this._width / 2;
+        }
+        if (this._y < this._height / 2) {
+            this._y = this._height / 2;
+        }
+        if (this._y > h - this._height / 2) {
+            this._y = h - this._height / 2;
+        }
     };
 
     CropArea.prototype._drawArea = function() {};

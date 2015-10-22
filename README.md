@@ -118,6 +118,8 @@ The following code enables to select an image using a file input and crop it. Th
 <img-crop
     image="{string}"
     result-image="{string}"
+    result-blob="{string}"
+    url-blob="{string}"
     area-coords="myAreaCoords"
    [change-on-fly="{boolean}"]
    [area-type="{circle|square|rectangle}"]
@@ -125,6 +127,7 @@ The following code enables to select an image using a file input and crop it. Th
    [result-image-size="{number}"]
    [result-image-format="{string}"]
    [result-image-quality="{number}"]
+   [force-aspect-ratio="{boolean}"]
    [on-change="{expression}"]
    [on-load-begin="{expression"]
    [on-load-done="{expression"]
@@ -143,6 +146,10 @@ Assignable angular expression to data-bind to. NgImgCrop puts a data uri of a cr
 ### result-blob
 
 Assignable angular expression to data-bind to. NgImgCrop puts a blob of a cropped image into it.
+
+### url-blob
+
+Assignable angular expression to data-bind to. NgImgCrop puts an url blob of a cropped image into it.
 
 ### change-on-fly
 
@@ -167,6 +174,10 @@ Assignable angular expression to data-bind to. NgImgCrop puts a blob of a croppe
 ### result-image-quality
 
 *Optional*. Quality of result image. Possible values between 0.0 and 1.0 inclusive. Default: browser default.
+
+### force-aspect-ratio
+
+*Optional*. For square or circle area types. Maintain aspect ratio.
 
 ### on-change
 

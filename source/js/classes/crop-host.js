@@ -30,17 +30,25 @@ crop.factory('cropHost', ['$document', '$q', 'cropAreaCircle', 'cropAreaSquare',
         var ctx = null,
             image = null,
             theArea = null,
-            self = this;
+            self = this,
 
-        // Dimensions
-        var minCanvasDims = [100, 100],
-            maxCanvasDims = [300, 300];
+            // Dimensions
+            minCanvasDims = [100, 100],
+            maxCanvasDims = [300, 300],
 
-        // Result Image size
-        var resImgSize = {
-            w: 200,
-            h: 200
-        };
+            // Result Image size
+            resImgSize = {
+                w: 200,
+                h: 200
+            },
+
+            // Result Image type
+            resImgFormat = 'image/png',
+
+            // Result Image quality
+            resImgQuality = null,
+
+            forceAspectRatio = false;
 
         /* PRIVATE FUNCTIONS */
 
@@ -121,13 +129,21 @@ crop.factory('cropHost', ['$document', '$q', 'cropAreaCircle', 'cropAreaSquare',
             drawScene();
         };
 
+        var getChangedTouches = function(event) {
+            if (angular.isDefined(event.changedTouches)) {
+                return event.changedTouches;
+            } else {
+                return event.originalEvent.changedTouches;
+            }
+        };
+
         var onMouseMove = function(e) {
             if (image !== null) {
                 var offset = getElementOffset(ctx.canvas),
                     pageX, pageY;
                 if (e.type === 'touchmove') {
-                    pageX = e.changedTouches[0].pageX;
-                    pageY = e.changedTouches[0].pageY;
+                    pageX = getChangedTouches(e)[0].pageX;
+                    pageY = getChangedTouches(e)[0].pageY;
                 } else {
                     pageX = e.pageX;
                     pageY = e.pageY;
@@ -144,8 +160,8 @@ crop.factory('cropHost', ['$document', '$q', 'cropAreaCircle', 'cropAreaSquare',
                 var offset = getElementOffset(ctx.canvas),
                     pageX, pageY;
                 if (e.type === 'touchstart') {
-                    pageX = e.changedTouches[0].pageX;
-                    pageY = e.changedTouches[0].pageY;
+                    pageX = getChangedTouches(e)[0].pageX;
+                    pageY = getChangedTouches(e)[0].pageY;
                 } else {
                     pageX = e.pageX;
                     pageY = e.pageY;
@@ -160,8 +176,8 @@ crop.factory('cropHost', ['$document', '$q', 'cropAreaCircle', 'cropAreaSquare',
                 var offset = getElementOffset(ctx.canvas),
                     pageX, pageY;
                 if (e.type === 'touchend') {
-                    pageX = e.changedTouches[0].pageX;
-                    pageY = e.changedTouches[0].pageY;
+                    pageX = getChangedTouches(e)[0].pageX;
+                    pageY = getChangedTouches(e)[0].pageY;
                 } else {
                     pageX = e.pageX;
                     pageY = e.pageY;
@@ -192,7 +208,11 @@ crop.factory('cropHost', ['$document', '$q', 'cropAreaCircle', 'cropAreaSquare',
                     0,
                     theArea.getSize().w,
                     theArea.getSize().h);
-                retObj.dataURI = temp_canvas.toDataURL();
+                if (resImgQuality !== null) {
+                    retObj.dataURI = temp_canvas.toDataURL(resImgFormat, resImgQuality);
+                } else {
+                    retObj.dataURI = temp_canvas.toDataURL(resImgFormat);
+                }
             }
             return retObj;
         };
@@ -239,9 +259,15 @@ crop.factory('cropHost', ['$document', '$q', 'cropAreaCircle', 'cropAreaSquare',
                         if ([3, 6, 8].indexOf(orientation) > -1) {
                             var canvas = document.createElement("canvas"),
                                 ctx = canvas.getContext("2d"),
-                                cw = newImage.width, ch = newImage.height, cx = 0, cy = 0, deg = 0, rw = 0, rh = 0;
-                                rw = cw;
-                                rh = ch;
+                                cw = newImage.width,
+                                ch = newImage.height,
+                                cx = 0,
+                                cy = 0,
+                                deg = 0,
+                                rw = 0,
+                                rh = 0;
+                            rw = cw;
+                            rh = ch;
                             switch (orientation) {
                                 case 3:
                                     cx = -newImage.width;
@@ -275,7 +301,7 @@ crop.factory('cropHost', ['$document', '$q', 'cropAreaCircle', 'cropAreaSquare',
                                     ch = maxWorH;
                                     cw = p * cw;
                                 }
-                                
+
                                 cy = p * cy;
                                 cx = p * cx;
                                 rw = p * rw;
@@ -288,7 +314,7 @@ crop.factory('cropHost', ['$document', '$q', 'cropAreaCircle', 'cropAreaSquare',
                             ctx.drawImage(newImage, cx, cy, rw, rh);
 
                             image = new Image();
-                            image.src = canvas.toDataURL("image/png");
+                            image.src = canvas.toDataURL(resImgFormat);
                         } else {
                             image = newImage;
                         }
@@ -407,6 +433,22 @@ crop.factory('cropHost', ['$document', '$q', 'cropAreaCircle', 'cropAreaSquare',
             if (!isNaN(size.w) && !isNaN(size.h)) {
                 resImgSize = size;
                 drawScene();
+            }
+        };
+
+        this.setResultImageFormat = function(format) {
+            resImgFormat = format;
+        };
+
+        this.setForceAspectRatio = function(force) {
+            forceAspectRatio = force;
+            theArea.setForceAspectRatio(force);
+        };
+
+        this.setResultImageQuality = function(quality) {
+            quality = parseFloat(quality);
+            if (!isNaN(quality) && quality >= 0 && quality <= 1) {
+                resImgQuality = quality;
             }
         };
 
