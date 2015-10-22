@@ -155,6 +155,10 @@ The following code enables to select an image using a file input and crop it. Th
 
 Assignable angular expression to data-bind to. NgImgCrop gets an image for cropping from it.
 
+* Notice for mobile device:
+Using Data URI is very slow on mobile device, 6x slower. (http://www.mobify.com/blog/data-uris-are-slow-on-mobile/)
+Provide instead a blob.
+
 ### result-image
 
 Assignable angular expression to data-bind to. NgImgCrop puts a data uri of a cropped image into it.

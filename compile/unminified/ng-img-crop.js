@@ -1,11 +1,11 @@
 /*!
- * ngImgCropExtended v0.3.8
+ * ngImgCropExtended v0.3.9
  * https://github.com/vogloblinsky/ngImgCropExtended/
  *
  * Copyright (c) 2015 undefined
  * License: MIT
  *
- * Generated at Thursday, October 22nd, 2015, 2:03:26 PM
+ * Generated at Thursday, October 22nd, 2015, 10:10:29 PM
  */
 (function() {
 var crop = angular.module('ngImgCrop', []);
@@ -2252,7 +2252,11 @@ crop.factory('cropHost', ['$document', '$q', 'cropAreaCircle', 'cropAreaSquare',
                     events.trigger('load-error');
                 };
                 events.trigger('load-start');
-                newImage.src = imageSource;
+                if (imageSource instanceof window.Blob) {
+                    newImage.src = URL.createObjectURL(imageSource);
+                } else {
+                    newImage.src = imageSource;
+                }
             }
         };
 
