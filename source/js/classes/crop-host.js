@@ -326,7 +326,11 @@ crop.factory('cropHost', ['$document', '$q', 'cropAreaCircle', 'cropAreaSquare',
                     events.trigger('load-error');
                 };
                 events.trigger('load-start');
-                newImage.src = imageSource;
+                if (imageSource instanceof window.Blob) {
+                    newImage.src = URL.createObjectURL(imageSource);
+                } else {
+                    newImage.src = imageSource;
+                }
             }
         };
 

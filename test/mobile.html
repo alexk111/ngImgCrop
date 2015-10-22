@@ -82,14 +82,16 @@
 
                     EXIF.getData(file, function() {
                         var orientation = EXIF.getTag(this, 'Orientation');
-                    
+
                         mpImg.render(canvas, {
-                            maxHeight: $scope.resImgSize,
+                            maxHeight: $scope.resImgSize * 2,
                             orientation: orientation
                         }, function(){
                             var tt = canvas.toDataURL("image/jpeg", 1);
-                            $scope.$apply(function($scope) {
-                                $scope.imageDataURI = tt;
+                            canvas.toBlob(function(blob) {
+                                $scope.$apply(function($scope) {
+                                    $scope.imageDataURI = blob;
+                                });
                             });
                         });
                     });
