@@ -4,7 +4,7 @@ crop.factory('cropAreaRectangle', ['cropArea', function(CropArea) {
     var CropAreaRectangle = function() {
         CropArea.apply(this, arguments);
 
-        this._resizeCtrlBaseRadius = 10;
+        this._resizeCtrlBaseRadius = 15;
         this._resizeCtrlNormalRatio = 0.75;
         this._resizeCtrlHoverRatio = 1;
         this._iconMoveNormalRatio = 0.9;
