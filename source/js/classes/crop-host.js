@@ -188,17 +188,17 @@ crop.factory('cropHost', ['$document', '$q', 'cropAreaCircle', 'cropAreaSquare',
         };
 
         this.getResultImage = function() {
-            var temp_ctx, temp_canvas;
+            var temp_ctx, temp_canvas,
+                ris = this.getResultImageSize(),
+                center = theArea.getCenterPoint(),
+                retObj = {
+                    dataURI: null,
+                    imageData: null
+                };
             temp_canvas = angular.element('<canvas></canvas>')[0];
             temp_ctx = temp_canvas.getContext('2d');
-            var ris = this.getResultImageSize();
-            temp_canvas.width = theArea.getSize().w;
-            temp_canvas.height = theArea.getSize().h;
-            var center = theArea.getCenterPoint();
-            var retObj = {
-                dataURI: null,
-                imageData: null
-            };
+            temp_canvas.width = ris.w;
+            temp_canvas.height = ris.h;
             if (image !== null) {
 
                 temp_ctx.drawImage(image, (center.x - theArea.getSize().w / 2) * (image.width / ctx.canvas.width), (center.y - theArea.getSize().h / 2) * (image.height / ctx.canvas.height),
@@ -206,8 +206,8 @@ crop.factory('cropHost', ['$document', '$q', 'cropAreaCircle', 'cropAreaSquare',
                     theArea.getSize().h * (image.height / ctx.canvas.height),
                     0,
                     0,
-                    theArea.getSize().w,
-                    theArea.getSize().h);
+                    ris.w,
+                    ris.h);
                 if (resImgQuality !== null) {
                     retObj.dataURI = temp_canvas.toDataURL(resImgFormat, resImgQuality);
                 } else {
@@ -220,19 +220,20 @@ crop.factory('cropHost', ['$document', '$q', 'cropAreaCircle', 'cropAreaSquare',
         this.getResultImageDataBlob = function() {
             var temp_ctx, temp_canvas, _p,
                 center = theArea.getCenterPoint(),
+                ris = this.getResultImageSize(),
                 _p = $q.defer();
             temp_canvas = angular.element('<canvas></canvas>')[0];
             temp_ctx = temp_canvas.getContext('2d');
-            temp_canvas.width = theArea.getSize().w;
-            temp_canvas.height = theArea.getSize().h;
+            temp_canvas.width = ris.w;
+            temp_canvas.height = ris.h;
             if (image !== null) {
                 temp_ctx.drawImage(image, (center.x - theArea.getSize().w / 2) * (image.width / ctx.canvas.width), (center.y - theArea.getSize().h / 2) * (image.height / ctx.canvas.height),
                     theArea.getSize().w * (image.width / ctx.canvas.width),
                     theArea.getSize().h * (image.height / ctx.canvas.height),
                     0,
                     0,
-                    theArea.getSize().w,
-                    theArea.getSize().h);
+                    ris.w,
+                    ris.h);
             }
             temp_canvas.toBlob(function(blob) {
                 _p.resolve(blob);

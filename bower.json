@@ -1,7 +1,7 @@
 {
     "name": "ng-img-crop-add-extended",
     "prettyName": "ngImgCropExtended",
-    "version": "0.3.9",
+    "version": "0.3.10",
     "authors": [{
         "name": "Alex Kaul",
         "email": "alexkaul@googlemail.com"
