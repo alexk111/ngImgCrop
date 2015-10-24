@@ -144,6 +144,9 @@ The following code enables to select an image using a file input and crop it. Th
    [result-image-format="{string}"]
    [result-image-quality="{number}"]
    [force-aspect-ratio="{boolean}"]
+   [dominant-color="{string}"]
+   [palette-color="{string}"]
+   [palette-color-length="{number}"]
    [on-change="{expression}"]
    [on-load-begin="{expression"]
    [on-load-done="{expression"]
@@ -198,6 +201,18 @@ Assignable angular expression to data-bind to. NgImgCrop puts an url blob of a c
 ### force-aspect-ratio
 
 *Optional*. For square or circle area types. Maintain aspect ratio.
+
+### dominant-color
+
+*Optional*. Provide dominant color for image using color-thief (https://github.com/lokesh/color-thief).
+
+### palette-color
+
+*Optional*. Provide a color palette for image using color-thief (https://github.com/lokesh/color-thief).
+
+### palette-color-length
+
+*Optional*. Provide a color palette for image using color-thief (https://github.com/lokesh/color-thief).
 
 ### on-change
 

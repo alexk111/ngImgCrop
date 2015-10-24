@@ -17,6 +17,8 @@ crop.factory('cropHost', ['$document', '$q', 'cropAreaCircle', 'cropAreaSquare',
         var top = box.top + scrollTop - clientTop;
         var left = box.left + scrollLeft - clientLeft;
 
+        var colorPaletteLength = 8;
+
         return {
             top: Math.round(top),
             left: Math.round(left)
@@ -491,6 +493,38 @@ crop.factory('cropHost', ['$document', '$q', 'cropAreaCircle', 'cropAreaSquare',
             }
 
             drawScene();
+        };
+
+        this.getDominantColor = function(uri) {
+            var imageDC = new Image(),
+                colorThief = new ColorThief(),
+                dominantColor = null,
+                _p = $q.defer();
+            imageDC.src = uri;
+            imageDC.onload = function() {
+                dominantColor = colorThief.getColor(imageDC);
+                _p.resolve(dominantColor);
+            };
+
+            return _p.promise;
+        };
+
+        this.getPalette = function(uri) {
+            var imageDC = new Image(),
+                colorThief = new ColorThief(),
+                palette = null,
+                _p = $q.defer();
+            imageDC.src = uri;
+            imageDC.onload = function() {
+                palette = colorThief.getPalette(imageDC, colorPaletteLength);
+                _p.resolve(palette);
+            };
+
+            return _p.promise;
+        };
+
+        this.setPaletteColorLength = function(lg) {
+            colorPaletteLength = lg;
         };
 
         /* Life Cycle begins */

@@ -12,25 +12,15 @@
         width: 300px;
         height: 200px;
     }
+    .dominant {
+        width: 100px;
+        height: 50px;
+        display: inline-block;
+    }
     </style>
 </head>
 
 <body ng-controller="Ctrl">
-    <div style="float:right">
-        <h3>Crop Data:</h3>
-        <ul>
-            <li><b>Width</b>: {{image.cropInfo.width}}</li>
-            <li><b>Height</b>: {{image.cropInfo.height}}</li>
-            <li><b>X</b>: {{image.cropInfo.x}}</li>
-            <li><b>Y</b>: {{image.cropInfo.y}}</li>
-        </ul>
-        <h3>Original Image Data:</h3>
-        <ul>
-            <li><b>Width</b>: {{image.originalInfo.width}}</li>
-            <li><b>Height</b>: {{image.originalInfo.height}}</li>
-        </ul>
-    </div>
-    
     <form>
         <label for="fileInput">Select Image:</label>
         <input type="file" id="fileInput" accept="image/*"/>
@@ -42,6 +32,9 @@
         <img-crop 
             image="imageDataURI" 
             result-blob="resBlob"
+            dominant-color="dominantColor"
+            palette-color="paletteColor"
+            palette-color-length="paletteColorLength"
             force-aspect-ratio="true" 
             url-blob="urlBlob"
             area-type="{{type}}" 
@@ -49,10 +42,13 @@
             ></img-crop>
     </div>
     <div style="text-align:center">
-        <h3>Result with blob in url</h3>
+        <h3>Result with blob in url :</h3>
         <div>
             <img ng-src="{{urlBlob}}"/>
         </div>
+        <h3>Dominant color : {{dominantColor}}</h3>
+        <div class="dominant" style="background: rgb({{dominantColor[0]}}, {{dominantColor[1]}}, {{dominantColor[2]}});"></div>
+        <h3>Palette colors : {{paletteColor}}</h3>
     </div>
 
     <script type="text/javascript" src="../bower_components/angular/angular.min.js"></script>
@@ -62,9 +58,13 @@
         .controller('Ctrl', function($scope) {
             $scope.type = 'square';
             $scope.imageDataURI = '';
+            $scope.dominantColor = [];
             $scope.resBlob = {};
             $scope.urlBlob = {};
             $scope.resImgSize = 200;
+
+            $scope.paletteColor = '';
+            $scope.paletteColorLength = 8;
 
             $scope.getBlob = function() {
                 console.log($scope.resBlob);

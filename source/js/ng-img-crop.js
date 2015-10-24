@@ -18,6 +18,10 @@ crop.directive('imgCrop', ['$timeout', 'cropHost', 'cropPubSub', function($timeo
             resultImageQuality: '=',
 
             forceAspectRatio: '=',
+            
+            dominantColor: '=',
+            paletteColor: '=',
+            paletteColorLength: '=',
 
             onChange: '&',
             onLoadBegin: '&',
@@ -50,6 +54,13 @@ crop.directive('imgCrop', ['$timeout', 'cropHost', 'cropPubSub', function($timeo
                         cropHost.getResultImageDataBlob().then(function(blob) {
                             scope.resultBlob = blob;
                             scope.urlBlob = urlCreator.createObjectURL(blob);
+                        });
+
+                        cropHost.getDominantColor(scope.resultImage).then(function(dominantColor) {
+                            scope.dominantColor = dominantColor;
+                        });
+                        cropHost.getPalette(scope.resultImage).then(function(palette) {
+                            scope.paletteColor = palette;
                         });
 
                         updateAreaCoords(scope);
@@ -133,6 +144,9 @@ crop.directive('imgCrop', ['$timeout', 'cropHost', 'cropPubSub', function($timeo
             scope.$watch('resultImageSize', function() {
                 cropHost.setResultImageSize(scope.resultImageSize);
                 updateResultImage(scope);
+            });
+            scope.$watch('paletteColorLength', function() {
+                cropHost.setPaletteColorLength(scope.paletteColorLength);
             });
 
             // Update CropHost dimensions when the directive element is resized
