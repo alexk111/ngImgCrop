@@ -29,20 +29,6 @@
 </head>
 
 <body ng-controller="Ctrl">
-    <div style="float:right">
-        <h3>Crop Data:</h3>
-        <ul>
-            <li><b>Width</b>: {{image.cropInfo.width}}</li>
-            <li><b>Height</b>: {{image.cropInfo.height}}</li>
-            <li><b>X</b>: {{image.cropInfo.x}}</li>
-            <li><b>Y</b>: {{image.cropInfo.y}}</li>
-        </ul>
-        <h3>Original Image Data:</h3>
-        <ul>
-            <li><b>Width</b>: {{image.originalInfo.width}}</li>
-            <li><b>Height</b>: {{image.originalInfo.height}}</li>
-        </ul>
-    </div>
     <div>
         <label>
             <input type="checkbox" ng-model="enableCrop" ng-init="enableCrop=true" /> Add ngImgCrop to Page</label>
