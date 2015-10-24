@@ -16,7 +16,7 @@
     }],
     "name": "ng-img-crop-extended",
     "prettyName": "ngImgCropExtended",
-    "version": "0.3.10",
+    "version": "0.3.11",
     "description": "Image crop directive for AngularJS, square, circle and rectangle areas",
     "license": "MIT",
     "homepage": "https://github.com/vogloblinsky/ngImgCropExtended/",
