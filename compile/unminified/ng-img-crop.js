@@ -1,11 +1,11 @@
 /*!
- * ngImgCropExtended v0.4.1
+ * ngImgCropExtended v0.4.3
  * https://github.com/CrackerakiUA/ngImgCropExtended/
  *
  * Copyright (c) 2015 undefined
  * License: MIT
  *
- * Generated at Sunday, October 25th, 2015, 1:33:02 PM
+ * Generated at Sunday, October 25th, 2015, 3:18:30 PM
  */
 (function() {
 var crop = angular.module('ngImgCrop', []);
@@ -844,24 +844,28 @@ crop.factory('cropArea', ['cropCanvas', function(CropCanvas) {
         var newSizeWidth = (this._forceAspectRatio) ? size.w : se.x - nw.x,
             newSizeHeight = (this._forceAspectRatio) ? size.h : se.y - nw.y;
 
+        // save rectangle scale
         if(this._aspect){
             newSizeWidth = newSizeHeight * this._aspect;
             if(nw.x+newSizeWidth>canvasW){
                 newSizeWidth=canvasW-nw.x;
                 newSizeHeight=newSizeWidth/this._aspect;
+                if(this._minSize.w>newSizeWidth) newSizeWidth=this._minSize.w;
+                if(this._minSize.h>newSizeHeight) newSizeHeight=this._minSize.h;
+                nw.x=canvasW-newSizeWidth;
             }
+            if(nw.y+newSizeHeight>canvasW) nw.y=canvasW-newSizeHeight;
         }
 
-        if(this._forceAspectRatio){
+        // save square scale
+        if(this._forceAspectRatio) {
             newSizeWidth = newSizeHeight;
             if(nw.x+newSizeWidth>canvasW){
                 newSizeWidth=canvasW-nw.x;
+                if(newSizeWidth<this._minSize.w) newSizeWidth=this._minSize.w;
                 newSizeHeight=newSizeWidth;
-            }            
+            }
         }
-
-        if(this._minSize.w>newSizeWidth) newSizeWidth=this._minSize.w;
-        if(this._minSize.h>newSizeHeight) newSizeHeight=this._minSize.h;
 
         var newSize = {
             x: nw.x,
@@ -2431,7 +2435,6 @@ crop.factory('cropHost', ['$document', '$q', 'cropAreaCircle', 'cropAreaSquare',
             theArea = new AreaClass(ctx, events);
             theArea.setMinSize(curMinSize);
             theArea.setSize(curSize);
-            
             if (type === 'square' || type === 'circle') {
                 forceAspectRatio = true;
                 theArea.setForceAspectRatio(true);

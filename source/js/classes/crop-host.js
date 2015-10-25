@@ -475,7 +475,6 @@ crop.factory('cropHost', ['$document', '$q', 'cropAreaCircle', 'cropAreaSquare',
             theArea = new AreaClass(ctx, events);
             theArea.setMinSize(curMinSize);
             theArea.setSize(curSize);
-            
             if (type === 'square' || type === 'circle') {
                 forceAspectRatio = true;
                 theArea.setForceAspectRatio(true);
