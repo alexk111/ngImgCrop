@@ -1,9 +1,9 @@
 ## Live demo
 
-![Codepen: Circle Crop](http://codepen.io/Crackeraki/pen/avYNKP)
-![Codepen: Square Crop](http://codepen.io/Crackeraki/pen/QjmNVM)
-![Codepen: Rectangle Crop](http://codepen.io/Crackeraki/pen/XmEdPx)
-![Codepen: Rectangle With Aspect Crop](http://codepen.io/Crackeraki/pen/zvWqJM)
+[Codepen: Circle Crop](http://codepen.io/Crackeraki/pen/avYNKP)<br>
+[Codepen: Square Crop](http://codepen.io/Crackeraki/pen/QjmNVM)<br>
+[Codepen: Rectangle Crop](http://codepen.io/Crackeraki/pen/XmEdPx)<br>
+[Codepen: Rectangle With Aspect Crop](http://codepen.io/Crackeraki/pen/zvWqJM)<br>
 
 # ngImgCropExtended
 
