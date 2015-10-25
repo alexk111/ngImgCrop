@@ -527,6 +527,16 @@ crop.factory('cropHost', ['$document', '$q', 'cropAreaCircle', 'cropAreaSquare',
             colorPaletteLength = lg;
         };
 
+        this.setAspect = function(aspect) {
+            theArea.setAspect(aspect);
+            var minSize = theArea.getMinSize();
+            minSize.w=minSize.h*aspect;
+            theArea.setMinSize(minSize);
+            var size = theArea.getSize();
+            size.w=size.h*aspect;
+            theArea.setSize(size);
+        };
+
         /* Life Cycle begins */
 
         // Init Context var
