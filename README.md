@@ -1,3 +1,10 @@
+## Live demo
+
+![Codepen: Circle Crop](http://codepen.io/Crackeraki/pen/avYNKP)
+![Codepen: Square Crop](http://codepen.io/Crackeraki/pen/QjmNVM)
+![Codepen: Rectangle Crop](http://codepen.io/Crackeraki/pen/XmEdPx)
+![Codepen: Rectangle With Aspect Crop](http://codepen.io/Crackeraki/pen/zvWqJM)
+
 # ngImgCropExtended
 
 Simple Image Crop directive for AngularJS. Enables to crop a circle, a square or a rectangle out of an image.
@@ -11,14 +18,6 @@ Source image by Edgaras Maselskis
 ![Square Crop](/screenshots/square.png "Square Crop")
 
 ![Rectangle Crop](/screenshots/rectangle.png "Rectangle Crop")
-
-## Live demo
-
-[Codepen: Circle Crop](http://codepen.io/Crackeraki/pen/avYNKP)
-[Codepen: Square Crop](http://codepen.io/Crackeraki/pen/QjmNVM)
-[Codepen: Rectangle Crop](http://codepen.io/Crackeraki/pen/XmEdPx)
-[Codepen: Rectangle With Aspect Crop](http://codepen.io/Crackeraki/pen/zvWqJM)
-
 
 ## Requirements
 
