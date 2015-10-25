@@ -204,6 +204,10 @@ Assignable angular expression to data-bind to. NgImgCrop puts an url blob of a c
 
 *Optional*. For square or circle area types. Maintain aspect ratio.
 
+### aspect-ratio
+
+*Optional*. For rectangle area type. Maintain aspect ratio by scale width/height number.
+
 ### dominant-color
 
 *Optional*. Provide dominant color for image using color-thief (https://github.com/lokesh/color-thief).
