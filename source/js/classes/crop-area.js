@@ -130,6 +130,7 @@ crop.factory('cropArea', ['cropCanvas', function(CropCanvas) {
         var newSizeWidth = (this._forceAspectRatio) ? size.w : se.x - nw.x,
             newSizeHeight = (this._forceAspectRatio) ? size.h : se.y - nw.y;
 
+        // save rectangle scale
         if(this._aspect){
             newSizeWidth = newSizeHeight * this._aspect;
             if(nw.x+newSizeWidth>canvasW){
@@ -138,16 +139,6 @@ crop.factory('cropArea', ['cropCanvas', function(CropCanvas) {
             }
         }
 
-        if(this._forceAspectRatio){
-            newSizeWidth = newSizeHeight;
-            if(nw.x+newSizeWidth>canvasW){
-                newSizeWidth=canvasW-nw.x;
-                newSizeHeight=newSizeWidth;
-            }            
-        }
-
-        if(this._minSize.w>newSizeWidth) newSizeWidth=this._minSize.w;
-        if(this._minSize.h>newSizeHeight) newSizeHeight=this._minSize.h;
 
         var newSize = {
             x: nw.x,
@@ -199,6 +190,12 @@ crop.factory('cropArea', ['cropCanvas', function(CropCanvas) {
             }
             if (se.x > canvasW) {
                 newSize.x = canvasW - newSize.w;
+            }
+            // save square scale
+            newSizeWidth = newSizeHeight;
+            if(nw.x+newSizeWidth>canvasW){
+                newSize.w=canvasW-nw.x;
+                newSize.h=newSizeWidth;
             }
         }
 

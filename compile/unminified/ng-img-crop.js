@@ -1,11 +1,11 @@
 /*!
- * ngImgCropExtended v0.4.1
+ * ngImgCropExtended v0.4.3
  * https://github.com/CrackerakiUA/ngImgCropExtended/
  *
  * Copyright (c) 2015 undefined
  * License: MIT
  *
- * Generated at Sunday, October 25th, 2015, 1:33:02 PM
+ * Generated at Sunday, October 25th, 2015, 2:53:18 PM
  */
 (function() {
 var crop = angular.module('ngImgCrop', []);
@@ -844,6 +844,7 @@ crop.factory('cropArea', ['cropCanvas', function(CropCanvas) {
         var newSizeWidth = (this._forceAspectRatio) ? size.w : se.x - nw.x,
             newSizeHeight = (this._forceAspectRatio) ? size.h : se.y - nw.y;
 
+        // save rectangle scale
         if(this._aspect){
             newSizeWidth = newSizeHeight * this._aspect;
             if(nw.x+newSizeWidth>canvasW){
@@ -851,17 +852,6 @@ crop.factory('cropArea', ['cropCanvas', function(CropCanvas) {
                 newSizeHeight=newSizeWidth/this._aspect;
             }
         }
-
-        if(this._forceAspectRatio){
-            newSizeWidth = newSizeHeight;
-            if(nw.x+newSizeWidth>canvasW){
-                newSizeWidth=canvasW-nw.x;
-                newSizeHeight=newSizeWidth;
-            }            
-        }
-
-        if(this._minSize.w>newSizeWidth) newSizeWidth=this._minSize.w;
-        if(this._minSize.h>newSizeHeight) newSizeHeight=this._minSize.h;
 
         var newSize = {
             x: nw.x,
@@ -913,6 +903,12 @@ crop.factory('cropArea', ['cropCanvas', function(CropCanvas) {
             }
             if (se.x > canvasW) {
                 newSize.x = canvasW - newSize.w;
+            }
+            // save square scale
+            newSizeWidth = newSizeHeight;
+            if(nw.x+newSizeWidth>canvasW){
+                newSize.w=canvasW-nw.x;
+                newSize.h=newSizeWidth;
             }
         }
 
