@@ -1,3 +1,7 @@
+## Future Plan
+
+Add multiple image result, for example if we need small medium and huge image saved in the database, make that possible inside plugin. Many people will say that we can do that on the server side, but i believe it must be done at the same place we do resize in the first place.
+
 ## Live demo
 
 [Codepen: Circle Crop](http://codepen.io/Crackeraki/pen/avYNKP)<br>
