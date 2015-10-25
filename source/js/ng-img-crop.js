@@ -17,7 +17,6 @@ crop.directive('imgCrop', ['$timeout', 'cropHost', 'cropPubSub', function($timeo
             resultImageFormat: '=',
             resultImageQuality: '=',
 
-            forceAspectRatio: '=',
             aspectRatio: '=',
             
             dominantColor: '=',
@@ -130,10 +129,6 @@ crop.directive('imgCrop', ['$timeout', 'cropHost', 'cropPubSub', function($timeo
                 cropHost.setAreaMinSize(scope.areaMinSize);
                 updateResultImage(scope);
             });
-            scope.$watch('forceAspectRatio', function() {
-                cropHost.setForceAspectRatio(scope.forceAspectRatio);
-                updateResultImage(scope);
-            });
             scope.$watch('resultImageFormat',function(){
                 cropHost.setResultImageFormat(scope.resultImageFormat);
                 updateResultImage(scope);
@@ -150,7 +145,10 @@ crop.directive('imgCrop', ['$timeout', 'cropHost', 'cropPubSub', function($timeo
                 cropHost.setPaletteColorLength(scope.paletteColorLength);
             });
             scope.$watch('aspectRatio', function() {
-                cropHost.setAspect(scope.aspectRatio);
+                if(typeof scope.aspectRatio=='string' && scope.aspectRatio!=''){
+                    scope.aspectRatio=parseInt(scope.aspectRatio);
+                }
+                if(scope.aspectRatio) cropHost.setAspect(scope.aspectRatio);
             });
 
             // Update CropHost dimensions when the directive element is resized

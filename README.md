@@ -5,7 +5,7 @@
 [Codepen: Rectangle Crop](http://codepen.io/Crackeraki/pen/XmEdPx)<br>
 [Codepen: Rectangle With Aspect Crop](http://codepen.io/Crackeraki/pen/zvWqJM)<br>
 
-# ngImgCropExtended
+# ngImgCropFullExtended
 
 Simple Image Crop directive for AngularJS. Enables to crop a circle, a square or a rectangle out of an image.
 
@@ -145,7 +145,6 @@ The following code enables to select an image using a file input and crop it. Th
    [result-image-format="{string}"]
    [result-image-quality="{number}"]
    [aspect-ratio="{number}"]
-   [force-aspect-ratio="{boolean}"]
    [dominant-color="{string}"]
    [palette-color="{string}"]
    [palette-color-length="{number}"]
@@ -199,10 +198,6 @@ Assignable angular expression to data-bind to. NgImgCrop puts an url blob of a c
 ### result-image-quality
 
 *Optional*. Quality of result image. Possible values between 0.0 and 1.0 inclusive. Default: browser default.
-
-### force-aspect-ratio
-
-*Optional*. For square or circle area types. Maintain aspect ratio.
 
 ### aspect-ratio
 
