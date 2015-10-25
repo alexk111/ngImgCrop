@@ -1,11 +1,11 @@
 /*!
- * ngImgCropExtended v0.4.0
+ * ngImgCropExtended v0.4.1
  * https://github.com/CrackerakiUA/ngImgCropExtended/
  *
  * Copyright (c) 2015 undefined
  * License: MIT
  *
- * Generated at Sunday, October 25th, 2015, 11:56:04 AM
+ * Generated at Sunday, October 25th, 2015, 1:33:02 PM
  */
 (function() {
 var crop = angular.module('ngImgCrop', []);
@@ -754,7 +754,7 @@ crop.factory('cropArea', ['cropCanvas', function(CropCanvas) {
     };
 
     CropArea.prototype.setAspect = function(aspect) {
-        this._aspect=aspect
+        this._aspect=aspect;
     }
 
     CropArea.prototype.getSize = function() {
@@ -762,7 +762,6 @@ crop.factory('cropArea', ['cropCanvas', function(CropCanvas) {
     };
 
     CropArea.prototype.setSize = function(size) {
-
         size = this._processSize(size);
         this._size = this._preventBoundaryCollision(size);
     };
@@ -852,6 +851,17 @@ crop.factory('cropArea', ['cropCanvas', function(CropCanvas) {
                 newSizeHeight=newSizeWidth/this._aspect;
             }
         }
+
+        if(this._forceAspectRatio){
+            newSizeWidth = newSizeHeight;
+            if(nw.x+newSizeWidth>canvasW){
+                newSizeWidth=canvasW-nw.x;
+                newSizeHeight=newSizeWidth;
+            }            
+        }
+
+        if(this._minSize.w>newSizeWidth) newSizeWidth=this._minSize.w;
+        if(this._minSize.h>newSizeHeight) newSizeHeight=this._minSize.h;
 
         var newSize = {
             x: nw.x,
@@ -2393,11 +2403,6 @@ crop.factory('cropHost', ['$document', '$q', 'cropAreaCircle', 'cropAreaSquare',
             resImgFormat = format;
         };
 
-        this.setForceAspectRatio = function(force) {
-            forceAspectRatio = force;
-            theArea.setForceAspectRatio(force);
-        };
-
         this.setResultImageQuality = function(quality) {
             quality = parseFloat(quality);
             if (!isNaN(quality) && quality >= 0 && quality <= 1) {
@@ -2426,6 +2431,14 @@ crop.factory('cropHost', ['$document', '$q', 'cropAreaCircle', 'cropAreaSquare',
             theArea = new AreaClass(ctx, events);
             theArea.setMinSize(curMinSize);
             theArea.setSize(curSize);
+            
+            if (type === 'square' || type === 'circle') {
+                forceAspectRatio = true;
+                theArea.setForceAspectRatio(true);
+            }else{
+                forceAspectRatio = false;
+                theArea.setForceAspectRatio(false);
+            }
 
             //TODO: use top left point
             theArea.setCenterPoint({
@@ -2514,7 +2527,6 @@ crop.factory('cropHost', ['$document', '$q', 'cropAreaCircle', 'cropAreaSquare',
             elCanvas.remove();
         };
     };
-
 }]);
 
 crop.factory('cropPubSub', [function() {
@@ -2557,7 +2569,6 @@ crop.directive('imgCrop', ['$timeout', 'cropHost', 'cropPubSub', function($timeo
             resultImageFormat: '=',
             resultImageQuality: '=',
 
-            forceAspectRatio: '=',
             aspectRatio: '=',
             
             dominantColor: '=',
@@ -2670,10 +2681,6 @@ crop.directive('imgCrop', ['$timeout', 'cropHost', 'cropPubSub', function($timeo
                 cropHost.setAreaMinSize(scope.areaMinSize);
                 updateResultImage(scope);
             });
-            scope.$watch('forceAspectRatio', function() {
-                cropHost.setForceAspectRatio(scope.forceAspectRatio);
-                updateResultImage(scope);
-            });
             scope.$watch('resultImageFormat',function(){
                 cropHost.setResultImageFormat(scope.resultImageFormat);
                 updateResultImage(scope);
@@ -2690,7 +2697,10 @@ crop.directive('imgCrop', ['$timeout', 'cropHost', 'cropPubSub', function($timeo
                 cropHost.setPaletteColorLength(scope.paletteColorLength);
             });
             scope.$watch('aspectRatio', function() {
-                cropHost.setAspect(scope.aspectRatio);
+                if(typeof scope.aspectRatio=='string' && scope.aspectRatio!=''){
+                    scope.aspectRatio=parseInt(scope.aspectRatio);
+                }
+                if(scope.aspectRatio) cropHost.setAspect(scope.aspectRatio);
             });
 
             // Update CropHost dimensions when the directive element is resized

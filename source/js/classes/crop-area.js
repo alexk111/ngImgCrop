@@ -40,7 +40,7 @@ crop.factory('cropArea', ['cropCanvas', function(CropCanvas) {
     };
 
     CropArea.prototype.setAspect = function(aspect) {
-        this._aspect=aspect
+        this._aspect=aspect;
     }
 
     CropArea.prototype.getSize = function() {
@@ -48,7 +48,6 @@ crop.factory('cropArea', ['cropCanvas', function(CropCanvas) {
     };
 
     CropArea.prototype.setSize = function(size) {
-
         size = this._processSize(size);
         this._size = this._preventBoundaryCollision(size);
     };
@@ -138,6 +137,17 @@ crop.factory('cropArea', ['cropCanvas', function(CropCanvas) {
                 newSizeHeight=newSizeWidth/this._aspect;
             }
         }
+
+        if(this._forceAspectRatio){
+            newSizeWidth = newSizeHeight;
+            if(nw.x+newSizeWidth>canvasW){
+                newSizeWidth=canvasW-nw.x;
+                newSizeHeight=newSizeWidth;
+            }            
+        }
+
+        if(this._minSize.w>newSizeWidth) newSizeWidth=this._minSize.w;
+        if(this._minSize.h>newSizeHeight) newSizeHeight=this._minSize.h;
 
         var newSize = {
             x: nw.x,

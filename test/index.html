@@ -52,9 +52,8 @@
             <input type="radio" ng-model="type" value="rectangle" /> Rectangle</label>
     </div>
     <div>
-        <label>
-            <input type="checkbox" ng-model="changeOnFly" /> Change On Fly</label>
-            <input type="checkbox" ng-model="forceAspectRatio" /> Force aspect ratio</label>
+        <label><input type="checkbox" ng-model="changeOnFly" /> Change On Fly</label>
+        <label ng-show="type=='rectangle'"><input type="text" ng-model="aspectRatio" /> Aspect ratio</label>
     </div>
     <div>
         <label>Area Min Size (Size = Width = Height):
@@ -109,14 +108,13 @@
             result-image-format="resImgFormat" 
             result-image-quality="resImgQuality" 
             result-image-size="resImgSize"
-            force-aspect-ratio="forceAspectRatio"
+            aspect-ratio="aspectRatio"
             on-change="onChange($dataURI)" 
             on-load-begin="onLoadBegin()" 
             on-load-done="onLoadDone()" 
             on-load-error="onLoadError()" 
             area-coords="myAreaCoords">
         </img-crop>
-        <!--aspect-ratio="aspectRatio"-->
     </div>
     <div style="text-align:center">
         <h3>Result with uri</h3>
