@@ -1,7 +1,5 @@
 # ngImgCropExtended
 
-[![Bower version](https://badge.fury.io/bo/ngImgCropExtended.svg)](http://badge.fury.io/bo/ngImgCropExtended)
-
 Simple Image Crop directive for AngularJS. Enables to crop a circle, a square or a rectangle out of an image.
 
 ## Screenshots
@@ -16,7 +14,11 @@ Source image by Edgaras Maselskis
 
 ## Live demo
 
-[Live demo on JSFiddle](http://jsfiddle.net/vogloblinsky/dnuwmkft/6/)
+[Codepen: Circle Crop](http://codepen.io/Crackeraki/pen/avYNKP)
+[Codepen: Square Crop](http://codepen.io/Crackeraki/pen/QjmNVM)
+[Codepen: Rectangle Crop](http://codepen.io/Crackeraki/pen/XmEdPx)
+[Codepen: Rectangle With Aspect Crop](http://codepen.io/Crackeraki/pen/zvWqJM)
+
 
 ## Requirements
 
@@ -42,8 +44,8 @@ Source image by Edgaras Maselskis
 ### Download
 
 You have two options to get the files:
-- [Download ngImgCropExtended](https://github.com/vogloblinsky/ngImgCropExtended/archive/master.zip) files from GitHub.
-- Use Bower to download the files. Just run `bower install ngImgCropExtended`.
+- [Download ngImgCropExtended](https://github.com/CrackerakiUA/ngImgCropExtended/archive/master.zip) files from GitHub.
+- Use Bower to download the files. Just run `bower install ngImgCropFullExtended`.
 
 ### Add files
 
@@ -140,9 +142,10 @@ The following code enables to select an image using a file input and crop it. Th
    [change-on-fly="{boolean}"]
    [area-type="{circle|square|rectangle}"]
    [area-min-size="{number}"]
-   [result-image-size="{number}"]
+   [result-image-size="{number|{w:number,h:number}}"]
    [result-image-format="{string}"]
    [result-image-quality="{number}"]
+   [aspect-ratio="{number}"]
    [force-aspect-ratio="{boolean}"]
    [dominant-color="{string}"]
    [palette-color="{string}"]
@@ -233,5 +236,5 @@ Assignable angular expression to data-bind to. NgImgCrop puts an url blob of a c
 
 ## License
 
-See the [LICENSE](https://github.com/alexk111/vogloblinsky/blob/master/LICENSE) file.
+See the [LICENSE](https://github.com/alexk111/CrackerakiUA/blob/master/LICENSE) file.
 

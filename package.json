@@ -13,16 +13,19 @@
     }, {
         "name": "Vincent Ogloblinsky",
         "email": "vincent.ogloblinsky@gmail.com"
+    }, {
+        "name": "Honchar Denys",
+        "email": "crackeraki@gmail.com"
     }],
     "name": "ng-img-crop-extended",
     "prettyName": "ngImgCropExtended",
-    "version": "0.3.11",
-    "description": "Image crop directive for AngularJS, square, circle and rectangle areas",
+    "version": "0.4.0",
+    "description": "Image crop directive for AngularJS, square, circle and rectangle areas. Working aspect.",
     "license": "MIT",
-    "homepage": "https://github.com/vogloblinsky/ngImgCropExtended/",
+    "homepage": "https://github.com/CrackerakiUA/ngImgCropExtended/",
     "repository": {
         "type": "git",
-        "url": "https://github.com/vogloblinsky/ngImgCropExtended/"
+        "url": "https://github.com/CrackerakiUA/ngImgCropExtended/"
     },
     "dependencies": {},
     "devDependencies": {

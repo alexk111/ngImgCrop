@@ -114,10 +114,12 @@ crop.factory('cropAreaRectangle', ['cropArea', function(CropArea) {
         } else if (this._resizeCtrlIsDragging > -1) {
             var s = this.getSize();
             var se = this.getSouthEastBound();
+            var posX = mouseCurX;
             switch (this._resizeCtrlIsDragging) {
                 case 0: // Top Left
+                    if(this._aspect) posX = se.x-((se.y-mouseCurY)*this._aspect);
                     this.setSizeByCorners({
-                        x: mouseCurX,
+                        x: posX,
                         y: mouseCurY
                     }, {
                         x: se.x,
@@ -126,18 +128,20 @@ crop.factory('cropAreaRectangle', ['cropArea', function(CropArea) {
                     cursor = 'nwse-resize';
                     break;
                 case 1: // Top Right
+                    if(this._aspect) posX = s.x+((se.y-mouseCurY)*this._aspect);
                     this.setSizeByCorners({
                         x: s.x,
                         y: mouseCurY
                     }, {
-                        x: mouseCurX,
+                        x: posX,
                         y: se.y
                     });
                     cursor = 'nesw-resize';
                     break;
                 case 2: // Bottom Left
+                    if(this._aspect) posX = se.x-((mouseCurY-s.y)*this._aspect);
                     this.setSizeByCorners({
-                        x: mouseCurX,
+                        x: posX,
                         y: s.y
                     }, {
                         x: se.x,
@@ -146,11 +150,12 @@ crop.factory('cropAreaRectangle', ['cropArea', function(CropArea) {
                     cursor = 'nesw-resize';
                     break;
                 case 3: // Bottom Right
+                    if(this._aspect) posX = s.x+((mouseCurY-s.y)*this._aspect);
                     this.setSizeByCorners({
                         x: s.x,
                         y: s.y
                     }, {
-                        x: mouseCurX,
+                        x: posX,
                         y: mouseCurY
                     });
                     cursor = 'nwse-resize';

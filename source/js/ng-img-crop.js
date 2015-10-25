@@ -18,6 +18,7 @@ crop.directive('imgCrop', ['$timeout', 'cropHost', 'cropPubSub', function($timeo
             resultImageQuality: '=',
 
             forceAspectRatio: '=',
+            aspectRatio: '=',
             
             dominantColor: '=',
             paletteColor: '=',
@@ -147,6 +148,9 @@ crop.directive('imgCrop', ['$timeout', 'cropHost', 'cropPubSub', function($timeo
             });
             scope.$watch('paletteColorLength', function() {
                 cropHost.setPaletteColorLength(scope.paletteColorLength);
+            });
+            scope.$watch('aspectRatio', function() {
+                cropHost.setAspect(scope.aspectRatio);
             });
 
             // Update CropHost dimensions when the directive element is resized
