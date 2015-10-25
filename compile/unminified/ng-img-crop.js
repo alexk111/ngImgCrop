@@ -1,11 +1,11 @@
 /*!
- * ngImgCropExtended v0.3.11
- * https://github.com/vogloblinsky/ngImgCropExtended/
+ * ngImgCropExtended v0.4.0
+ * https://github.com/CrackerakiUA/ngImgCropExtended/
  *
  * Copyright (c) 2015 undefined
  * License: MIT
  *
- * Generated at Sunday, October 25th, 2015, 3:18:55 AM
+ * Generated at Sunday, October 25th, 2015, 11:56:04 AM
  */
 (function() {
 var crop = angular.module('ngImgCrop', []);
@@ -2471,6 +2471,16 @@ crop.factory('cropHost', ['$document', '$q', 'cropAreaCircle', 'cropAreaSquare',
 
         this.setPaletteColorLength = function(lg) {
             colorPaletteLength = lg;
+        };
+
+        this.setAspect = function(aspect) {
+            theArea.setAspect(aspect);
+            var minSize = theArea.getMinSize();
+            minSize.w=minSize.h*aspect;
+            theArea.setMinSize(minSize);
+            var size = theArea.getSize();
+            size.w=size.h*aspect;
+            theArea.setSize(size);
         };
 
         /* Life Cycle begins */
