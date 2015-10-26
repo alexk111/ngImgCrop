@@ -7,7 +7,11 @@
 
 ## Future Plan
 
-Add multiple image result, for example if we need small, medium and huge image size saved in the server, make that possible inside our plugin. Many people will say that we can do that on the server side, but i believe it must be done at the same place we do the resize in the first place.
+1) If aspect ration is not setted and type is rectangle, make result-image-size have scale of crop area. As result image values will be takken number(will be width), {w: Number} and {h: Number}.
+
+2) Remove aspect-ratio option and add it into result-image-size, for example if user give {w: Number,h: Number} aspect-ration will be w/h.
+
+3) Add multiple image result, for example if we need small, medium and huge image size saved in the server, make that possible inside our plugin. Many people will say that we can do that on the server side, but i believe it must be done at the same place we do the resize in the first place.
 
 # ngImgCropFullExtended
 
