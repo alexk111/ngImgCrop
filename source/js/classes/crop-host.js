@@ -224,12 +224,18 @@ crop.factory('cropHost', ['$document', 'cropAreaCircle', 'cropAreaSquare', 'crop
               ctx.drawImage(newImage, cx, cy);
 
               image=new Image();
+              image.onload = function() {
+                resetCropHost();
+                events.trigger('image-updated');
+              };
               image.src = canvas.toDataURL("image/png");
+
             } else {
               image=newImage;
+              resetCropHost();
+              events.trigger('image-updated');
             }
-            resetCropHost();
-            events.trigger('image-updated');
+
           });
         };
         newImage.onerror=function() {
