@@ -11,6 +11,10 @@
 
 2) Add multiple image result, for example if we need small, medium and huge image size saved in the server, make that possible inside our plugin. Many people will say that we can do that on the server side, but i believe it must be done at the same place we do the resize in the first place.
 
+3) Wrap input(file) within plugin, so it don't have any load problems, like with angular material dialog. Make in it an area with a message inside to click for upload new file. This will be by option enabled. Rebuild all demo with this feature. Add button on work space to add new image if image given, make full options for that.
+
+4) Add filters apply. Make an easy way to create new filters. Add some basic filters like Brightness,Contrast,Blur etc.
+
 # ngImgCropFullExtended
 
 Simple Image Crop directive for AngularJS. Enables to crop a circle, a square or a rectangle out of an image.
