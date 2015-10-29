@@ -43,12 +43,20 @@ crop.factory('cropHost', ['$document', 'cropAreaCircle', 'cropAreaSquare', 'crop
     // Result Image quality
     var resImgQuality=null;
 
+    // Result Image background color
+    var resImgBackground=null;
+
     /* PRIVATE FUNCTIONS */
 
     // Draw Scene
     function drawScene() {
       // clear canvas
       ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
+
+      if (resImgBackground) {
+        ctx.fillStyle = resImgBackground;
+        ctx.fillRect(0, 0, ctx.canvas.width, ctx.canvas.height);
+      }
 
       if(image!==null) {
         // draw source image
@@ -164,13 +172,20 @@ crop.factory('cropHost', ['$document', 'cropAreaCircle', 'cropAreaSquare', 'crop
     };
 
 
-    this.getResultImageDataURI=function() {
+    this.getResultImageDataURI=function(backgroundColor) {
       var temp_ctx, temp_canvas;
+      if (backgroundColor) {
+        resImgBackground = backgroundColor;
+      }
       temp_canvas = angular.element('<canvas></canvas>')[0];
       temp_ctx = temp_canvas.getContext('2d');
       temp_canvas.width = resImgSize;
       temp_canvas.height = resImgSize;
       if(image!==null){
+        if (resImgBackground) {
+          temp_ctx.fillStyle = resImgBackground;
+          temp_ctx.fillRect(0, 0, ctx.canvas.width, ctx.canvas.height);
+        }
         temp_ctx.drawImage(image, (theArea.getX()-theArea.getSize()/2)*(image.width/ctx.canvas.width), (theArea.getY()-theArea.getSize()/2)*(image.height/ctx.canvas.height), theArea.getSize()*(image.width/ctx.canvas.width), theArea.getSize()*(image.height/ctx.canvas.height), 0, 0, resImgSize, resImgSize);
       }
       if (resImgQuality!==null ){

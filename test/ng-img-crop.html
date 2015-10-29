@@ -63,6 +63,10 @@
     <label><input type="radio" ng-model="resImgFormat" value="image/webp" /> image/webp</label>
   </div>
   <div>
+    Result Image Background Color:
+    <label><input type="text" ng-model="resImgBackgroundColor"/></label>
+  </div>
+  <div>
     <label>Result Image Quality (0<=X<=1): <input type="text" ng-model="resImgQuality" /></label>
   </div>
   <form ng-show="enableCrop">
@@ -84,6 +88,7 @@
               result-image="$parent.resImageDataURI"
               change-on-fly="changeOnFly"
               area-type="{{type}}"
+              result-image-background="{{resImgBackgroundColor}}"
               area-min-size="selMinSize"
               result-image-format="{{resImgFormat}}"
               result-image-quality="resImgQuality"
@@ -110,6 +115,7 @@
         $scope.type='circle';
         $scope.imageDataURI='';
         $scope.resImageDataURI='';
+        $scope.resImgBackgroundColor='white';
         $scope.resImgFormat='image/png';
         $scope.resImgQuality=1;
         $scope.selMinSize=100;
