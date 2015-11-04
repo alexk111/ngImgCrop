@@ -15,7 +15,11 @@
 
 4) Wrap input(file) within plugin, so it don't have any load problems, like with angular material dialog. Make in it an area with a message inside to click for upload new file. This will be by option enabled. Rebuild all demo with this feature. Add button on work space to add new image if image given, make full options for that.
 
-5) Add filters apply. Make an easy way to create new filters. Add some basic filters like Brightness,Contrast,Blur etc.
+5) Add option to not resize cropper area on siders.
+
+6) On aspect ration when height is more then width, crop area don't go down.
+
+7) Add filters apply. Make an easy way to create new filters. Add some basic filters like Brightness,Contrast,Blur etc.
 
 # ngImgCropFullExtended
 
