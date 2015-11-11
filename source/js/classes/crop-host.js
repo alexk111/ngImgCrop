@@ -395,11 +395,17 @@ crop.factory('cropHost', ['$document', '$q', 'cropAreaCircle', 'cropAreaSquare',
         this.setAreaMinSize = function(size) {
             if (angular.isUndefined(size)) {
                 return;
+            }else if(typeof size == 'number' || typeof size == 'string'){
+                size = {
+                    w: parseInt(parseInt(size), 10),
+                    h: parseInt(parseInt(size), 10)
+                };
+            }else{
+                size = {
+                    w: parseInt(size.w, 10),
+                    h: parseInt(size.h, 10)
+                };
             }
-            size = {
-                w: parseInt(size.w, 10),
-                h: parseInt(size.h, 10)
-            };
             if (!isNaN(size.w) && !isNaN(size.h)) {
                 theArea.setMinSize(size);
                 drawScene();

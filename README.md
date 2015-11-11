@@ -21,6 +21,8 @@
 
 7) Add filters apply. Make an easy way to create new filters. Add some basic filters like Brightness,Contrast,Blur etc.
 
+8) Add option to change text of initialization.
+
 # ngImgCropFullExtended
 
 Simple Image Crop directive for AngularJS. Enables to crop a circle, a square or a rectangle out of an image.
@@ -58,9 +60,10 @@ Source image by Edgaras Maselskis
 
 ### Download
 
-You have two options to get the files:
+You have three options to get the files:
 - [Download ngImgCropExtended](https://github.com/CrackerakiUA/ngImgCropExtended/archive/master.zip) files from GitHub.
 - Use Bower to download the files. Just run `bower install ngImgCropFullExtended`.
+- Use Meteor to download the files. Just run `meteor add correpw:ng-img-crop-full-extended`.
 
 ### Add files
 
@@ -156,8 +159,8 @@ The following code enables to select an image using a file input and crop it. Th
     area-coords="myAreaCoords"
    [change-on-fly="{boolean}"]
    [area-type="{circle|square|rectangle}"]
-   [area-min-size="{number}"]
-   [result-image-size="{number|{w:number,h:number}}"]
+   [area-min-size="{ number|{w:number,h:number} }"]
+   [result-image-size="{ number|{w:number,h:number} }"]
    [result-image-format="{string}"]
    [result-image-quality="{number}"]
    [aspect-ratio="{number}"]

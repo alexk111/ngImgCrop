@@ -5,7 +5,7 @@
  * Copyright (c) 2015 undefined
  * License: MIT
  *
- * Generated at Sunday, October 25th, 2015, 3:18:30 PM
+ * Generated at Wednesday, November 11th, 2015, 12:20:02 PM
  */
 (function() {
 var crop = angular.module('ngImgCrop', []);
@@ -2355,11 +2355,17 @@ crop.factory('cropHost', ['$document', '$q', 'cropAreaCircle', 'cropAreaSquare',
         this.setAreaMinSize = function(size) {
             if (angular.isUndefined(size)) {
                 return;
+            }else if(typeof size == 'number' || typeof size == 'string'){
+                size = {
+                    w: parseInt(parseInt(size), 10),
+                    h: parseInt(parseInt(size), 10)
+                };
+            }else{
+                size = {
+                    w: parseInt(size.w, 10),
+                    h: parseInt(size.h, 10)
+                };
             }
-            size = {
-                w: parseInt(size.w, 10),
-                h: parseInt(size.h, 10)
-            };
             if (!isNaN(size.w) && !isNaN(size.h)) {
                 theArea.setMinSize(size);
                 drawScene();
