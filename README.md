@@ -15,7 +15,13 @@
 
 4) Wrap input(file) within plugin, so it don't have any load problems, like with angular material dialog. Make in it an area with a message inside to click for upload new file. This will be by option enabled. Rebuild all demo with this feature. Add button on work space to add new image if image given, make full options for that.
 
-5) Add filters apply. Make an easy way to create new filters. Add some basic filters like Brightness,Contrast,Blur etc.
+5) Add option to not resize cropper area on siders.
+
+6) On aspect ration when height is more then width, crop area don't go down.
+
+7) Add filters apply. Make an easy way to create new filters. Add some basic filters like Brightness,Contrast,Blur etc.
+
+8) Add option to change text of initialization.
 
 # ngImgCropFullExtended
 
@@ -54,9 +60,10 @@ Source image by Edgaras Maselskis
 
 ### Download
 
-You have two options to get the files:
+You have three options to get the files:
 - [Download ngImgCropExtended](https://github.com/CrackerakiUA/ngImgCropExtended/archive/master.zip) files from GitHub.
 - Use Bower to download the files. Just run `bower install ngImgCropFullExtended`.
+- Use Meteor to download the files. Just run `meteor add correpw:ng-img-crop-full-extended`.
 
 ### Add files
 
@@ -152,8 +159,8 @@ The following code enables to select an image using a file input and crop it. Th
     area-coords="myAreaCoords"
    [change-on-fly="{boolean}"]
    [area-type="{circle|square|rectangle}"]
-   [area-min-size="{number}"]
-   [result-image-size="{number|{w:number,h:number}}"]
+   [area-min-size="{ number|{w:number,h:number} }"]
+   [result-image-size="{ number|{w:number,h:number} }"]
    [result-image-format="{string}"]
    [result-image-quality="{number}"]
    [aspect-ratio="{number}"]
