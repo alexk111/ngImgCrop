@@ -2403,7 +2403,6 @@ crop.factory('cropHost', ['$document', '$q', 'cropAreaCircle', 'cropAreaSquare',
                     w: parseInt(size[0].w, 10),
                     h: parseInt(size[0].h, 10)
                 };
-                this.setAspect(size.w/size.h);
                 return;
             }
             if (angular.isUndefined(size)) {
@@ -2425,8 +2424,7 @@ crop.factory('cropHost', ['$document', '$q', 'cropAreaCircle', 'cropAreaSquare',
             size = {
                 w: parseInt(size.w, 10),
                 h: parseInt(size.h, 10)
-            };
-            this.setAspect(size.w/size.h);
+            };      
             if (!isNaN(size.w) && !isNaN(size.h)) {
                 resImgSize = size;
                 drawScene();
