@@ -1999,6 +1999,7 @@ crop.factory('cropHost', ['$document', '$q', 'cropAreaCircle', 'cropAreaSquare',
             maxCanvasDims = [300, 300],
 
             // Result Image size
+            resImgSizeArray = [];
             resImgSize = {
                 w: 200,
                 h: 200
@@ -2149,9 +2150,9 @@ crop.factory('cropHost', ['$document', '$q', 'cropAreaCircle', 'cropAreaSquare',
             }
         };
 
-        this.getResultImage = function() {
+        var renderImageToDataURL = function(getResultImageSize){
             var temp_ctx, temp_canvas,
-                ris = this.getResultImageSize(),
+                ris = getResultImageSize,
                 center = theArea.getCenterPoint(),
                 retObj = {
                     dataURI: null,
@@ -2177,6 +2178,22 @@ crop.factory('cropHost', ['$document', '$q', 'cropAreaCircle', 'cropAreaSquare',
                 }
             }
             return retObj;
+        }
+
+        this.getResultImage = function() {
+            if(resImgSizeArray.length==0){
+                return renderImageToDataURL(this.getResultImageSize());
+            }else{
+                var arrayResultImages=[];
+                for (var i = 0; i < resImgSizeArray.length; i++) {
+                    arrayResultImages.push({
+                        dataURI:renderImageToDataURL(resImgSizeArray[i]).dataURI,
+                        w:resImgSizeArray[i].w,
+                        h:resImgSizeArray[i].h
+                    });
+                };
+                return arrayResultImages;
+            }            
         };
 
         this.getResultImageDataBlob = function() {
@@ -2380,16 +2397,23 @@ crop.factory('cropHost', ['$document', '$q', 'cropAreaCircle', 'cropAreaSquare',
             return resImgSize;
         };
         this.setResultImageSize = function(size) {
+            if(angular.isArray(size)){
+                resImgSizeArray=size.slice();
+                size = {
+                    w: parseInt(size[0].w, 10),
+                    h: parseInt(size[0].h, 10)
+                };
+                this.setAspect(size.w/size.h);
+                return;
+            }
             if (angular.isUndefined(size)) {
                 return;
             }
-
             //allow setting of size to "selection" for mirroring selection's dimensions
             if (angular.isString(size)) {
                 resImgSize = size;
                 return;
             }
-
             //allow scalar values for square-like selection shapes
             if (angular.isNumber(size)) {
                 size = parseInt(size, 10);
@@ -2398,11 +2422,11 @@ crop.factory('cropHost', ['$document', '$q', 'cropAreaCircle', 'cropAreaSquare',
                     h: size
                 };
             }
-
             size = {
                 w: parseInt(size.w, 10),
                 h: parseInt(size.h, 10)
             };
+            this.setAspect(size.w/size.h);
             if (!isNaN(size.w) && !isNaN(size.h)) {
                 resImgSize = size;
                 drawScene();
@@ -2568,6 +2592,7 @@ crop.directive('imgCrop', ['$timeout', 'cropHost', 'cropPubSub', function($timeo
             image: '=',
             chargement: '=',
             resultImage: '=',
+            resultArrayImage: '=',
             resultBlob: '=',
             urlBlob: '=',
             
@@ -2606,9 +2631,13 @@ crop.directive('imgCrop', ['$timeout', 'cropHost', 'cropPubSub', function($timeo
 
             var updateResultImage = function(scope) {
                 if (scope.image !== '') {
-                    var resultImageObj = cropHost.getResultImage(),
-                        resultImage = resultImageObj.dataURI,
-                        urlCreator = window.URL || window.webkitURL;
+                    var resultImageObj = cropHost.getResultImage();
+                    if(angular.isArray(resultImageObj)){
+                        resultImage=resultImageObj[0].dataURI;
+                        scope.resultArrayImage=resultImageObj;
+                        console.log(scope.resultArrayImage);
+                    }else var resultImage = resultImageObj.dataURI;
+                    var urlCreator = window.URL || window.webkitURL;
                     if (storedResultImage !== resultImage) {
                         storedResultImage = resultImage;
                         scope.resultImage = resultImage;
@@ -2681,7 +2710,6 @@ crop.directive('imgCrop', ['$timeout', 'cropHost', 'cropPubSub', function($timeo
                     displayLoading();
                 }
                 $timeout(function() {
-                    console.log(scope.image);
                     cropHost.setNewImageSource(scope.image);
                 }, 100);
             });
