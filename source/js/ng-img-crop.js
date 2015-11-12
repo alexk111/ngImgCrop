@@ -5,11 +5,11 @@ crop.directive('imgCrop', ['$timeout', 'cropHost', 'cropPubSub', function($timeo
         restrict: 'E',
         scope: {
             image: '=',
-            chargement: '=',
             resultImage: '=',
             resultArrayImage: '=',
             resultBlob: '=',
             urlBlob: '=',
+            chargement: '=',
             
             changeOnFly: '=',
             areaCoords: '=',

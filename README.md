@@ -4,6 +4,7 @@
 [Codepen: Square Crop](http://codepen.io/Crackeraki/pen/QjmNVM)<br>
 [Codepen: Rectangle Crop](http://codepen.io/Crackeraki/pen/XmEdPx)<br>
 [Codepen: Rectangle With Aspect Crop](http://codepen.io/Crackeraki/pen/zvWqJM)<br>
+[Codepen: Rectangle + Aspect + Array Crop](http://codepen.io/Crackeraki/pen/MazNzr)<br>
 
 ## Future Plan / Bug
 
@@ -250,6 +251,10 @@ While you have added an array inside of option result-image-size you will have o
 ### on-load-error
 
 *Optional*. Expression to evaluate when the source image didn't load.
+
+### chargement
+
+*Optional*. Allow you to modify text of loading message.
 
 
 ## License
