@@ -39,6 +39,7 @@ crop.factory('cropHost', ['$document', '$q', 'cropAreaCircle', 'cropAreaSquare',
             maxCanvasDims = [300, 300],
 
             // Result Image size
+            resImgSizeArray = [];
             resImgSize = {
                 w: 200,
                 h: 200
@@ -189,9 +190,9 @@ crop.factory('cropHost', ['$document', '$q', 'cropAreaCircle', 'cropAreaSquare',
             }
         };
 
-        this.getResultImage = function() {
+        var renderImageToDataURL = function(getResultImageSize){
             var temp_ctx, temp_canvas,
-                ris = this.getResultImageSize(),
+                ris = getResultImageSize,
                 center = theArea.getCenterPoint(),
                 retObj = {
                     dataURI: null,
@@ -217,6 +218,22 @@ crop.factory('cropHost', ['$document', '$q', 'cropAreaCircle', 'cropAreaSquare',
                 }
             }
             return retObj;
+        }
+
+        this.getResultImage = function() {
+            if(resImgSizeArray.length==0){
+                return renderImageToDataURL(this.getResultImageSize());
+            }else{
+                var arrayResultImages=[];
+                for (var i = 0; i < resImgSizeArray.length; i++) {
+                    arrayResultImages.push({
+                        dataURI:renderImageToDataURL(resImgSizeArray[i]).dataURI,
+                        w:resImgSizeArray[i].w,
+                        h:resImgSizeArray[i].h
+                    });
+                };
+                return arrayResultImages;
+            }            
         };
 
         this.getResultImageDataBlob = function() {
@@ -420,16 +437,22 @@ crop.factory('cropHost', ['$document', '$q', 'cropAreaCircle', 'cropAreaSquare',
             return resImgSize;
         };
         this.setResultImageSize = function(size) {
+            if(angular.isArray(size)){
+                resImgSizeArray=size.slice();
+                size = {
+                    w: parseInt(size[0].w, 10),
+                    h: parseInt(size[0].h, 10)
+                };
+                return;
+            }
             if (angular.isUndefined(size)) {
                 return;
             }
-
             //allow setting of size to "selection" for mirroring selection's dimensions
             if (angular.isString(size)) {
                 resImgSize = size;
                 return;
             }
-
             //allow scalar values for square-like selection shapes
             if (angular.isNumber(size)) {
                 size = parseInt(size, 10);
@@ -438,11 +461,10 @@ crop.factory('cropHost', ['$document', '$q', 'cropAreaCircle', 'cropAreaSquare',
                     h: size
                 };
             }
-
             size = {
                 w: parseInt(size.w, 10),
                 h: parseInt(size.h, 10)
-            };
+            };      
             if (!isNaN(size.w) && !isNaN(size.h)) {
                 resImgSize = size;
                 drawScene();

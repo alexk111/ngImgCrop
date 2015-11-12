@@ -61,11 +61,6 @@
         </label>
     </div>
     <div>
-        <label>Result Image Size (Size = Width = Height):
-            <input type="text" ng-model="resImgSize" />
-        </label>
-    </div>
-    <div>
         Result Image Format:
         <label>
             <input type="radio" ng-model="resImgFormat" value="image/jpeg" /> image/jpeg</label>
@@ -109,6 +104,7 @@
             result-image-quality="resImgQuality" 
             result-image-size="resImgSize"
             aspect-ratio="aspectRatio"
+            chargement="'Testing Message'"
             on-change="onChange($dataURI)" 
             on-load-begin="onLoadBegin()" 
             on-load-done="onLoadDone()" 
@@ -141,7 +137,7 @@
             $scope.resImgFormat = 'image/png';
             $scope.resImgQuality = 1;
             $scope.selMinSize = 100;
-            $scope.resImgSize = 200;
+            $scope.resImgSize =  [{w:200,h:150},{w:400,h:300}];
             //$scope.aspectRatio=1.2;
             $scope.onChange = function($dataURI) {
                 console.log('onChange fired');

@@ -4,24 +4,21 @@
 [Codepen: Square Crop](http://codepen.io/Crackeraki/pen/QjmNVM)<br>
 [Codepen: Rectangle Crop](http://codepen.io/Crackeraki/pen/XmEdPx)<br>
 [Codepen: Rectangle With Aspect Crop](http://codepen.io/Crackeraki/pen/zvWqJM)<br>
+[Codepen: Rectangle + Aspect + Array Crop](http://codepen.io/Crackeraki/pen/MazNzr)<br>
 
 ## Future Plan / Bug
 
-1) When adding url of an image, make sure cropped working.
+1) If aspect ration is not setted and type is rectangle, make result-image-size have scale of crop area. As result image values will be takken number(will be width), {w: Number} and {h: Number}.
 
-2) If aspect ration is not setted and type is rectangle, make result-image-size have scale of crop area. As result image values will be takken number(will be width), {w: Number} and {h: Number}.
+2) Add option to not resize cropper area on siders.
 
-3) Add multiple image result, for example if we need small, medium and huge image size saved in the server, make that possible inside our plugin. Many people will say that we can do that on the server side, but i believe it must be done at the same place we do the resize in the first place.
+3) On aspect ration when height is more then width, crop area don't go down.
 
-4) Wrap input(file) within plugin, so it don't have any load problems, like with angular material dialog. Make in it an area with a message inside to click for upload new file. This will be by option enabled. Rebuild all demo with this feature. Add button on work space to add new image if image given, make full options for that.
+4) Add option to set fixed Height or Width of the crop area.
 
-5) Add option to not resize cropper area on siders.
+5) Wrap input(file) within plugin, so it don't have any load problems, like with angular material dialog. Make in it an area with a message inside to click for upload new file. This will be by option enabled. Rebuild all demo with this feature. Add button on work space to add new image if image given, make full options for that.
 
-6) On aspect ration when height is more then width, crop area don't go down.
-
-7) Add filters apply. Make an easy way to create new filters. Add some basic filters like Brightness,Contrast,Blur etc.
-
-8) Add option to change text of initialization.
+6) Add filters apply. Make an easy way to create new filters. Add some basic filters like Brightness,Contrast,Blur etc.
 
 # ngImgCropFullExtended
 
@@ -154,13 +151,14 @@ The following code enables to select an image using a file input and crop it. Th
 <img-crop
     image="{string}"
     result-image="{string}"
+    result-array-image="{array}"
     result-blob="{string}"
     url-blob="{string}"
     area-coords="myAreaCoords"
    [change-on-fly="{boolean}"]
    [area-type="{circle|square|rectangle}"]
    [area-min-size="{ number|{w:number,h:number} }"]
-   [result-image-size="{ number|{w:number,h:number} }"]
+   [result-image-size="{ number|{w:number,h:number}|[{w:number,h:number},{w:number,h:number},...] }"]
    [result-image-format="{string}"]
    [result-image-quality="{number}"]
    [aspect-ratio="{number}"]
@@ -210,6 +208,10 @@ Assignable angular expression to data-bind to. NgImgCrop puts an url blob of a c
 
 *Optional*. Width/height of the result image (in pixels). Default: 200.
 
+### result-array-image
+
+While you have added an array inside of option result-image-size you will have option to get array of dataURI alogside with width and height requested.
+
 ### result-image-format
 
 *Optional*. Format of result image. Possible values include image/jpeg, image/png, and image/webp. Browser support varies. Default: image/png.
@@ -249,6 +251,10 @@ Assignable angular expression to data-bind to. NgImgCrop puts an url blob of a c
 ### on-load-error
 
 *Optional*. Expression to evaluate when the source image didn't load.
+
+### chargement
+
+*Optional*. Allow you to modify text of loading message.
 
 
 ## License
