@@ -23,6 +23,8 @@
 
 8) Add option to change text of initialization.
 
+9) Add option to set fixed Height or Width of the crop area.
+
 # ngImgCropFullExtended
 
 Simple Image Crop directive for AngularJS. Enables to crop a circle, a square or a rectangle out of an image.
