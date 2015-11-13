@@ -4,7 +4,7 @@
 [Codepen: Square + Init Url Crop](http://codepen.io/Crackeraki/pen/QjmNVM)<br>
 [Codepen: Rectangle Crop](http://codepen.io/Crackeraki/pen/XmEdPx)<br>
 [Codepen: Rectangle With Aspect Crop](http://codepen.io/Crackeraki/pen/zvWqJM)<br>
-[Codepen: Rectangle + Aspect + Array Crop](http://codepen.io/Crackeraki/pen/MazNzr)<br>
+[Codepen: Rectangle + Aspect + Array Crop](http://codepen.io/Neftedollar/pen/YydwNB)<br>
 
 ## Future Plan / Bug
 
