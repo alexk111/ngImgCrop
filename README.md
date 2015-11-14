@@ -8,7 +8,7 @@
 
 ## Future Plan / Bug
 
-1) If aspect ration is not setted and type is rectangle, make result-image-size have scale of crop area. As result image values will be takken number(will be width), {w: Number} and {h: Number}.
+1) Result image is not shown when it get initialized from url.
 
 2) Add option to not resize cropper area on siders.
 
