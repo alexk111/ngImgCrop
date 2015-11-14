@@ -203,14 +203,42 @@ crop.factory('cropHost', ['$document', '$q', 'cropAreaCircle', 'cropAreaSquare',
             temp_canvas.width = ris.w;
             temp_canvas.height = ris.h;
             if (image !== null) {
+                var x = (center.x - theArea.getSize().w / 2) * (image.width / ctx.canvas.width),
+                    y = (center.y - theArea.getSize().h / 2) * (image.height / ctx.canvas.height),
+                    areaWidth = theArea.getSize().w * (image.width / ctx.canvas.width),
+                    areaHeight = theArea.getSize().h * (image.height / ctx.canvas.height);
 
-                temp_ctx.drawImage(image, (center.x - theArea.getSize().w / 2) * (image.width / ctx.canvas.width), (center.y - theArea.getSize().h / 2) * (image.height / ctx.canvas.height),
-                    theArea.getSize().w * (image.width / ctx.canvas.width),
-                    theArea.getSize().h * (image.height / ctx.canvas.height),
-                    0,
-                    0,
-                    ris.w,
-                    ris.h);
+                if (forceAspectRatio) {
+                    temp_ctx.drawImage(image, x, y,
+                        areaWidth,
+                        areaHeight,
+                        0,
+                        0,
+                        ris.w,
+                        ris.h);
+                } else {
+                    var aspectRatio = areaWidth / areaHeight;
+                    var resultHeight, resultWidth;
+
+                    if (aspectRatio > 1) {
+                        resultWidth = ris.w;
+                        resultHeight = resultWidth / aspectRatio;
+                    } else {
+                        resultHeight = ris.h;
+                        resultWidth = resultHeight * aspectRatio;
+                    }
+
+                    temp_ctx.drawImage(image,
+                        x,
+                        y,
+                        areaWidth,
+                        areaHeight,
+                        0,
+                        0,
+                        Math.round(resultWidth),
+                        Math.round(resultHeight));
+                }
+
                 if (resImgQuality !== null) {
                     retObj.dataURI = temp_canvas.toDataURL(resImgFormat, resImgQuality);
                 } else {
@@ -246,13 +274,41 @@ crop.factory('cropHost', ['$document', '$q', 'cropAreaCircle', 'cropAreaSquare',
             temp_canvas.width = ris.w;
             temp_canvas.height = ris.h;
             if (image !== null) {
-                temp_ctx.drawImage(image, (center.x - theArea.getSize().w / 2) * (image.width / ctx.canvas.width), (center.y - theArea.getSize().h / 2) * (image.height / ctx.canvas.height),
-                    theArea.getSize().w * (image.width / ctx.canvas.width),
-                    theArea.getSize().h * (image.height / ctx.canvas.height),
-                    0,
-                    0,
-                    ris.w,
-                    ris.h);
+                var x = (center.x - theArea.getSize().w / 2) * (image.width / ctx.canvas.width),
+                    y = (center.y - theArea.getSize().h / 2) * (image.height / ctx.canvas.height),
+                    areaWidth = theArea.getSize().w * (image.width / ctx.canvas.width),
+                    areaHeight = theArea.getSize().h * (image.height / ctx.canvas.height);
+
+                if (forceAspectRatio) {
+                    temp_ctx.drawImage(image, x, y,
+                        areaWidth,
+                        areaHeight,
+                        0,
+                        0,
+                        ris.w,
+                        ris.h);
+                } else {
+                    var aspectRatio = areaWidth / areaHeight;
+                    var resultHeight, resultWidth;
+
+                    if (aspectRatio > 1) {
+                        resultWidth = ris.w;
+                        resultHeight = resultWidth / aspectRatio;
+                    } else {
+                        resultHeight = ris.h;
+                        resultWidth = resultHeight * aspectRatio;
+                    }
+
+                    temp_ctx.drawImage(image,
+                        x,
+                        y,
+                        areaWidth,
+                        areaHeight,
+                        0,
+                        0,
+                        Math.round(resultWidth),
+                        Math.round(resultHeight));
+                }
             }
             temp_canvas.toBlob(function(blob) {
                 _p.resolve(blob);
