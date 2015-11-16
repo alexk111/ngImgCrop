@@ -1,11 +1,11 @@
 /*!
- * ngImgCrop v0.3.2
+ * ngImgCrop v0.3.3
  * https://github.com/alexk111/ngImgCrop
  *
  * Copyright (c) 2015 Alex Kaul
  * License: MIT
  *
- * Generated at Thursday, October 29th, 2015, 8:01:52 PM
+ * Generated at Monday, November 16th, 2015, 10:40:30 AM
  */
 (function() {
 'use strict';
@@ -1551,7 +1551,7 @@ crop.factory('cropHost', ['$document', 'cropAreaCircle', 'cropAreaSquare', 'crop
       if(image!==null){
         if (resImgBackground) {
           temp_ctx.fillStyle = resImgBackground;
-          temp_ctx.fillRect(0, 0, ctx.canvas.width, ctx.canvas.height);
+          temp_ctx.fillRect(0, 0, resImgSize, resImgSize);
         }
         temp_ctx.drawImage(image, (theArea.getX()-theArea.getSize()/2)*(image.width/ctx.canvas.width), (theArea.getY()-theArea.getSize()/2)*(image.height/ctx.canvas.height), theArea.getSize()*(image.width/ctx.canvas.width), theArea.getSize()*(image.height/ctx.canvas.height), 0, 0, resImgSize, resImgSize);
       }
