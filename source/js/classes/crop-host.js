@@ -165,13 +165,22 @@ crop.factory('cropHost', ['$document', 'cropAreaCircle', 'cropAreaSquare', 'crop
 
 
     this.getResultImageDataURI=function() {
-      var temp_ctx, temp_canvas;
+      var temp_ctx, temp_canvas,
+          clipWidth, clipHeight;
       temp_canvas = angular.element('<canvas></canvas>')[0];
       temp_ctx = temp_canvas.getContext('2d');
       temp_canvas.width = resImgSize;
       temp_canvas.height = resImgSize;
-      if(image!==null){
-        temp_ctx.drawImage(image, (theArea.getX()-theArea.getSize()/2)*(image.width/ctx.canvas.width), (theArea.getY()-theArea.getSize()/2)*(image.height/ctx.canvas.height), theArea.getSize()*(image.width/ctx.canvas.width), theArea.getSize()*(image.height/ctx.canvas.height), 0, 0, resImgSize, resImgSize);
+      if(image!==null) {
+        clipWidth = theArea.getSize()*(image.width/ctx.canvas.width);
+        clipHeight = theArea.getSize()*(image.height/ctx.canvas.height);
+        if (clipWidth > image.width){
+          clipWidth = image.width;
+        }
+        if (clipHeight > image.height){
+          clipHeight = image.height;
+        }
+        temp_ctx.drawImage(image, (theArea.getX()-theArea.getSize()/2)*(image.width/ctx.canvas.width), (theArea.getY()-theArea.getSize()/2)*(image.height/ctx.canvas.height), clipWidth, clipHeight, 0, 0, resImgSize, resImgSize);
       }
       if (resImgQuality!==null ){
         return temp_canvas.toDataURL(resImgFormat, resImgQuality);
