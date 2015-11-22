@@ -261,7 +261,7 @@ crop.factory('cropHost', ['$document', '$q', 'cropAreaCircle', 'cropAreaSquare',
                     });
                 };
                 return arrayResultImages;
-            }            
+            }
         };
 
         this.getResultImageDataBlob = function() {
@@ -326,6 +326,7 @@ crop.factory('cropHost', ['$document', '$q', 'cropAreaCircle', 'cropAreaSquare',
             events.trigger('image-updated');
             if (!!imageSource) {
                 var newImage = new Image();
+                newImage.crossOrigin = 'anonymous';
                 newImage.onload = function() {
                     events.trigger('load-done');
 
@@ -520,7 +521,7 @@ crop.factory('cropHost', ['$document', '$q', 'cropAreaCircle', 'cropAreaSquare',
             size = {
                 w: parseInt(size.w, 10),
                 h: parseInt(size.h, 10)
-            };      
+            };
             if (!isNaN(size.w) && !isNaN(size.h)) {
                 resImgSize = size;
                 drawScene();
