@@ -8,7 +8,7 @@
 
 ## Future Plan / Bug
 
-1) Result image is not shown when it get initialized from url.
+1) Add option to init cropper area to max size as much as possible.
 
 2) Add option to not resize cropper area on siders.
 
@@ -19,6 +19,8 @@
 5) Wrap input(file) within plugin, so it don't have any load problems, like with angular material dialog. Make in it an area with a message inside to click for upload new file. This will be by option enabled. Rebuild all demo with this feature. Add button on work space to add new image if image given, make full options for that.
 
 6) Add filters apply. Make an easy way to create new filters. Add some basic filters like Brightness,Contrast,Blur etc.
+
+7) When mouse leave the crop container, crop area get to the corner.
 
 # ngImgCropFullExtended
 
