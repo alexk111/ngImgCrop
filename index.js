@@ -1,2 +1,2 @@
-require("./compile/minified/ng-img-crop.js");
+require("./compile/unminified/ng-img-crop.js");
 module.exports = "ngImgCrop";
