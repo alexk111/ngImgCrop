@@ -140,7 +140,7 @@ crop.factory('cropArea', ['cropCanvas', function(CropCanvas) {
                 if(this._minSize.h>newSizeHeight) newSizeHeight=this._minSize.h;
                 nw.x=canvasW-newSizeWidth;
             }
-            if(nw.y+newSizeHeight>canvasW) nw.y=canvasW-newSizeHeight;
+            if(nw.y+newSizeHeight>canvasH) nw.y=canvasH-newSizeHeight;
         }
 
         // save square scale
