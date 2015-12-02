@@ -141,7 +141,7 @@ crop.directive('imgCrop', ['$timeout', 'cropHost', 'cropPubSub', function($timeo
                 updateResultImage(scope);
             });
             scope.$watch('resultImageQuality',function(){
-                cropHost.setResultImageFormat(scope.resultImageQuality);
+                cropHost.setResultImageQuality(scope.resultImageQuality);
                 updateResultImage(scope);
             });
             scope.$watch('resultImageSize', function() {
