@@ -1,11 +1,11 @@
 /*!
- * ngImgCropExtended v0.4.5
+ * ngImgCropExtended v0.4.6
  * https://github.com/CrackerakiUA/ngImgCropExtended/
  *
  * Copyright (c) 2015 undefined
  * License: MIT
  *
- * Generated at Wednesday, December 2nd, 2015, 4:42:34 AM
+ * Generated at Wednesday, December 2nd, 2015, 4:53:44 AM
  */
 (function() {
 var crop = angular.module('ngImgCrop', []);
