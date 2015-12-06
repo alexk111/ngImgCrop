@@ -1,11 +1,11 @@
 /*!
- * ngImgCropExtended v0.4.6
+ * ngImgCropExtended v0.4.7
  * https://github.com/CrackerakiUA/ngImgCropExtended/
  *
  * Copyright (c) 2015 undefined
  * License: MIT
  *
- * Generated at Wednesday, December 2nd, 2015, 4:53:44 AM
+ * Generated at Sunday, December 6th, 2015, 10:41:00 AM
  */
 (function() {
 var crop = angular.module('ngImgCrop', []);
@@ -2449,6 +2449,17 @@ crop.factory('cropHost', ['$document', '$q', 'cropAreaCircle', 'cropAreaSquare',
         this.getResultImageSize = function() {
             if (resImgSize == "selection") {
                 return theArea.getSize();
+            }else if(resImgSize == "max") {
+                 // We maximize the rendered size
+                var zoom = 1;
+                if (image && ctx && ctx.canvas) {
+                    image.width / ctx.canvas.width;
+                }
+                var size = {
+                    w: zoom * theArea.getSize().w,
+                    h: zoom * theArea.getSize().h
+                };
+                return size;
             }
 
             return resImgSize;
