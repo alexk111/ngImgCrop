@@ -5,7 +5,7 @@
  * Copyright (c) 2015 undefined
  * License: MIT
  *
- * Generated at Saturday, December 5th, 2015, 6:17:33 PM
+ * Generated at Sunday, December 6th, 2015, 10:23:35 AM
  */
 (function() {
 var crop = angular.module('ngImgCrop', []);
@@ -2450,13 +2450,11 @@ crop.factory('cropHost', ['$document', '$q', 'cropAreaCircle', 'cropAreaSquare',
             if (resImgSize == "selection") {
                 return theArea.getSize();
             }else if(resImgSize == "max") {
-                // We maximize the rendered size
-                var ratio_w = theArea.getSize().w/ctx.canvas.width;
-                var ratio_h = theArea.getSize().h/ctx.canvas.height;
-                var ratio = Math.min(ratio_w, ratio_h);
+                 // We maximize the rendered size
+                var zoom = image.width / ctx.canvas.width;
                 var size = {
-                    w: ratio * image.width,
-                    h: ratio * image.height
+                    w: zoom * theArea.getSize().w,
+                    h: zoom * theArea.getSize().h
                 };
                 return size;
             }

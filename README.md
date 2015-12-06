@@ -208,7 +208,7 @@ Assignable angular expression to data-bind to. NgImgCrop puts an url blob of a c
 
 *Optional*. Width/height of the result image (in pixels). Default: 200. 
 'selection' renders an image of the size of the area selected.
-'max' maximizes the rendered image. (picture[h|w] * min(selection[h|w]/canvas[h|w]))
+'max' maximizes the rendered image.
 
 ### result-array-image
 
