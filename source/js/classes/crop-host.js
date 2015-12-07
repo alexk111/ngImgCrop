@@ -493,7 +493,7 @@ crop.factory('cropHost', ['$document', '$q', 'cropAreaCircle', 'cropAreaSquare',
                  // We maximize the rendered size
                 var zoom = 1;
                 if (image && ctx && ctx.canvas) {
-                    image.width / ctx.canvas.width;
+                    zoom = image.width / ctx.canvas.width;
                 }
                 var size = {
                     w: zoom * theArea.getSize().w,
