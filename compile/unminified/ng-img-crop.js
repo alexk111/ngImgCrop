@@ -1,11 +1,11 @@
 /*!
- * ngImgCropExtended v0.4.7
- * https://github.com/CrackerakiUA/ngImgCropExtended/
+ * ngImgCropExtendedDrmc v0.4.7
+ * https://github.com/drmikecrowe/ngImgCropExtended/
  *
  * Copyright (c) 2015 undefined
  * License: MIT
  *
- * Generated at Sunday, December 6th, 2015, 10:41:00 AM
+ * Generated at Tuesday, December 15th, 2015, 3:39:53 PM
  */
 (function() {
 var crop = angular.module('ngImgCrop', []);
@@ -1999,7 +1999,7 @@ crop.factory('cropHost', ['$document', '$q', 'cropAreaCircle', 'cropAreaSquare',
             maxCanvasDims = [300, 300],
 
             // Result Image size
-            resImgSizeArray = [];
+            resImgSizeArray = [],
             resImgSize = {
                 w: 200,
                 h: 200
@@ -2272,7 +2272,7 @@ crop.factory('cropHost', ['$document', '$q', 'cropAreaCircle', 'cropAreaSquare',
             }
             temp_canvas.toBlob(function(blob) {
                 _p.resolve(blob);
-            });
+            }, resImgFormat);
             return _p.promise;
         };
 
@@ -2453,7 +2453,7 @@ crop.factory('cropHost', ['$document', '$q', 'cropAreaCircle', 'cropAreaSquare',
                  // We maximize the rendered size
                 var zoom = 1;
                 if (image && ctx && ctx.canvas) {
-                    image.width / ctx.canvas.width;
+                    zoom = image.width / ctx.canvas.width;
                 }
                 var size = {
                     w: zoom * theArea.getSize().w,
@@ -2657,24 +2657,24 @@ crop.directive('imgCrop', ['$timeout', 'cropHost', 'cropPubSub', function($timeo
         scope: {
             image: '=',
             resultImage: '=',
-            resultArrayImage: '=',
-            resultBlob: '=',
-            urlBlob: '=',
-            chargement: '=',
+            resultArrayImage: '=?',
+            resultBlob: '=?',
+            urlBlob: '=?',
+            chargement: '=?',
             
-            changeOnFly: '=',
-            areaCoords: '=',
+            changeOnFly: '=?',
+            areaCoords: '=?',
             areaType: '@',
-            areaMinSize: '=',
-            resultImageSize: '=',
-            resultImageFormat: '=',
-            resultImageQuality: '=',
+            areaMinSize: '=?',
+            resultImageSize: '=?',
+            resultImageFormat: '=?',
+            resultImageQuality: '=?',
 
-            aspectRatio: '=',
+            aspectRatio: '=?',
             
-            dominantColor: '=',
-            paletteColor: '=',
-            paletteColorLength: '=',
+            dominantColor: '=?',
+            paletteColor: '=?',
+            paletteColorLength: '=?',
 
             onChange: '&',
             onLoadBegin: '&',
@@ -2713,12 +2713,14 @@ crop.directive('imgCrop', ['$timeout', 'cropHost', 'cropPubSub', function($timeo
                             scope.urlBlob = urlCreator.createObjectURL(blob);
                         });
 
-                        cropHost.getDominantColor(scope.resultImage).then(function(dominantColor) {
-                            scope.dominantColor = dominantColor;
-                        });
-                        cropHost.getPalette(scope.resultImage).then(function(palette) {
-                            scope.paletteColor = palette;
-                        });
+                        if (scope.resultImage) {
+                            cropHost.getDominantColor(scope.resultImage).then(function(dominantColor) {
+                                scope.dominantColor = dominantColor;
+                            });
+                            cropHost.getPalette(scope.resultImage).then(function(palette) {
+                                scope.paletteColor = palette;
+                            });
+                        }
 
                         updateAreaCoords(scope);
                         scope.onChange({

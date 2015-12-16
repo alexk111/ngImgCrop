@@ -39,7 +39,7 @@ crop.factory('cropHost', ['$document', '$q', 'cropAreaCircle', 'cropAreaSquare',
             maxCanvasDims = [300, 300],
 
             // Result Image size
-            resImgSizeArray = [];
+            resImgSizeArray = [],
             resImgSize = {
                 w: 200,
                 h: 200
@@ -312,7 +312,7 @@ crop.factory('cropHost', ['$document', '$q', 'cropAreaCircle', 'cropAreaSquare',
             }
             temp_canvas.toBlob(function(blob) {
                 _p.resolve(blob);
-            });
+            }, resImgFormat);
             return _p.promise;
         };
 
@@ -493,7 +493,7 @@ crop.factory('cropHost', ['$document', '$q', 'cropAreaCircle', 'cropAreaSquare',
                  // We maximize the rendered size
                 var zoom = 1;
                 if (image && ctx && ctx.canvas) {
-                    image.width / ctx.canvas.width;
+                    zoom = image.width / ctx.canvas.width;
                 }
                 var size = {
                     w: zoom * theArea.getSize().w,
