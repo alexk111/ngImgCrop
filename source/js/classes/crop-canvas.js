@@ -166,8 +166,8 @@ crop.factory('cropCanvas', [function() {
         this.drawCropArea = function(image, centerCoords, size, fnDrawClipPath) {
             var xRatio = image.width / ctx.canvas.width,
                 yRatio = image.height / ctx.canvas.height,
-                xLeft = centerCoords.x - size.w / 2,
-                yTop = centerCoords.y - size.h / 2;
+                xLeft = Math.abs(centerCoords.x - size.w / 2),
+                yTop = Math.abs(centerCoords.y - size.h / 2);
 
             ctx.save();
             ctx.strokeStyle = colors.areaOutline;
