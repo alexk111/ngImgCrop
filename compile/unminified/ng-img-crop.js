@@ -1,11 +1,11 @@
 /*!
- * ngImgCropExtendedDrmc v0.4.7
- * https://github.com/drmikecrowe/ngImgCropExtended/
+ * ngImgCropExtended v0.4.7
+ * https://github.com/CrackerakiUA/ngImgCropExtended/
  *
- * Copyright (c) 2015 undefined
+ * Copyright (c) 2016 undefined
  * License: MIT
  *
- * Generated at Tuesday, December 15th, 2015, 3:39:53 PM
+ * Generated at Tuesday, January 12th, 2016, 8:21:43 AM
  */
 (function() {
 var crop = angular.module('ngImgCrop', []);
@@ -1153,8 +1153,8 @@ crop.factory('cropCanvas', [function() {
         this.drawCropArea = function(image, centerCoords, size, fnDrawClipPath) {
             var xRatio = image.width / ctx.canvas.width,
                 yRatio = image.height / ctx.canvas.height,
-                xLeft = centerCoords.x - size.w / 2,
-                yTop = centerCoords.y - size.h / 2;
+                xLeft = Math.abs(centerCoords.x - size.w / 2),
+                yTop = Math.abs(centerCoords.y - size.h / 2);
 
             ctx.save();
             ctx.strokeStyle = colors.areaOutline;
