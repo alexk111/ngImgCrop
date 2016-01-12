@@ -5,7 +5,7 @@
  * Copyright (c) 2016 undefined
  * License: MIT
  *
- * Generated at Tuesday, January 12th, 2016, 8:21:43 AM
+ * Generated at Tuesday, January 12th, 2016, 12:22:20 PM
  */
 (function() {
 var crop = angular.module('ngImgCrop', []);
@@ -1151,8 +1151,8 @@ crop.factory('cropCanvas', [function() {
         /* Crop Area */
 
         this.drawCropArea = function(image, centerCoords, size, fnDrawClipPath) {
-            var xRatio = image.width / ctx.canvas.width,
-                yRatio = image.height / ctx.canvas.height,
+            var xRatio = Math.abs(image.width / ctx.canvas.width),
+                yRatio = Math.abs(image.height / ctx.canvas.height),
                 xLeft = Math.abs(centerCoords.x - size.w / 2),
                 yTop = Math.abs(centerCoords.y - size.h / 2);
 
@@ -1166,7 +1166,7 @@ crop.factory('cropCanvas', [function() {
 
             // draw part of original image
             if (size.w > 0) {
-                ctx.drawImage(image, xLeft * xRatio, yTop * yRatio, size.w * xRatio, size.h * yRatio, xLeft, yTop, size.w, size.h);
+                ctx.drawImage(image, xLeft * xRatio, yTop * yRatio, Math.abs(size.w * xRatio), Math.abs(size.h * yRatio), xLeft, yTop, Math.abs(size.w), Math.abs(size.h));
             }
 
             ctx.beginPath();
