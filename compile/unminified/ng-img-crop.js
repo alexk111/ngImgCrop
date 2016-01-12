@@ -1,11 +1,11 @@
 /*!
- * ngImgCropExtendedDrmc v0.4.7
- * https://github.com/drmikecrowe/ngImgCropExtended/
+ * ngImgCropExtended v0.4.7
+ * https://github.com/CrackerakiUA/ngImgCropExtended/
  *
- * Copyright (c) 2015 undefined
+ * Copyright (c) 2016 undefined
  * License: MIT
  *
- * Generated at Tuesday, December 15th, 2015, 3:39:53 PM
+ * Generated at Tuesday, January 12th, 2016, 12:22:20 PM
  */
 (function() {
 var crop = angular.module('ngImgCrop', []);
@@ -1151,10 +1151,10 @@ crop.factory('cropCanvas', [function() {
         /* Crop Area */
 
         this.drawCropArea = function(image, centerCoords, size, fnDrawClipPath) {
-            var xRatio = image.width / ctx.canvas.width,
-                yRatio = image.height / ctx.canvas.height,
-                xLeft = centerCoords.x - size.w / 2,
-                yTop = centerCoords.y - size.h / 2;
+            var xRatio = Math.abs(image.width / ctx.canvas.width),
+                yRatio = Math.abs(image.height / ctx.canvas.height),
+                xLeft = Math.abs(centerCoords.x - size.w / 2),
+                yTop = Math.abs(centerCoords.y - size.h / 2);
 
             ctx.save();
             ctx.strokeStyle = colors.areaOutline;
@@ -1166,7 +1166,7 @@ crop.factory('cropCanvas', [function() {
 
             // draw part of original image
             if (size.w > 0) {
-                ctx.drawImage(image, xLeft * xRatio, yTop * yRatio, size.w * xRatio, size.h * yRatio, xLeft, yTop, size.w, size.h);
+                ctx.drawImage(image, xLeft * xRatio, yTop * yRatio, Math.abs(size.w * xRatio), Math.abs(size.h * yRatio), xLeft, yTop, Math.abs(size.w), Math.abs(size.h));
             }
 
             ctx.beginPath();
