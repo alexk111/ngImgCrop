@@ -57,9 +57,10 @@ Source image by Edgaras Maselskis
 
 ### Download
 
-You have three options to get the files:
+You have four options to get the files:
 - [Download ngImgCropExtended](https://github.com/CrackerakiUA/ngImgCropExtended/archive/master.zip) files from GitHub.
 - Use Bower to download the files. Just run `bower install ngImgCropFullExtended`.
+- Use Npm to download the files. Just run `npm install ng-img-crop-extended`.
 - Use Meteor to download the files. Just run `meteor add correpw:ng-img-crop-full-extended`.
 
 ### Add files
