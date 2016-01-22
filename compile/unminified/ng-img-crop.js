@@ -5,7 +5,7 @@
  * Copyright (c) 2016 undefined
  * License: MIT
  *
- * Generated at Thursday, January 21st, 2016, 5:17:32 AM
+ * Generated at Friday, January 22nd, 2016, 10:09:51 AM
  */
 (function() {
 var crop = angular.module('ngImgCrop', []);
@@ -2286,7 +2286,9 @@ crop.factory('cropHost', ['$document', '$q', 'cropAreaCircle', 'cropAreaSquare',
             events.trigger('image-updated');
             if (!!imageSource) {
                 var newImage = new Image();
-                newImage.crossOrigin = 'anonymous';
+                if (imageSource.substring(0,4).toLowerCase()==='http') {
+                    newImage.crossOrigin = 'anonymous';
+                }
                 newImage.onload = function() {
                     events.trigger('load-done');
 
