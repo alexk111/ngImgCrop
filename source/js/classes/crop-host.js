@@ -326,7 +326,9 @@ crop.factory('cropHost', ['$document', '$q', 'cropAreaCircle', 'cropAreaSquare',
             events.trigger('image-updated');
             if (!!imageSource) {
                 var newImage = new Image();
-                newImage.crossOrigin = 'anonymous';
+                if (imageSource.substring(0,4).toLowerCase()==='http') {
+                    newImage.crossOrigin = 'anonymous';
+                }
                 newImage.onload = function() {
                     events.trigger('load-done');
 
