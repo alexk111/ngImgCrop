@@ -8,7 +8,10 @@
 
 ## News
 
-On update 0.5.0 i have added feature which block the render of canvas on each move end, which will save the lag when you are exporting huge images. To make this work you have to asign `$scope.blockManagement={block: true}` to `<img-crop live-view="blockManagement">`. When you have to render the canvas into dataURL you just have to `$scope.blockManagement.render(function(dataURL){console.log(dataURL);})`. I have build live demo on the `Codepen: Rectangle Crop`;
+On update 0.5.0 i have added feature which block the render of canvas on each move end, which will save the lag when you are exporting huge images. To make this work you have to asign `$scope.blockManagement={block: true}` to `<img-crop live-view="blockManagement">`. When you have to render the canvas into dataURL you just have to `$scope.blockManagement.render(function(dataURL){console.log(dataURL);})`. I have build live demo on the `Codepen: Rectangle Crop`;<br>
+If you have any issue after update from 0.4.9 to 0.5.0, please reply here [Post about the new feature](https://github.com/CrackerakiUA/ngImgCropFullExtended/issues/57)
+
+
 
 # ngImgCropFullExtended
 
