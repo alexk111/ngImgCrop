@@ -12,6 +12,7 @@ crop.directive('imgCrop', ['$timeout', 'cropHost', 'cropPubSub', function($timeo
             chargement: '=?',
             
             changeOnFly: '=?',
+            liveView: '=?',
             areaCoords: '=?',
             areaType: '@',
             areaMinSize: '=?',
@@ -35,6 +36,18 @@ crop.directive('imgCrop', ['$timeout', 'cropHost', 'cropPubSub', function($timeo
             $scope.events = new CropPubSub();
         }],
         link: function(scope, element /*, attrs*/ ) {
+
+            if(scope.liveView && typeof scope.liveView.block=='boolean'){
+                scope.liveView.render=function(callback){
+                    updateResultImage(scope,true,callback);
+                }
+            }else scope.liveView = {block:false};
+
+
+
+            console.log(scope.liveView);
+
+
             // Init Events Manager
             var events = scope.events;
 
@@ -44,19 +57,21 @@ crop.directive('imgCrop', ['$timeout', 'cropHost', 'cropPubSub', function($timeo
             // Store Result Image to check if it's changed
             var storedResultImage;
 
-            var updateResultImage = function(scope) {
-                if (scope.image !== '') {
+            var updateResultImage = function(scope,force,callback) {
+                if (scope.image !== '' && (!scope.liveView.block || force)) {
                     var resultImageObj = cropHost.getResultImage();
                     if(angular.isArray(resultImageObj)){
                         resultImage=resultImageObj[0].dataURI;
                         scope.resultArrayImage=resultImageObj;
                         console.log(scope.resultArrayImage);
                     }else var resultImage = resultImageObj.dataURI;
+
                     var urlCreator = window.URL || window.webkitURL;
                     if (storedResultImage !== resultImage) {
                         storedResultImage = resultImage;
                         scope.resultImage = resultImage;
-
+                        if(scope.liveView.callback) scope.liveView.callback(resultImage);
+                        if(callback) callback(resultImage);
                         cropHost.getResultImageDataBlob().then(function(blob) {
                             scope.resultBlob = blob;
                             scope.urlBlob = urlCreator.createObjectURL(blob);
@@ -120,6 +135,7 @@ crop.directive('imgCrop', ['$timeout', 'cropHost', 'cropPubSub', function($timeo
                 .on('area-move-end area-resize-end image-updated', fnSafeApply(function(scope) {
                     updateResultImage(scope);
                 }));
+
 
             // Sync CropHost with Directive's options
             scope.$watch('image', function(newVal) {

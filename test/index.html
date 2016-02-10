@@ -91,6 +91,14 @@
         <button ng-click="getBlob();">Get blob (show JS console)</button>
     </div>
 
+    <div>
+        <label>
+            <input type='checkbox' ng-model="blockingObject.block">
+            <span>Block Rendering</span>
+        </label>
+        <button ng-click="callTestFuntion()">Render the Image</button>
+    </div>
+
     <div ng-if="enableCrop" class="cropArea" ng-class="{'big':size=='big', 'medium':size=='medium', 'small':size=='small'}">
         <img-crop 
             image="imageDataURI" 
@@ -108,7 +116,8 @@
             on-change="onChange($dataURI)" 
             on-load-begin="onLoadBegin()" 
             on-load-done="onLoadDone()" 
-            on-load-error="onLoadError()" 
+            on-load-error="onLoadError()"
+            live-view="blockingObject"
             area-coords="myAreaCoords">
         </img-crop>
     </div>
@@ -128,6 +137,17 @@
     <script type="text/javascript">
     angular.module('app', ['ngImgCrop'])
         .controller('Ctrl', function($scope) {
+            $scope.blockingObject = {block:true};
+            $scope.callTestFuntion = function(){
+                $scope.blockingObject.render(function(dataURL){
+                    console.log('via render');
+                    console.log(dataURL.length);
+                });
+            }
+            $scope.blockingObject.callback=function(dataURL){
+                console.log('via function');
+                console.log(dataURL.length);
+            }
             $scope.size = 'small';
             $scope.type = 'circle';
             $scope.imageDataURI = '';

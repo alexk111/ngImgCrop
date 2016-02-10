@@ -6,19 +6,9 @@
 [Codepen: Rectangle With Aspect Crop](http://codepen.io/Crackeraki/pen/zvWqJM)<br>
 [Codepen: Rectangle + Aspect + Array Crop](http://codepen.io/Neftedollar/pen/YydwNB)<br>
 
-## Future Plan / Bug
+## News
 
-1) Add option to init cropper area to max size as much as possible.
-
-2) Add option to not resize cropper area on siders.
-
-3) Add option to set fixed Height or Width of the crop area.
-
-4) Wrap input(file) within plugin, so it don't have any load problems, like with angular material dialog. Make in it an area with a message inside to click for upload new file. This will be by option enabled. Rebuild all demo with this feature. Add button on work space to add new image if image given, make full options for that.
-
-5) Add filters apply. Make an easy way to create new filters. Add some basic filters like Brightness,Contrast,Blur etc.
-
-6) Add option to export original image resized as dataURL.
+On update 0.5.0 i have added feature which block the render of canvas on each move end, which will save the lag when you are exporting huge images. To make this work you have to asign `$scope.blockManagement={block: true}` to `<img-crop live-view="blockManagement">`. When you have to render the canvas into dataURL you just have to `$scope.blockManagement.render(function(dataURL){console.log(dataURL);})`. I have build live demo on the `Codepen: Rectangle Crop`;
 
 # ngImgCropFullExtended
 
@@ -157,6 +147,7 @@ The following code enables to select an image using a file input and crop it. Th
     url-blob="{string}"
     area-coords="myAreaCoords"
    [change-on-fly="{boolean}"]
+   [live-view="{object}"]
    [area-type="{circle|square|rectangle}"]
    [area-min-size="{ number|{w:number,h:number} }"]
    [result-image-size="{ number|{w:number,h:number}|[{w:number,h:number},{w:number,h:number},...] }"]
@@ -196,6 +187,10 @@ Assignable angular expression to data-bind to. NgImgCrop puts an url blob of a c
 ### change-on-fly
 
 *Optional*. By default, to reduce CPU usage, when a user drags/resizes the crop area, the result image is only updated after the user stops dragging/resizing. Set true to always update the result image as the user drags/resizes the crop area.
+
+### live-view
+
+*Optional*. By default, to reduce CPU usage and lag mostly for huge result images, when a user drags/resizes the crop area, the result image is only updated after the user stops dragging/resizing. This is a bit complex part then change on fly, to make it work you have to create object in your controller and assign a variable block to it with try value. After that cropper will bind function "render" which will accept callback and that callback will return dataURL. Example of object {block: true}.
 
 ### area-type
 
