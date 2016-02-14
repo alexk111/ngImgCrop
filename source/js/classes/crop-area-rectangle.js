@@ -1,7 +1,7 @@
 'use strict';
 
-crop.factory('cropAreaSquare', ['cropArea', function(CropArea) {
-    var CropAreaSquare = function() {
+crop.factory('cropAreaRectangle', ['cropArea', function (CropArea) {
+    var CropAreaRectangle = function () {
         CropArea.apply(this, arguments);
 
         this._resizeCtrlBaseRadius = 15;
@@ -17,7 +17,10 @@ crop.factory('cropAreaSquare', ['cropArea', function(CropArea) {
         this._posDragStartY = 0;
         this._posResizeStartX = 0;
         this._posResizeStartY = 0;
-        this._posResizeStartSize = 0;
+        this._posResizeStartSize = {
+            w: 0,
+            h: 0
+        };
 
         this._resizeCtrlIsHover = -1;
         this._areaIsHover = false;
@@ -25,15 +28,16 @@ crop.factory('cropAreaSquare', ['cropArea', function(CropArea) {
         this._areaIsDragging = false;
     };
 
-    CropAreaSquare.prototype = new CropArea();
+    CropAreaRectangle.prototype = new CropArea();
 
-    CropAreaSquare.prototype.getType = function() {
-        return 'square';
+    // return a type string
+    CropAreaRectangle.prototype.getType = function () {
+        return 'rectangle';
     };
 
-    CropAreaSquare.prototype._calcSquareCorners = function() {
-        var size = this.getSize(),
-            se = this.getSouthEastBound();
+    CropAreaRectangle.prototype._calcRectangleCorners = function () {
+        var size = this.getSize();
+        var se = this.getSouthEastBound();
         return [
             [size.x, size.y], //northwest
             [se.x, size.y], //northeast
@@ -42,9 +46,9 @@ crop.factory('cropAreaSquare', ['cropArea', function(CropArea) {
         ];
     };
 
-    CropAreaSquare.prototype._calcSquareDimensions = function() {
-        var size = this.getSize(),
-            se = this.getSouthEastBound();
+    CropAreaRectangle.prototype._calcRectangleDimensions = function () {
+        var size = this.getSize();
+        var se = this.getSouthEastBound();
         return {
             left: size.x,
             top: size.y,
@@ -53,13 +57,13 @@ crop.factory('cropAreaSquare', ['cropArea', function(CropArea) {
         };
     };
 
-    CropAreaSquare.prototype._isCoordWithinArea = function(coord) {
-        var squareDimensions = this._calcSquareDimensions();
-        return (coord[0] >= squareDimensions.left && coord[0] <= squareDimensions.right && coord[1] >= squareDimensions.top && coord[1] <= squareDimensions.bottom);
+    CropAreaRectangle.prototype._isCoordWithinArea = function (coord) {
+        var rectangleDimensions = this._calcRectangleDimensions();
+        return (coord[0] >= rectangleDimensions.left && coord[0] <= rectangleDimensions.right && coord[1] >= rectangleDimensions.top && coord[1] <= rectangleDimensions.bottom);
     };
 
-    CropAreaSquare.prototype._isCoordWithinResizeCtrl = function(coord) {
-        var resizeIconsCenterCoords = this._calcSquareCorners();
+    CropAreaRectangle.prototype._isCoordWithinResizeCtrl = function (coord) {
+        var resizeIconsCenterCoords = this._calcRectangleCorners();
         var res = -1;
         for (var i = 0, len = resizeIconsCenterCoords.length; i < len; i++) {
             var resizeIconCenterCoords = resizeIconsCenterCoords[i];
@@ -72,27 +76,26 @@ crop.factory('cropAreaSquare', ['cropArea', function(CropArea) {
         return res;
     };
 
-    CropAreaSquare.prototype._drawArea = function(ctx, centerCoords, size) {
-        var hSize = size / 2;
+    CropAreaRectangle.prototype._drawArea = function (ctx, center, size) {
         ctx.rect(size.x, size.y, size.w, size.h);
     };
 
-    CropAreaSquare.prototype.draw = function() {
+    CropAreaRectangle.prototype.draw = function () {
         CropArea.prototype.draw.apply(this, arguments);
 
-        // draw move icon
         var center = this.getCenterPoint();
+        // draw move icon
         this._cropCanvas.drawIconMove([center.x, center.y], this._areaIsHover ? this._iconMoveHoverRatio : this._iconMoveNormalRatio);
 
-        // draw resize cubes
-        var resizeIconsCenterCoords = this._calcSquareCorners();
+        // draw resize thumbs
+        var resizeIconsCenterCoords = this._calcRectangleCorners();
         for (var i = 0, len = resizeIconsCenterCoords.length; i < len; i++) {
             var resizeIconCenterCoords = resizeIconsCenterCoords[i];
             this._cropCanvas.drawIconResizeCircle(resizeIconCenterCoords, this._resizeCtrlBaseRadius, this._resizeCtrlIsHover === i ? this._resizeCtrlHoverRatio : this._resizeCtrlNormalRatio);
         }
     };
 
-    CropAreaSquare.prototype.processMouseMove = function(mouseCurX, mouseCurY) {
+    CropAreaRectangle.prototype.processMouseMove = function (mouseCurX, mouseCurY) {
         var cursor = 'default';
         var res = false;
 
@@ -109,112 +112,56 @@ crop.factory('cropAreaSquare', ['cropArea', function(CropArea) {
             res = true;
             this._events.trigger('area-move');
         } else if (this._resizeCtrlIsDragging > -1) {
-            var xMulti, yMulti;
+            var s = this.getSize();
+            var se = this.getSouthEastBound();
+            var posX = mouseCurX;
             switch (this._resizeCtrlIsDragging) {
                 case 0: // Top Left
-                    xMulti = -1;
-                    yMulti = -1;
+                    if (this._aspect) posX = se.x - ((se.y - mouseCurY) * this._aspect);
+                    this.setSizeByCorners({
+                        x: posX,
+                        y: mouseCurY
+                    }, {
+                        x: se.x,
+                        y: se.y
+                    });
                     cursor = 'nwse-resize';
                     break;
                 case 1: // Top Right
-                    xMulti = 1;
-                    yMulti = -1;
+                    if (this._aspect) posX = s.x + ((se.y - mouseCurY) * this._aspect);
+                    this.setSizeByCorners({
+                        x: s.x,
+                        y: mouseCurY
+                    }, {
+                        x: posX,
+                        y: se.y
+                    });
                     cursor = 'nesw-resize';
                     break;
                 case 2: // Bottom Left
-                    xMulti = -1;
-                    yMulti = 1;
+                    if (this._aspect) posX = se.x - ((mouseCurY - s.y) * this._aspect);
+                    this.setSizeByCorners({
+                        x: posX,
+                        y: s.y
+                    }, {
+                        x: se.x,
+                        y: mouseCurY
+                    });
                     cursor = 'nesw-resize';
                     break;
                 case 3: // Bottom Right
-                    xMulti = 1;
-                    yMulti = 1;
+                    if (this._aspect) posX = s.x + ((mouseCurY - s.y) * this._aspect);
+                    this.setSizeByCorners({
+                        x: s.x,
+                        y: s.y
+                    }, {
+                        x: posX,
+                        y: mouseCurY
+                    });
                     cursor = 'nwse-resize';
                     break;
             }
-            var iFX = (mouseCurX - this._posResizeStartX) * xMulti,
-                iFY = (mouseCurY - this._posResizeStartY) * yMulti,
-                iFR;
-            if (iFX > iFY) {
-                iFR = this._posResizeStartSize.w + iFY;
-            } else {
-                iFR = this._posResizeStartSize.w + iFX;
-            }
-            var newSize = Math.max(this._minSize.w, iFR),
-                newNO = {},
-                newSE = {},
-                newSO = {},
-                newNE = {},
-                s = this.getSize(),
-                se = this.getSouthEastBound();
-            switch (this._resizeCtrlIsDragging) {
-                case 0: // Top Left
-                    newNO.x = se.x - newSize;
-                    newNO.y = se.y - newSize;
-                    if(newNO.y > 0) {
-                        this.setSizeByCorners(newNO, {
-                            x: se.x,
-                            y: se.y
-                        });
-                    }
-                    cursor = 'nwse-resize';
-                    break;
-                case 1: // Top Right
-                    if(iFX >= 0 && iFY >= 0) {
-                        //Move to top/right, increase
-                        newNE.x = s.x + newSize;
-                        newNE.y = se.y - newSize;
-                    } else if(iFX < 0 || iFY < 0) {
-                        //else decrease
-                        newNE.x = s.x + newSize;
-                        newNE.y = se.y - newSize;
-                    }
-                    if(newNE.y > 0) {
-                        this.setSizeByCorners({
-                            x: s.x,
-                            y: newNE.y
-                        }, {
-                            x: newNE.x,
-                            y: se.y
-                        });
-                    }
-                    cursor = 'nesw-resize';
-                    break;
-                case 2: // Bottom Left
-                    if(iFX >= 0 && iFY >= 0) {
-                        //Move to bottom/left, increase
-                        newSO.x = se.x - newSize;
-                        newSO.y = s.y + newSize;
-                    } else if(iFX <= 0 || iFY <= 0) {
-                        //else decrease
-                        newSO.x = se.x - newSize;
-                        newSO.y = s.y + newSize;
-                    }
-                    if(newSO.y < this._ctx.canvas.height) {
-                        this.setSizeByCorners({
-                            x: newSO.x,
-                            y: s.y
-                        }, {
-                            x: se.x,
-                            y: newSO.y
-                        });
-                    }
-                    cursor = 'nesw-resize';
-                    break;
-                case 3: // Bottom Right
 
-                    newSE.x = s.x + newSize;
-                    newSE.y = s.y + newSize;
-
-                    if(newSE.y < this._ctx.canvas.height) {
-                        this.setSizeByCorners({
-                            x: s.x,
-                            y: s.y
-                        }, newSE);
-                    }
-                    cursor = 'nwse-resize';
-                    break;
-            }
             this._resizeCtrlIsHover = this._resizeCtrlIsDragging;
             res = true;
             this._events.trigger('area-resize');
@@ -252,7 +199,7 @@ crop.factory('cropAreaSquare', ['cropArea', function(CropArea) {
         return res;
     };
 
-    CropAreaSquare.prototype.processMouseDown = function(mouseDownX, mouseDownY) {
+    CropAreaRectangle.prototype.processMouseDown = function (mouseDownX, mouseDownY) {
         var isWithinResizeCtrl = this._isCoordWithinResizeCtrl([mouseDownX, mouseDownY]);
         if (isWithinResizeCtrl > -1) {
             this._areaIsDragging = false;
@@ -275,7 +222,7 @@ crop.factory('cropAreaSquare', ['cropArea', function(CropArea) {
         }
     };
 
-    CropAreaSquare.prototype.processMouseUp = function( /*mouseUpX, mouseUpY*/ ) {
+    CropAreaRectangle.prototype.processMouseUp = function (/*mouseUpX, mouseUpY*/) {
         if (this._areaIsDragging) {
             this._areaIsDragging = false;
             this._events.trigger('area-move-end');
@@ -291,6 +238,5 @@ crop.factory('cropAreaSquare', ['cropArea', function(CropArea) {
         this._posDragStartY = 0;
     };
 
-
-    return CropAreaSquare;
+    return CropAreaRectangle;
 }]);

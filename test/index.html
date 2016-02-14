@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html ng-app="app">
+
+<head>
+    <title>ngImgCrop Test Page</title>
+    <link rel="stylesheet" href="../compile/unminified/ng-img-crop.css" />
+    <style>
+    .cropArea {
+        background: #E4E4E4;
+        margin: auto;
+        overflow: hidden;
+    }
+    
+    .cropArea.big {
+        width: 800px;
+        height: 600px;
+    }
+    
+    .cropArea.medium {
+        width: 500px;
+        height: 350px;
+    }
+    
+    .cropArea.small {
+        width: 300px;
+        height: 200px;
+    }
+    </style>
+</head>
+
+<body ng-controller="Ctrl">
+    <div>
+        <label>
+            <input type="checkbox" ng-model="enableCrop" ng-init="enableCrop=true" /> Add ngImgCrop to Page</label>
+    </div>
+    <div>
+        Container size:
+        <label>
+            <input type="radio" ng-model="size" value="big" /> Big</label>
+        <label>
+            <input type="radio" ng-model="size" value="medium" /> Medium</label>
+        <label>
+            <input type="radio" ng-model="size" value="small" /> Small</label>
+    </div>
+    <div>
+        Area type:
+        <label>
+            <input type="radio" ng-model="type" value="circle" /> Circle</label>
+        <label>
+            <input type="radio" ng-model="type" value="square" /> Square</label>
+        <label>
+            <input type="radio" ng-model="type" value="rectangle" /> Rectangle</label>
+    </div>
+    <div>
+        <label><input type="checkbox" ng-model="changeOnFly" /> Change On Fly</label>
+        <label ng-show="type=='rectangle'"><input type="text" ng-model="aspectRatio" /> Aspect ratio</label>
+    </div>
+    <div>
+        <label>Area Min Size (Size = Width = Height):
+            <input type="text" ng-model="selMinSize" />
+        </label>
+    </div>
+    <div>
+        Result Image Format:
+        <label>
+            <input type="radio" ng-model="resImgFormat" value="image/jpeg" /> image/jpeg</label>
+        <label>
+            <input type="radio" ng-model="resImgFormat" value="image/png" /> image/png</label>
+        <label>
+            <input type="radio" ng-model="resImgFormat" value="image/webp" /> image/webp</label>
+    </div>
+    <div>
+        <label>Result Image Quality (0
+            <=X<=1): <input type="text" ng-model="resImgQuality" />
+        </label>
+    </div>
+    <form ng-show="enableCrop">
+        <label for="fileInput">Select Image:</label>
+        <input type="file" id="fileInput" accept="image/*"/>
+        <button type="reset">Clear</button>
+        <button ng-click="imageDataURI='test.jpg'">Set Test Image</button>
+    </form>
+    <div>
+        <label>Image URL:
+            <input type="text" ng-model="edtImageURI" />
+        </label>
+        <button ng-click="imageDataURI=edtImageURI">Set Image</button>
+    </div>
+    <div>
+        <button ng-click="imageDataURI=''">Reset Image</button>
+        <button ng-click="getBlob();">Get blob (show JS console)</button>
+    </div>
+
+    <div>
+        <label>
+            <input type='checkbox' ng-model="blockingObject.block">
+            <span>Block Rendering</span>
+        </label>
+        <button ng-click="callTestFuntion()">Render the Image</button>
+    </div>
+
+    <div ng-if="enableCrop" class="cropArea" ng-class="{'big':size=='big', 'medium':size=='medium', 'small':size=='small'}">
+        <img-crop 
+            image="imageDataURI" 
+            result-image="$parent.resImageDataURI" 
+            result-blob="$parent.resBlob" 
+            url-blob="$parent.urlBlob"
+            change-on-fly="changeOnFly" 
+            area-type="{{type}}" 
+            area-min-size="selMinSize" 
+            area-init-size="selInitSize"
+            result-image-format="resImgFormat"
+            result-image-quality="resImgQuality" 
+            result-image-size="resImgSize"
+            aspect-ratio="aspectRatio"
+            chargement="'Testing Message'"
+            on-change="onChange($dataURI)" 
+            on-load-begin="onLoadBegin()" 
+            on-load-done="onLoadDone()" 
+            on-load-error="onLoadError()"
+            live-view="blockingObject"
+            area-coords="myAreaCoords">
+        </img-crop>
+    </div>
+    <div style="text-align:center">
+        <h3>Result with uri</h3>
+        <div>
+            <img ng-src="{{resImageDataURI}}" />
+        </div>
+        <h3>Result with blob in url</h3>
+        <div>
+            <img ng-src="{{urlBlob}}"/>
+        </div>
+    </div>
+
+    <script type="text/javascript" src="../bower_components/angular/angular.min.js"></script>
+    <script type="text/javascript" src="../compile/unminified/ng-img-crop.js?1"></script>
+    <script type="text/javascript">
+    angular.module('app', ['ngImgCrop'])
+        .controller('Ctrl', function($scope) {
+            $scope.blockingObject = {block:true};
+            $scope.callTestFuntion = function(){
+                $scope.blockingObject.render(function(dataURL){
+                    console.log('via render');
+                    console.log(dataURL.length);
+                });
+            }
+            $scope.blockingObject.callback=function(dataURL){
+                console.log('via function');
+                console.log(dataURL.length);
+            }
+            $scope.size = 'small';
+            $scope.type = 'circle';
+            $scope.imageDataURI = '';
+            $scope.resImageDataURI = '';
+            $scope.resBlob = {};
+            $scope.urlBlob = {};
+            $scope.resImgFormat = 'image/jpeg';
+            $scope.resImgQuality = 1;
+            $scope.selMinSize = 100;
+            $scope.selInitSize = [{w:200,h:80}];
+            $scope.resImgSize =  [{w:200,h:150},{w:400,h:300}];
+            //$scope.aspectRatio=1.2;
+            $scope.onChange = function($dataURI) {
+                console.log('onChange fired');
+            };
+            $scope.onLoadBegin = function() {
+                console.log('onLoadBegin fired');
+            };
+            $scope.onLoadDone = function() {
+                console.log('onLoadDone fired');
+            };
+            $scope.onLoadError = function() {
+                console.log('onLoadError fired');
+            };
+            $scope.getBlob = function() {
+                console.log($scope.resBlob);
+            };
+            var handleFileSelect = function(evt) {
+                var file = evt.currentTarget.files[0],
+                    reader = new FileReader();
+                if(navigator.userAgent.match(/iP(hone|od|ad)/i) ) {
+                    var canvas = document.createElement('canvas'),
+                        mpImg = new MegaPixImage(file);
+
+                    canvas.width = mpImg.srcImage.width;
+                    canvas.height = mpImg.srcImage.height;
+
+                    EXIF.getData(file, function() {
+                        var orientation = EXIF.getTag(this, 'Orientation');
+                    
+                        mpImg.render(canvas, {
+                            maxHeight: $scope.resImgSize,
+                            orientation: orientation
+                        });
+                        setTimeout(function(){
+                            var tt = canvas.toDataURL("image/jpeg", 1);
+                            $scope.$apply(function($scope) {
+                                $scope.imageDataURI = tt;
+                            });
+                        }, 100);
+                    });
+                } else {
+                    reader.onload = function(evt) {
+                        $scope.$apply(function($scope) {
+                            console.log(evt.target.result);
+                            $scope.imageDataURI = evt.target.result;
+                        });
+                    };
+                    reader.readAsDataURL(file);
+                }
+            };
+            angular.element(document.querySelector('#fileInput')).on('change', handleFileSelect);
+            $scope.$watch('resImageDataURI', function() {
+                //console.log('Res image', $scope.resImageDataURI);
+            });
+        });
+    </script>
+</body>
+
+</html>

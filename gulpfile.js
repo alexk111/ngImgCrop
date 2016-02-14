@@ -15,6 +15,7 @@ var argv         = require('minimist')(process.argv.slice(2)),
     express_lr   = require('connect-livereload'),
     tinylr       = require('tiny-lr'),
     opn          = require('opn'),
+    runSequence  = require('run-sequence'),
     jshint       = require('gulp-jshint'),
     jshintStylish= require('jshint-stylish'),
     pkg          = require('./package.json'),
@@ -36,6 +37,7 @@ var Config = {
       js:     'source/js',
       scss:   'source/scss'
     },
+    tmp: '.tmp/unminified',
     compileUnminified: {
       root:   'compile/unminified',
       js:     'compile/unminified',
@@ -66,7 +68,7 @@ var Config = {
 
 // Compile Styles
 gulp.task('styles', function(){
-  return gulp.src(Config.paths.source.scss + '/'+pkg.name+'.scss')
+  return gulp.src(Config.paths.source.scss + '/ng-img-crop.scss')
     .pipe(compass({
       sass: Config.paths.source.scss,
       css: Config.paths.compileUnminified.css,
@@ -77,13 +79,15 @@ gulp.task('styles', function(){
 });
 
 // Compile Scripts
-gulp.task('scripts', function(){
+gulp.task('scripts-part-1', function(){
   return gulp.src([
       Config.paths.source.js + '/init.js',
       Config.paths.source.js + '/classes/*.js',
-      Config.paths.source.js + '/ng-img-crop.js'
+      Config.paths.source.js + '/ng-img-crop.js',
+      Config.paths.source.js + '/canvas-to-blob.js',
+      Config.paths.source.js + '/color-thief.min.js'
     ])
-    .pipe(concat(pkg.name+'.js', {
+    .pipe(concat('ng-img-crop'+'.js', {
       separator: '\n\n',
       process: function(src) {
         // Remove all 'use strict'; from the code and
@@ -96,9 +100,32 @@ gulp.task('scripts', function(){
     .pipe(concat.header(Config.banners.unminified + '\n' +
                         '(function() {\n\'use strict\';\n\n'))
     .pipe(concat.footer('\n}());'))
+    .pipe(gulp.dest(Config.paths.tmp));
+});
+
+gulp.task('scripts-part-2', function(){
+  return gulp.src([
+      Config.paths.tmp + '/ng-img-crop'+'.js',
+      Config.paths.source.js + '/exif.js',
+      Config.paths.source.js + '/ios-imagefile-megapixel.js',
+      Config.paths.source.js + '/color-thief.min.js'
+    ])
+    .pipe(concat('ng-img-crop'+'.js', {
+      separator: '\n\n',
+      process: function(src) {
+        // Remove all 'use strict'; from the code and
+        // replaces all double blank lines with one
+        return src.replace(/\r\n/g, '\n')
+                  .replace(/'use strict';\n+/g, '')
+                  .replace(/\n\n\s*\n/g, '\n\n');
+      }
+    }))
     .pipe(gulp.dest(Config.paths.compileUnminified.js));
 });
 
+gulp.task('scripts', function() {
+    runSequence('scripts-part-1', 'scripts-part-2');
+});
 
 // Make a Distrib
 gulp.task('dist:js:clean', function(){

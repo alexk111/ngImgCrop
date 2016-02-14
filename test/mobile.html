@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html ng-app="app">
+
+<head>
+    <title>ngImgCrop Test Page</title>
+    <link rel="stylesheet" href="../compile/unminified/ng-img-crop.css" />
+    <style>
+    .cropArea {
+        background: #E4E4E4;
+        margin: auto;
+        overflow: hidden;
+        width: 300px;
+        height: 200px;
+    }
+    .dominant {
+        width: 100px;
+        height: 50px;
+        display: inline-block;
+    }
+    </style>
+</head>
+
+<body ng-controller="Ctrl">
+    <form>
+        <label for="fileInput">Select Image:</label>
+        <input type="file" id="fileInput" accept="image/*"/>
+        <button type="reset">Clear</button>
+        <button ng-click="imageDataURI='test.jpg'">Set Test Image</button>
+        <button ng-click="getBlob();">getBlob</button>
+    </form>
+    <div class="cropArea">
+        <img-crop 
+            image="imageDataURI" 
+            result-blob="resBlob"
+            dominant-color="dominantColor"
+            palette-color="paletteColor"
+            palette-color-length="paletteColorLength"
+            force-aspect-ratio="true" 
+            url-blob="urlBlob"
+            area-type="{{type}}" 
+            result-image-size="resImgSize" 
+            ></img-crop>
+    </div>
+    <div style="text-align:center">
+        <h3>Result with blob in url :</h3>
+        <div>
+            <img ng-src="{{urlBlob}}"/>
+        </div>
+        <h3>Dominant color : {{dominantColor}}</h3>
+        <div class="dominant" style="background: rgb({{dominantColor[0]}}, {{dominantColor[1]}}, {{dominantColor[2]}});"></div>
+        <h3>Palette colors : {{paletteColor}}</h3>
+    </div>
+
+    <script type="text/javascript" src="../bower_components/angular/angular.min.js"></script>
+    <script type="text/javascript" src="../compile/unminified/ng-img-crop.js"></script>
+    <script type="text/javascript">
+    angular.module('app', ['ngImgCrop'])
+        .controller('Ctrl', function($scope) {
+            $scope.type = 'square';
+            $scope.imageDataURI = '';
+            $scope.dominantColor = [];
+            $scope.resBlob = {};
+            $scope.urlBlob = {};
+            $scope.resImgSize = 200;
+
+            $scope.paletteColor = '';
+            $scope.paletteColorLength = 8;
+
+            $scope.getBlob = function() {
+                console.log($scope.resBlob);
+            };
+
+            var handleFileSelect = function(evt) {
+                var file = evt.currentTarget.files[0],
+                    reader = new FileReader();
+                if(navigator.userAgent.match(/iP(hone|od|ad)/i) ) {
+                    var canvas = document.createElement('canvas'),
+                        mpImg = new MegaPixImage(file);
+
+                    canvas.width = mpImg.srcImage.width;
+                    canvas.height = mpImg.srcImage.height;
+
+                    EXIF.getData(file, function() {
+                        var orientation = EXIF.getTag(this, 'Orientation');
+
+                        mpImg.render(canvas, {
+                            maxHeight: $scope.resImgSize * 2,
+                            orientation: orientation
+                        }, function(){
+                            var tt = canvas.toDataURL("image/jpeg", 1);
+                            canvas.toBlob(function(blob) {
+                                $scope.$apply(function($scope) {
+                                    $scope.imageDataURI = blob;
+                                });
+                            });
+                        });
+                    });
+                } else {
+                    reader.onload = function(evt) {
+                        $scope.$apply(function($scope) {
+                            console.log(evt.target.result);
+                            $scope.imageDataURI = evt.target.result;
+                        });
+                    };
+                    reader.readAsDataURL(file);
+                }
+            };
+            angular.element(document.querySelector('#fileInput')).on('change', handleFileSelect);
+        });
+    </script>
+</body>
+
+</html>

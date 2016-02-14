@@ -47,6 +47,3 @@ Icon
 # Installed Bower/Node modules
 bower_components/
 node_modules/
-
-# compiled Files
-compile/
