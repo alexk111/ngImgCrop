@@ -108,7 +108,8 @@
             change-on-fly="changeOnFly" 
             area-type="{{type}}" 
             area-min-size="selMinSize" 
-            result-image-format="resImgFormat" 
+            area-init-size="selInitSize"
+            result-image-format="resImgFormat"
             result-image-quality="resImgQuality" 
             result-image-size="resImgSize"
             aspect-ratio="aspectRatio"
@@ -157,6 +158,7 @@
             $scope.resImgFormat = 'image/jpeg';
             $scope.resImgQuality = 1;
             $scope.selMinSize = 100;
+            $scope.selInitSize = [{w:200,h:80}];
             $scope.resImgSize =  [{w:200,h:150},{w:400,h:300}];
             //$scope.aspectRatio=1.2;
             $scope.onChange = function($dataURI) {

@@ -8,8 +8,8 @@
 
 ## News
 
-On update 0.5.0 i have added feature which block the render of canvas on each move end, which will save the lag when you are exporting huge images. To make this work you have to asign `$scope.blockManagement={block: true}` to `<img-crop live-view="blockManagement">`. When you have to render the canvas into dataURL you just have to `$scope.blockManagement.render(function(dataURL){console.log(dataURL);})`. I have build live demo on the `Codepen: Rectangle Crop`;<br>
-If you have any issue after update from 0.4.9 to 0.5.0, please reply here [Post about the new feature](https://github.com/CrackerakiUA/ngImgCropFullExtended/issues/57)
+On update 0.5.1 i have added feature which block the render of canvas on each move end, which will save the lag when you are exporting huge images. To make this work you have to asign `$scope.blockManagement={block: true}` to `<img-crop live-view="blockManagement">`. When you have to render the canvas into dataURL you just have to `$scope.blockManagement.render(function(dataURL){console.log(dataURL);})`. I have build live demo on the `Codepen: Rectangle Crop`;<br>
+If you have any issue after update from 0.4.9 to 0.5.1, please reply here [Post about the new feature](https://github.com/CrackerakiUA/ngImgCropFullExtended/issues/57)
 
 
 
@@ -153,6 +153,7 @@ The following code enables to select an image using a file input and crop it. Th
    [live-view="{object}"]
    [area-type="{circle|square|rectangle}"]
    [area-min-size="{ number|{w:number,h:number} }"]
+   [area-init-size="{ number|{w:number,h:number} }"]
    [result-image-size="{ number|{w:number,h:number}|[{w:number,h:number},{w:number,h:number},...] }"]
    [result-image-format="{string}"]
    [result-image-quality="{number}"]
@@ -202,6 +203,10 @@ Assignable angular expression to data-bind to. NgImgCrop puts an url blob of a c
 ### area-min-size
 
 *Optional*. Min. width/height of the crop area (in pixels). Default: 80.
+
+### area-init-size
+
+*Optional*. Min. width/height of the crop area (in pixels) to start with, overriding the standard 200*200 crop area ratio. Default: false
 
 ### result-image-size
 

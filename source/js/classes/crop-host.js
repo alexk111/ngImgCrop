@@ -113,11 +113,19 @@ crop.factory('cropHost', ['$document', '$q', 'cropAreaCircle', 'cropAreaSquare',
                     ch = cw;
                 }
 
-                theArea.setSize({
-                    w: Math.min(200, cw / 2),
-                    h: Math.min(200, ch / 2)
-                });
-                //TODO: set top left corner point
+                if(undefined !== theArea.getInitSize() ) {
+                    theArea.setSize({
+                        w: Math.min(theArea.getInitSize().w, cw / 2),
+                        h: Math.min(theArea.getInitSize().h, ch / 2)
+                    });
+                } else {
+                    theArea.setSize({
+                        w: Math.min(200, cw / 2),
+                        h: Math.min(200, ch / 2)
+                    });
+                }
+
+                //@todo: set top left corner point
                 theArea.setCenterPoint({
                     x: ctx.canvas.width / 2,
                     y: ctx.canvas.height / 2
@@ -246,7 +254,7 @@ crop.factory('cropHost', ['$document', '$q', 'cropAreaCircle', 'cropAreaSquare',
                 }
             }
             return retObj;
-        }
+        };
 
         this.getResultImage = function() {
             if(resImgSizeArray.length==0){
@@ -265,7 +273,7 @@ crop.factory('cropHost', ['$document', '$q', 'cropAreaCircle', 'cropAreaSquare',
         };
 
         this.getResultImageDataBlob = function() {
-            var temp_ctx, temp_canvas, _p,
+            var temp_ctx, temp_canvas,
                 center = theArea.getCenterPoint(),
                 ris = this.getResultImageSize(),
                 _p = $q.defer();
@@ -318,7 +326,7 @@ crop.factory('cropHost', ['$document', '$q', 'cropAreaCircle', 'cropAreaSquare',
 
         this.getAreaCoords = function() {
             return theArea.getSize()
-        }
+        };
 
         this.setNewImageSource = function(imageSource) {
             image = null;
@@ -488,6 +496,26 @@ crop.factory('cropHost', ['$document', '$q', 'cropAreaCircle', 'cropAreaSquare',
             }
         };
 
+        this.setAreaInitSize = function(size) {
+            if (angular.isUndefined(size)) {
+                return;
+            }else if(typeof size == 'number' || typeof size == 'string'){
+                size = {
+                    w: parseInt(parseInt(size), 10),
+                    h: parseInt(parseInt(size), 10)
+                };
+            }else{
+                size = {
+                    w: parseInt(size.w, 10),
+                    h: parseInt(size.h, 10)
+                };
+            }
+            if (!isNaN(size.w) && !isNaN(size.h)) {
+                theArea.setInitSize(size);
+                drawScene();
+            }
+        };
+
         this.getResultImageSize = function() {
             if (resImgSize == "selection") {
                 return theArea.getSize();
@@ -506,6 +534,7 @@ crop.factory('cropHost', ['$document', '$q', 'cropAreaCircle', 'cropAreaSquare',
 
             return resImgSize;
         };
+
         this.setResultImageSize = function(size) {
             if(angular.isArray(size)){
                 resImgSizeArray=size.slice();
