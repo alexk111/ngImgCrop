@@ -2,10 +2,10 @@
  * ngImgCrop v0.3.2
  * https://github.com/alexk111/ngImgCrop
  *
- * Copyright (c) 2014 Alex Kaul
+ * Copyright (c) 2016 Alex Kaul
  * License: MIT
  *
- * Generated at Wednesday, December 3rd, 2014, 3:54:12 PM
+ * Generated at Tuesday, March 22nd, 2016, 8:59:33 AM
  */
 (function() {
 'use strict';
@@ -1532,14 +1532,26 @@ crop.factory('cropHost', ['$document', 'cropAreaCircle', 'cropAreaSquare', 'crop
     };
 
     this.getResultImageDataURI=function() {
-      var temp_ctx, temp_canvas;
+      var temp_ctx, temp_canvas, newImageSize;
       temp_canvas = angular.element('<canvas></canvas>')[0];
-      temp_ctx = temp_canvas.getContext('2d');
-      temp_canvas.width = resImgSize;
-      temp_canvas.height = resImgSize;
+      temp_ctx    = temp_canvas.getContext('2d');
       if(image!==null){
-        temp_ctx.drawImage(image, (theArea.getX()-theArea.getSize()/2)*(image.width/ctx.canvas.width), (theArea.getY()-theArea.getSize()/2)*(image.height/ctx.canvas.height), theArea.getSize()*(image.width/ctx.canvas.width), theArea.getSize()*(image.height/ctx.canvas.height), 0, 0, resImgSize, resImgSize);
+        if(opts.dontStretchSmallerImages) {
+          //in case the original image is smaller than the final image size, don't resize it
+          var originalSize = image.width * (theArea.getSize() / ctx.canvas.width);
+
+          newImageSize = parseInt(Math.min(resImgSize, originalSize));
+          temp_canvas.width  = newImageSize;
+          temp_canvas.height = newImageSize;
+        } else {
+          newImageSize = resImgSize;
+          temp_canvas.width = resImgSize;
+          temp_canvas.height = resImgSize;
+        }
+
+        temp_ctx.drawImage(image, (theArea.getX()-theArea.getSize()/2)*(image.width/ctx.canvas.width), (theArea.getY()-theArea.getSize()/2)*(image.height/ctx.canvas.height), theArea.getSize()*(image.width/ctx.canvas.width), theArea.getSize()*(image.height/ctx.canvas.height), 0, 0, newImageSize, newImageSize);
       }
+
       if (resImgQuality!==null ){
         return temp_canvas.toDataURL(resImgFormat, resImgQuality);
       }
@@ -1770,6 +1782,7 @@ crop.directive('imgCrop', ['$timeout', 'cropHost', 'cropPubSub', function($timeo
       resultImageSize: '=',
       resultImageFormat: '@',
       resultImageQuality: '=',
+      dontStretchSmallerImages: '@',
 
       onChange: '&',
       onLoadBegin: '&',
@@ -1783,9 +1796,16 @@ crop.directive('imgCrop', ['$timeout', 'cropHost', 'cropPubSub', function($timeo
     link: function(scope, element/*, attrs*/) {
       // Init Events Manager
       var events = scope.events;
+      var cropHostOpts = {};
+
+      cropHostOpts.dontStretchSmallerImages = !!scope.dontStretchSmallerImages;
 
       // Init Crop Host
-      var cropHost=new CropHost(element.find('canvas'), {}, events);
+      var cropHost=new CropHost(
+          element.find('canvas'),
+          cropHostOpts,
+          events
+      );
 
       // Store Result Image to check if it's changed
       var storedResultImage;
