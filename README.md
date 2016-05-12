@@ -117,9 +117,9 @@ The following code enables to select an image using a file input and crop it. Th
    [result-image-format="{string}"]
    [result-image-quality="{number}"]
    [on-change="{expression}"]
-   [on-load-begin="{expression"]
-   [on-load-done="{expression"]
-   [on-load-error="{expression"]
+   [on-load-begin="{expression}"]
+   [on-load-done="{expression}"]
+   [on-load-error="{expression}"]
 ></img-crop>
 ```
 
