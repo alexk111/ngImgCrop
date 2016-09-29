@@ -37,6 +37,9 @@ crop.factory('cropHost', ['$document', 'cropAreaCircle', 'cropAreaSquare', 'crop
     // Result Image size
     var resImgSize=200;
 
+    var resImgHeight = 200;
+    var resImgWidth = 200;
+
     // Result Image type
     var resImgFormat='image/png';
 
@@ -168,10 +171,17 @@ crop.factory('cropHost', ['$document', 'cropAreaCircle', 'cropAreaSquare', 'crop
       var temp_ctx, temp_canvas;
       temp_canvas = angular.element('<canvas></canvas>')[0];
       temp_ctx = temp_canvas.getContext('2d');
-      temp_canvas.width = resImgSize;
-      temp_canvas.height = resImgSize;
+
+      // temp_canvas.width = resImgSize;
+      // temp_canvas.height = resImgSize;
+
+      temp_canvas.width = resImgWidth;
+      temp_canvas.height = resImgHeight;
+
+
       if(image!==null){
-        temp_ctx.drawImage(image, (theArea.getX()-theArea.getSize()/2)*(image.width/ctx.canvas.width), (theArea.getY()-theArea.getSize()/2)*(image.height/ctx.canvas.height), theArea.getSize()*(image.width/ctx.canvas.width), theArea.getSize()*(image.height/ctx.canvas.height), 0, 0, resImgSize, resImgSize);
+        // temp_ctx.drawImage(image, (theArea.getX()-theArea.getSize()/2)*(image.width/ctx.canvas.width), (theArea.getY()-theArea.getSize()/2)*(image.height/ctx.canvas.height), theArea.getSize()*(image.width/ctx.canvas.width), theArea.getSize()*(image.height/ctx.canvas.height), 0, 0, resImgSize, resImgSize);
+        temp_ctx.drawImage(image, (theArea.getX()-theArea.getSize()/2)*(image.width/ctx.canvas.width), (theArea.getY()-theArea.getSize()/2)*(image.height/ctx.canvas.height), theArea.getSize()*(image.width/ctx.canvas.width), theArea.getSize()*(image.height/ctx.canvas.height), 0, 0, resImgWidth, resImgHeight);
       }
       if (resImgQuality!==null ){
         return temp_canvas.toDataURL(resImgFormat, resImgQuality);
@@ -291,9 +301,24 @@ crop.factory('cropHost', ['$document', 'cropAreaCircle', 'cropAreaSquare', 'crop
     };
 
     this.setResultImageSize=function(size) {
-      size=parseInt(size,10);
-      if(!isNaN(size)) {
-        resImgSize=size;
+
+      if(typeof size == 'number'){
+        size=parseInt(size,10);
+        if(!isNaN(size)) {
+          // resImgSize=size;
+          resImgHeight=size;
+          resImgWidth=size;
+        }
+      }
+      else if(typeof size == 'object' && size.height && size.width){
+        var height=parseInt(size.height,10);
+        var width=parseInt(size.width,10);
+        if(!isNaN(height)) {
+          resImgSize=height;
+        }
+        if(!isNaN(width)) {
+          resImgSize=width;
+        }
       }
     };
 
