@@ -1,20 +1,69 @@
 {
+  "_args": [
+    [
+      {
+        "raw": "https://github.com/valentinvieriu/ngImgCrop.git",
+        "scope": null,
+        "escapedName": null,
+        "name": null,
+        "rawSpec": "https://github.com/valentinvieriu/ngImgCrop.git",
+        "spec": "git+https://github.com/valentinvieriu/ngImgCrop.git",
+        "type": "hosted",
+        "hosted": {
+          "type": "github",
+          "ssh": "git@github.com:valentinvieriu/ngImgCrop.git",
+          "sshUrl": "git+ssh://git@github.com/valentinvieriu/ngImgCrop.git",
+          "httpsUrl": "git+https://github.com/valentinvieriu/ngImgCrop.git",
+          "gitUrl": "git://github.com/valentinvieriu/ngImgCrop.git",
+          "shortcut": "github:valentinvieriu/ngImgCrop",
+          "directUrl": "https://raw.githubusercontent.com/valentinvieriu/ngImgCrop/master/package.json"
+        }
+      },
+      "/Users/vvieri/blacklab/voting-marathon"
+    ]
+  ],
+  "_from": "git+https://github.com/valentinvieriu/ngImgCrop.git#62d2909213b1dd817824074aea514270222c72e5",
+  "_id": "ng-img-crop@0.3.2",
+  "_inCache": true,
+  "_installable": true,
+  "_location": "/ng-img-crop",
+  "_phantomChildren": {},
+  "_requested": {
+    "raw": "https://github.com/valentinvieriu/ngImgCrop.git",
+    "scope": null,
+    "escapedName": null,
+    "name": null,
+    "rawSpec": "https://github.com/valentinvieriu/ngImgCrop.git",
+    "spec": "git+https://github.com/valentinvieriu/ngImgCrop.git",
+    "type": "hosted",
+    "hosted": {
+      "type": "github",
+      "ssh": "git@github.com:valentinvieriu/ngImgCrop.git",
+      "sshUrl": "git+ssh://git@github.com/valentinvieriu/ngImgCrop.git",
+      "httpsUrl": "git+https://github.com/valentinvieriu/ngImgCrop.git",
+      "gitUrl": "git://github.com/valentinvieriu/ngImgCrop.git",
+      "shortcut": "github:valentinvieriu/ngImgCrop",
+      "directUrl": "https://raw.githubusercontent.com/valentinvieriu/ngImgCrop/master/package.json"
+    }
+  },
+  "_requiredBy": [
+    "#USER",
+    "/"
+  ],
+  "_resolved": "git+https://github.com/valentinvieriu/ngImgCrop.git#62d2909213b1dd817824074aea514270222c72e5",
+  "_shasum": "fc3f2221d6db395466972e6fda1e5adfc8a9844b",
+  "_shrinkwrap": null,
+  "_spec": "https://github.com/valentinvieriu/ngImgCrop.git",
+  "_where": "/Users/vvieri/blacklab/voting-marathon",
   "author": {
     "name": "Alex Kaul",
     "email": "alexkaul@googlemail.com"
   },
-  "name": "ng-img-crop",
-  "prettyName": "ngImgCrop",
-  "version": "0.3.2",
-  "description": "Image crop directive for AngularJS",
-  "license": "MIT",
-  "main": "compile/minified/ng-img-crop.js",
-  "homepage": "https://github.com/alexk111/ngImgCrop",
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/alexk111/ngImgCrop.git"
+  "bugs": {
+    "url": "https://github.com/alexk111/ngImgCrop/issues"
   },
   "dependencies": {},
+  "description": "Image crop directive for AngularJS",
   "devDependencies": {
     "connect-livereload": "^0.4.0",
     "express": "^4.4.5",
@@ -37,5 +86,19 @@
     "minimist": "^0.2.0",
     "opn": "^0.1.2",
     "tiny-lr": "0.0.7"
-  }
+  },
+  "gitHead": "62d2909213b1dd817824074aea514270222c72e5",
+  "homepage": "https://github.com/alexk111/ngImgCrop",
+  "license": "MIT",
+  "main": "index.js",
+  "name": "ng-img-crop",
+  "optionalDependencies": {},
+  "prettyName": "ngImgCrop",
+  "readme": "# ngImgCrop\n\nSimple Image Crop directive for AngularJS. Enables to crop a circle or a square out of an image.\n\n## Screenshots\n\n![Circle Crop](https://raw.github.com/alexk111/ngImgCrop/master/screenshots/circle_1.jpg \"Circle Crop\")\n\n![Square Crop](https://raw.github.com/alexk111/ngImgCrop/master/screenshots/square_1.jpg \"Square Crop\")\n\n## Live demo\n\n[Live demo on JSFiddle](http://jsfiddle.net/alexk111/rw6q9/)\n\n## Requirements\n\n - AngularJS\n - Modern Browser supporting <canvas>\n\n## Installing\n\n### Download\n\nYou have two options to get the files:\n- [Download ngImgCrop](https://github.com/alexk111/ngImgCrop/archive/master.zip) files from GitHub.\n- Use Bower to download the files. Just run `bower install ngImgCrop`.\n\n### Add files\n\nAdd the scripts to your application. Make sure the `ng-img-crop.js` file is inserted **after** the `angular.js` library:\n\n```html\n<script src=\"angular.js\"></script>\n<script src=\"ng-img-crop.js\"></script>\n<link rel=\"stylesheet\" type=\"text/css\" href=\"ng-img-crop.css\">\n```\n\n### Add a dependancy\n\nAdd the image crop module as a dependancy to your application module:\n\n```js\nvar myAppModule = angular.module('MyApp', ['ngImgCrop']);\n```\n\n## Usage\n\n1. Add the image crop directive `<img-crop>` to the HTML file where you want to use an image crop control. *Note:* a container, you place the directive to, should have some pre-defined size (absolute or relative to its parent). That's required, because the image crop control fits the size of its container.\n2. Bind the directive to a source image property (using **image=\"\"** option). The directive will read the image data from that property and watch for updates. The property can be a url to an image, or a data uri.\n3. Bind the directive to a result image property (using **result-image=\"\"** option). On each update, the directive will put the content of the crop area to that property in the data uri format.\n4. Set up the options that make sense to your application.\n5. Done!\n\n## Result image\n\nThe result image will always be a square for the both circle and square area types. It's highly recommended to store the image as a square on your back-end, because this will enable you to easily update your pics later, if you decide to implement some design changes. Showing a square image as a circle on the front-end is not a problem - it is as easy as adding a *border-radius* style for that image in a css.\n\n## Example code\n\nThe following code enables to select an image using a file input and crop it. The cropped image data is inserted into img each time the crop area updates.\n\n```html\n<html>\n<head>\n  <script src=\"angular.js\"></script>\n  <script src=\"ng-img-crop.js\"></script>\n  <link rel=\"stylesheet\" type=\"text/css\" href=\"ng-img-crop.css\">\n  <style>\n    .cropArea {\n      background: #E4E4E4;\n      overflow: hidden;\n      width:500px;\n      height:350px;\n    }\n  </style>\n  <script>\n    angular.module('app', ['ngImgCrop'])\n      .controller('Ctrl', function($scope) {\n        $scope.myImage='';\n        $scope.myCroppedImage='';\n\n        var handleFileSelect=function(evt) {\n          var file=evt.currentTarget.files[0];\n          var reader = new FileReader();\n          reader.onload = function (evt) {\n            $scope.$apply(function($scope){\n              $scope.myImage=evt.target.result;\n            });\n          };\n          reader.readAsDataURL(file);\n        };\n        angular.element(document.querySelector('#fileInput')).on('change',handleFileSelect);\n      });\n  </script>\n</head>\n<body ng-app=\"app\" ng-controller=\"Ctrl\">\n  <div>Select an image file: <input type=\"file\" id=\"fileInput\" /></div>\n  <div class=\"cropArea\">\n    <img-crop image=\"myImage\" result-image=\"myCroppedImage\"></img-crop>\n  </div>\n  <div>Cropped Image:</div>\n  <div><img ng-src=\"{{myCroppedImage}}\" /></div>\n</body>\n</html>\n```\n\n## Options\n\n```html\n<img-crop\n    image=\"{string}\"\n    result-image=\"{string}\"\n   [change-on-fly=\"{boolean}\"]\n   [area-type=\"{circle|square}\"]\n   [area-min-size=\"{number}\"]\n   [result-image-size=\"{number}\"]\n   [result-image-format=\"{string}\"]\n   [result-image-quality=\"{number}\"]\n   [on-change=\"{expression}\"]\n   [on-load-begin=\"{expression\"]\n   [on-load-done=\"{expression\"]\n   [on-load-error=\"{expression\"]\n></img-crop>\n```\n\n### image\n\nAssignable angular expression to data-bind to. NgImgCrop gets an image for cropping from it.\n\n### result-image\n\nAssignable angular expression to data-bind to. NgImgCrop puts a data uri of a cropped image into it.\n\n### change-on-fly\n\n*Optional*. By default, to reduce CPU usage, when a user drags/resizes the crop area, the result image is only updated after the user stops dragging/resizing. Set true to always update the result image as the user drags/resizes the crop area.\n\n### area-type\n\n*Optional*. Type of the crop area. Possible values: circle|square. Default: circle.\n\n### area-min-size\n\n*Optional*. Min. width/height of the crop area (in pixels). Default: 80.\n\n### result-image-size\n\n*Optional*. Width/height of the result image (in pixels). Default: 200.\n\n### result-image-format\n\n*Optional*. Format of result image. Possible values include image/jpeg, image/png, and image/webp. Browser support varies. Default: image/png.\n\n### result-image-quality\n\n*Optional*. Quality of result image. Possible values between 0.0 and 1.0 inclusive. Default: browser default.\n\n### on-change\n\n*Optional*. Expression to evaluate upon changing the cropped part of the image. The cropped image data is available as $dataURI.\n\n### on-load-begin\n\n*Optional*. Expression to evaluate when the source image starts loading.\n\n### on-load-done\n\n*Optional*. Expression to evaluate when the source image successfully loaded.\n\n### on-load-error\n\n*Optional*. Expression to evaluate when the source image didn't load.\n\n\n## License\n\nSee the [LICENSE](https://github.com/alexk111/ngImgCrop/blob/master/LICENSE) file.\n\n",
+  "readmeFilename": "README.md",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/alexk111/ngImgCrop.git"
+  },
+  "version": "0.3.2"
 }
