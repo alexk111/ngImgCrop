@@ -2,10 +2,10 @@
  * ngImgCrop v0.3.2
  * https://github.com/alexk111/ngImgCrop
  *
- * Copyright (c) 2014 Alex Kaul
+ * Copyright (c) 2015 Alex Kaul
  * License: MIT
  *
- * Generated at Wednesday, December 3rd, 2014, 3:54:12 PM
+ * Generated at Friday, June 19th, 2015, 2:06:26 AM
  */
 (function() {
 'use strict';
@@ -1390,6 +1390,12 @@ crop.factory('cropHost', ['$document', 'cropAreaCircle', 'cropAreaSquare', 'crop
       return { top: Math.round(top), left: Math.round(left) };
   };
 
+  // Get Element's Scale
+  var getElementScale=function(elem) {
+      var box = elem.getBoundingClientRect();
+      return elem.offsetWidth / box.width;
+  };
+
   return function(elCanvas, opts, events){
     /* PRIVATE VARIABLES */
 
@@ -1484,6 +1490,7 @@ crop.factory('cropHost', ['$document', 'cropAreaCircle', 'cropAreaSquare', 'crop
     var onMouseMove=function(e) {
       if(image!==null) {
         var offset=getElementOffset(ctx.canvas),
+            scale=getElementScale(ctx.canvas),
             pageX, pageY;
         if(e.type === 'touchmove') {
           pageX=getChangedTouches(e)[0].pageX;
@@ -1492,7 +1499,7 @@ crop.factory('cropHost', ['$document', 'cropAreaCircle', 'cropAreaSquare', 'crop
           pageX=e.pageX;
           pageY=e.pageY;
         }
-        theArea.processMouseMove(pageX-offset.left, pageY-offset.top);
+        theArea.processMouseMove((pageX-offset.left)*scale, (pageY-offset.top)*scale);
         drawScene();
       }
     };
@@ -1502,6 +1509,7 @@ crop.factory('cropHost', ['$document', 'cropAreaCircle', 'cropAreaSquare', 'crop
       e.stopPropagation();
       if(image!==null) {
         var offset=getElementOffset(ctx.canvas),
+            scale=getElementScale(ctx.canvas),
             pageX, pageY;
         if(e.type === 'touchstart') {
           pageX=getChangedTouches(e)[0].pageX;
@@ -1510,7 +1518,7 @@ crop.factory('cropHost', ['$document', 'cropAreaCircle', 'cropAreaSquare', 'crop
           pageX=e.pageX;
           pageY=e.pageY;
         }
-        theArea.processMouseDown(pageX-offset.left, pageY-offset.top);
+        theArea.processMouseDown((pageX-offset.left)*scale, (pageY-offset.top)*scale);
         drawScene();
       }
     };
@@ -1518,6 +1526,7 @@ crop.factory('cropHost', ['$document', 'cropAreaCircle', 'cropAreaSquare', 'crop
     var onMouseUp=function(e) {
       if(image!==null) {
         var offset=getElementOffset(ctx.canvas),
+            scale=getElementScale(ctx.canvas),
             pageX, pageY;
         if(e.type === 'touchend') {
           pageX=getChangedTouches(e)[0].pageX;
@@ -1526,7 +1535,7 @@ crop.factory('cropHost', ['$document', 'cropAreaCircle', 'cropAreaSquare', 'crop
           pageX=e.pageX;
           pageY=e.pageY;
         }
-        theArea.processMouseUp(pageX-offset.left, pageY-offset.top);
+        theArea.processMouseUp((pageX-offset.left)*scale, (pageY-offset.top)*scale);
         drawScene();
       }
     };
