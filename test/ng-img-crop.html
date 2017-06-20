@@ -2,8 +2,9 @@
 <html ng-app="app">
 <head>
   <title>ngImgCrop Test Page</title>
-  <script type="text/javascript" src="../bower_components/angular/angular.min.js"></script>
-  <!--<script src="//ajax.googleapis.com/ajax/libs/angularjs/1.3.0/angular.min.js"></script>-->
+  <!-- <script type="text/javascript" src="../bower_components/angular/angular.min.js"></script> -->
+  <script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.3.0/angular.min.js"></script>
+  <!-- <script type="text/javascript" src="angular.min.js"></script> -->
   <script type="text/javascript" src="../compile/unminified/ng-img-crop.js"></script>
   <link rel="stylesheet" href="../compile/unminified/ng-img-crop.css"/>
   <style>
@@ -27,63 +28,91 @@
   </style>
 </head>
 <body ng-controller="Ctrl">
-  <div>
-    <label><input type="checkbox" ng-model="enableCrop" ng-init="enableCrop=true"/> Add ngImgCrop to Page</label>
+  <div style="float: left">
+    <div>
+      <label><input type="checkbox" ng-model="enableCrop" ng-init="enableCrop=true"/> Add ngImgCrop to Page</label>
+    </div>
+    <div>
+      Container size:
+      <label><input type="radio" ng-model="size" value="big" /> Big</label>
+      <label><input type="radio" ng-model="size" value="medium" /> Medium</label>
+      <label><input type="radio" ng-model="size" value="small" /> Small</label>
+    </div>
+    <div>
+      Area type:
+      <label><input type="radio" ng-model="type" value="circle" /> Circle</label>
+      <label><input type="radio" ng-model="type" value="square" /> Square</label>
+      <!--<label><input type="radio" ng-model="type" value="rectangle" /> Rectangle</label>-->
+    </div>
+    <div>
+      <label><input type="checkbox" ng-model="changeOnFly" /> Change On Fly</label>
+    </div>
+    <div>
+      <label><input type="checkbox" ng-model="maximizeCrop" /> Maximize Default Crop Selection</label>
+    </div>
+    
+    <div>
+      Aspect Ratio: 
+      <label><input type="radio" ng-model="aspectRatio" value="1x1" /> 1 x 1</label>
+      <label><input type="radio" ng-model="aspectRatio" value="3x4" /> 3 x 4</label>
+      <label><input type="radio" ng-model="aspectRatio" value="6x2" /> 6 x 2</label>
+    </div>
+    
+    <div>
+      <label>Area Min Size (Size = Width = Height): <input type="text" ng-model="selMinSize" /></label>
+    </div>
+    <div>
+      <label>Result Image Size (Size = Width = Height): <input type="text" ng-model="resImgSize" /></label>
+    </div>
+    <div>
+      Result Image Format:
+      <label><input type="radio" ng-model="resImgFormat" value="image/jpeg" /> image/jpeg</label>
+      <label><input type="radio" ng-model="resImgFormat" value="image/png" /> image/png</label>
+      <label><input type="radio" ng-model="resImgFormat" value="image/webp" /> image/webp</label>
+    </div>
+    <div>
+      <label>Result Image Quality (0<=X<=1): <input type="text" ng-model="resImgQuality" /></label>
+    </div>
+    <form ng-show="enableCrop">
+      <label for="fileInput">Select Image:</label>
+      <input type="file" id="fileInput" />
+      <button type="reset">Clear</button>
+      <button ng-click="imageDataURI='test.jpg'">Set Test Image</button>
+    </form>
+    <div>
+      <label>Image URL: <input type="text" ng-model="edtImageURI" /></label>
+      <button ng-click="imageDataURI=edtImageURI">Set Image</button>
+    </div>
+    <div>
+      <button ng-click="imageDataURI=''">Reset Image</button>
+    </div>
   </div>
-  <div>
-    Container size:
-    <label><input type="radio" ng-model="size" value="big" /> Big</label>
-    <label><input type="radio" ng-model="size" value="medium" /> Medium</label>
-    <label><input type="radio" ng-model="size" value="small" /> Small</label>
+
+  <div style="float:right">
+    <h3>Crop Data:</h3>
+    <ul>
+      <li><b>Width</b>: {{image.cropInfo.width}}</li>
+      <li><b>Height</b>: {{image.cropInfo.height}}</li>
+      <li><b>X</b>: {{image.cropInfo.x}}</li>
+      <li><b>Y</b>: {{image.cropInfo.y}}</li>
+    </ul>
+    <h3>Original Image Data:</h3>
+    <ul>
+      <li><b>Width</b>: {{image.originalInfo.width}}</li>
+      <li><b>Height</b>: {{image.originalInfo.height}}</li>
+    </ul>
   </div>
-  <div>
-    Area type:
-    <label><input type="radio" ng-model="type" value="circle" /> Circle</label>
-    <label><input type="radio" ng-model="type" value="square" /> Square</label>
-    <!--<label><input type="radio" ng-model="type" value="rectangle" /> Rectangle</label>-->
-  </div>
-  <div>
-    <label><input type="checkbox" ng-model="changeOnFly" /> Change On Fly</label>
-  </div>
-  <!--
-  <div>
-    <label>Aspect Ratio: <input type="text" ng-model="aspectRatio" /></label>
-  </div>
-  -->
-  <div>
-    <label>Area Min Size (Size = Width = Height): <input type="text" ng-model="selMinSize" /></label>
-  </div>
-  <div>
-    <label>Result Image Size (Size = Width = Height): <input type="text" ng-model="resImgSize" /></label>
-  </div>
-  <div>
-    Result Image Format:
-    <label><input type="radio" ng-model="resImgFormat" value="image/jpeg" /> image/jpeg</label>
-    <label><input type="radio" ng-model="resImgFormat" value="image/png" /> image/png</label>
-    <label><input type="radio" ng-model="resImgFormat" value="image/webp" /> image/webp</label>
-  </div>
-  <div>
-    <label>Result Image Quality (0<=X<=1): <input type="text" ng-model="resImgQuality" /></label>
-  </div>
-  <form ng-show="enableCrop">
-    <label for="fileInput">Select Image:</label>
-    <input type="file" id="fileInput" />
-    <button type="reset">Clear</button>
-    <button ng-click="imageDataURI='test.jpg'">Set Test Image</button>
-  </form>
-  <div>
-    <label>Image URL: <input type="text" ng-model="edtImageURI" /></label>
-    <button ng-click="imageDataURI=edtImageURI">Set Image</button>
-  </div>
-  <div>
-    <button ng-click="imageDataURI=''">Reset Image</button>
-  </div>
+
+  <div style="clear:both"></div>
 
   <div ng-if="enableCrop" class="cropArea" ng-class="{'big':size=='big', 'medium':size=='medium', 'small':size=='small'}">
     <img-crop image="imageDataURI"
-              result-image="$parent.resImageDataURI"
               change-on-fly="changeOnFly"
+              maximize-crop="maximizeCrop"
               area-type="{{type}}"
+              result-image-aspect="{{aspectRatio}}"
+              crop-data="image.cropInfo"
+              original-data="image.originalInfo"
               area-min-size="selMinSize"
               result-image-format="{{resImgFormat}}"
               result-image-quality="resImgQuality"
@@ -93,14 +122,14 @@
               on-load-done="onLoadDone()"
               on-load-error="onLoadError()"
     ></img-crop>
-              <!--aspect-ratio="aspectRatio"-->
+              <!--result-image="$parent.resImageDataURI"-->
   </div>
-
   <div style="text-align:center">
-    <h3>Result</h3>
-    <div>
+    <h3>Result ({{ resImgSize }}):</h3>
+    <!-- <div>
       <img ng-src="{{resImageDataURI}}" />
-    </div>
+    </div> -->
+    <div img-crop-result="" image="imageDataURI" crop-data="image.cropInfo" original-data="image.originalInfo" width="{{ resImgSize }}"></div>
   </div>
 
   <script type="text/javascript">
@@ -108,6 +137,11 @@
       .controller('Ctrl', function($scope) {
         $scope.size='small';
         $scope.type='circle';
+        $scope.aspectRatio='1x1';
+        $scope.image = {
+          originalInfo: {},
+          cropInfo: {}
+        };
         $scope.imageDataURI='';
         $scope.resImageDataURI='';
         $scope.resImgFormat='image/png';

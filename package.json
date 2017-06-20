@@ -17,7 +17,7 @@
   "devDependencies": {
     "connect-livereload": "^0.4.0",
     "express": "^4.4.5",
-    "gulp": "^3.8.5",
+    "gulp": "^3.8.10",
     "gulp-autoprefixer": "0.0.8",
     "gulp-compass": "^1.1.9",
     "gulp-concat": "^2.2.0",

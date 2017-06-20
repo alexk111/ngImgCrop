@@ -17,7 +17,8 @@ crop.factory('cropAreaSquare', ['cropArea', function(CropArea) {
     this._posDragStartY=0;
     this._posResizeStartX=0;
     this._posResizeStartY=0;
-    this._posResizeStartSize=0;
+    this._posResizeStartWidth=0;
+    this._posResizeStartHeight=0;
 
     this._resizeCtrlIsHover = -1;
     this._areaIsHover = false;
@@ -28,22 +29,24 @@ crop.factory('cropAreaSquare', ['cropArea', function(CropArea) {
   CropAreaSquare.prototype = new CropArea();
 
   CropAreaSquare.prototype._calcSquareCorners=function() {
-    var hSize=this._size/2;
+    var hSize=this._width/2;
+    var vSize=this._height/2;
     return [
-      [this._x-hSize, this._y-hSize],
-      [this._x+hSize, this._y-hSize],
-      [this._x-hSize, this._y+hSize],
-      [this._x+hSize, this._y+hSize]
+      [this._x-hSize, this._y-vSize],
+      [this._x+hSize, this._y-vSize],
+      [this._x-hSize, this._y+vSize],
+      [this._x+hSize, this._y+vSize]
     ];
   };
 
   CropAreaSquare.prototype._calcSquareDimensions=function() {
-    var hSize=this._size/2;
+    var hSize=this._width/2;
+    var vSize=this._height/2;
     return {
       left: this._x-hSize,
-      top: this._y-hSize,
+      top: this._y-vSize,
       right: this._x+hSize,
-      bottom: this._y+hSize
+      bottom: this._y+vSize
     };
   };
 
@@ -66,9 +69,10 @@ crop.factory('cropAreaSquare', ['cropArea', function(CropArea) {
     return res;
   };
 
-  CropAreaSquare.prototype._drawArea=function(ctx,centerCoords,size){
-    var hSize=size/2;
-    ctx.rect(centerCoords[0]-hSize,centerCoords[1]-hSize,size,size);
+  CropAreaSquare.prototype._drawArea=function(ctx,centerCoords,width,height){
+    var hSize=width/2;
+    var vSize=height/2;
+    ctx.rect(centerCoords[0]-hSize,centerCoords[1]-vSize,width,height);
   };
 
   CropAreaSquare.prototype.draw=function() {
@@ -88,6 +92,8 @@ crop.factory('cropAreaSquare', ['cropArea', function(CropArea) {
   CropAreaSquare.prototype.processMouseMove=function(mouseCurX, mouseCurY) {
     var cursor='default';
     var res=false;
+    var canvas_h=this._ctx.canvas.height,
+        canvas_w=this._ctx.canvas.width;
 
     this._resizeCtrlIsHover = -1;
     this._areaIsHover = false;
@@ -123,22 +129,30 @@ crop.factory('cropAreaSquare', ['cropArea', function(CropArea) {
           cursor = 'nwse-resize';
           break;
       }
+      // horizontal distance moved (xMulti adjusts for direction)
       var iFX = (mouseCurX - this._posResizeStartX)*xMulti;
-      var iFY = (mouseCurY - this._posResizeStartY)*yMulti;
-      var iFR;
-      if(iFX>iFY) {
-        iFR = this._posResizeStartSize + iFY;
-      } else {
-        iFR = this._posResizeStartSize + iFX;
+      // starting crop width + distance moved = new crop width
+      var iFW = this._posResizeStartWidth + iFX;
+
+      var wasWidth=this._width;
+      var wasHeight=this._height;
+      var scale = this.getScale();
+      // rounds up the minimum crop to keep from collapsing crop area below minimum
+      var minSizeScale = Math.ceil(scale*this._minSize);
+      
+      var newWidth= Math.max(minSizeScale, this._unscaledMinSize, iFW);
+      var newHeight= Math.floor(this._aspect[1] * newWidth / this._aspect[0]);
+      if(newWidth <= canvas_w && newHeight <= canvas_h){
+        this._width = newWidth;
+        this._height = newHeight;
+        var x_posModifier=(this._width-wasWidth)/2;
+        var y_posModifier=(this._height-wasHeight)/2;
+        this._x+=x_posModifier*xMulti;
+        this._y+=y_posModifier*yMulti;
+        this._resizeCtrlIsHover = this._resizeCtrlIsDragging;
+        res=true;
+        this._events.trigger('area-resize');
       }
-      var wasSize=this._size;
-      this._size = Math.max(this._minSize, iFR);
-      var posModifier=(this._size-wasSize)/2;
-      this._x+=posModifier*xMulti;
-      this._y+=posModifier*yMulti;
-      this._resizeCtrlIsHover = this._resizeCtrlIsDragging;
-      res=true;
-      this._events.trigger('area-resize');
     } else {
       var hoveredResizeBox=this._isCoordWithinResizeCtrl([mouseCurX,mouseCurY]);
       if (hoveredResizeBox>-1) {
@@ -181,7 +195,8 @@ crop.factory('cropAreaSquare', ['cropArea', function(CropArea) {
       this._resizeCtrlIsHover = isWithinResizeCtrl;
       this._posResizeStartX=mouseDownX;
       this._posResizeStartY=mouseDownY;
-      this._posResizeStartSize = this._size;
+      this._posResizeStartWidth = this._width;
+      this._posResizeStartHeight = this._height;
       this._events.trigger('area-resize-start');
     } else if (this._isCoordWithinArea([mouseDownX,mouseDownY])) {
       this._areaIsDragging = true;
@@ -209,7 +224,6 @@ crop.factory('cropAreaSquare', ['cropArea', function(CropArea) {
     this._posDragStartX = 0;
     this._posDragStartY = 0;
   };
-
 
   return CropAreaSquare;
 }]);
