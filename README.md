@@ -126,6 +126,7 @@ The following code enables to select an image using a file input and crop it. Th
    [on-load-begin="{expression"]
    [on-load-done="{expression"]
    [on-load-error="{expression"]
+   [result-image-background="{string}"]
 ></img-crop>
 ```
 
@@ -176,6 +177,10 @@ Assignable angular expression to data-bind to. NgImgCrop puts a data uri of a cr
 ### on-load-error
 
 *Optional*. Expression to evaluate when the source image didn't load.
+
+### result-image-background
+
+*Optional*. Result image background in case there was an alpha channel and transparent parts of the image.
 
 
 ## License
