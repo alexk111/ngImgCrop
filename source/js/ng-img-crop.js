@@ -13,6 +13,7 @@ crop.directive('imgCrop', ['$timeout', 'cropHost', 'cropPubSub', function($timeo
       resultImageSize: '=',
       resultImageFormat: '@',
       resultImageQuality: '=',
+      dontStretchSmallerImages: '@',
 
       onChange: '&',
       onLoadBegin: '&',
@@ -26,9 +27,16 @@ crop.directive('imgCrop', ['$timeout', 'cropHost', 'cropPubSub', function($timeo
     link: function(scope, element/*, attrs*/) {
       // Init Events Manager
       var events = scope.events;
+      var cropHostOpts = {};
+
+      cropHostOpts.dontStretchSmallerImages = !!scope.dontStretchSmallerImages;
 
       // Init Crop Host
-      var cropHost=new CropHost(element.find('canvas'), {}, events);
+      var cropHost=new CropHost(
+          element.find('canvas'),
+          cropHostOpts,
+          events
+      );
 
       // Store Result Image to check if it's changed
       var storedResultImage;
