@@ -225,11 +225,15 @@ crop.factory('cropHost', ['$document', 'cropAreaCircle', 'cropAreaSquare', 'crop
 
               image=new Image();
               image.src = canvas.toDataURL("image/png");
+              image.onload = function(){
+                resetCropHost();
+                events.trigger('image-updated');
+              };
             } else {
               image=newImage;
+              resetCropHost();
+              events.trigger('image-updated');
             }
-            resetCropHost();
-            events.trigger('image-updated');
           });
         };
         newImage.onerror=function() {
