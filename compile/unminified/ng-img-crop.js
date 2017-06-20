@@ -2,10 +2,10 @@
  * ngImgCrop v0.3.2
  * https://github.com/alexk111/ngImgCrop
  *
- * Copyright (c) 2014 Alex Kaul
+ * Copyright (c) 2016 Alex Kaul
  * License: MIT
  *
- * Generated at Wednesday, December 3rd, 2014, 3:54:12 PM
+ * Generated at Tuesday, December 6th, 2016, 8:05:46 PM
  */
 (function() {
 'use strict';
@@ -1408,6 +1408,9 @@ crop.factory('cropHost', ['$document', 'cropAreaCircle', 'cropAreaSquare', 'crop
     // Result Image type
     var resImgFormat='image/png';
 
+    // Result Image Fill transparent color
+    var resImgFillTransparent='white';
+
     // Result Image quality
     var resImgQuality=null;
 
@@ -1537,6 +1540,8 @@ crop.factory('cropHost', ['$document', 'cropAreaCircle', 'cropAreaSquare', 'crop
       temp_ctx = temp_canvas.getContext('2d');
       temp_canvas.width = resImgSize;
       temp_canvas.height = resImgSize;
+      temp_ctx.fillStyle = resImgFillTransparent;
+      temp_ctx.fillRect(0, 0, resImgSize, resImgSize);
       if(image!==null){
         temp_ctx.drawImage(image, (theArea.getX()-theArea.getSize()/2)*(image.width/ctx.canvas.width), (theArea.getY()-theArea.getSize()/2)*(image.height/ctx.canvas.height), theArea.getSize()*(image.width/ctx.canvas.width), theArea.getSize()*(image.height/ctx.canvas.height), 0, 0, resImgSize, resImgSize);
       }
@@ -1668,6 +1673,10 @@ crop.factory('cropHost', ['$document', 'cropAreaCircle', 'cropAreaSquare', 'crop
       resImgFormat = format;
     };
 
+    this.setResultImageFillTransparent=function(color) {
+      resImgFillTransparent = color || resImgFillTransparent;
+    };
+
     this.setResultImageQuality=function(quality){
       quality = parseFloat(quality);
       if (!isNaN(quality) && quality>=0 && quality<=1){
@@ -1770,6 +1779,7 @@ crop.directive('imgCrop', ['$timeout', 'cropHost', 'cropPubSub', function($timeo
       resultImageSize: '=',
       resultImageFormat: '@',
       resultImageQuality: '=',
+      resultImageFillTransparent: '@',
 
       onChange: '&',
       onLoadBegin: '&',
@@ -1850,6 +1860,10 @@ crop.directive('imgCrop', ['$timeout', 'cropHost', 'cropPubSub', function($timeo
       });
       scope.$watch('resultImageFormat',function(){
         cropHost.setResultImageFormat(scope.resultImageFormat);
+        updateResultImage(scope);
+      });
+      scope.$watch('resultImageFillTransparent',function(){
+        cropHost.setResultImageFillTransparent(scope.resultImageFillTransparent);
         updateResultImage(scope);
       });
       scope.$watch('resultImageQuality',function(){

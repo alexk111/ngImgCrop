@@ -122,6 +122,7 @@ The following code enables to select an image using a file input and crop it. Th
    [result-image-size="{number}"]
    [result-image-format="{string}"]
    [result-image-quality="{number}"]
+   [result-image-fill-transparent="{string}"]
    [on-change="{expression}"]
    [on-load-begin="{expression"]
    [on-load-done="{expression"]
@@ -160,6 +161,11 @@ Assignable angular expression to data-bind to. NgImgCrop puts a data uri of a cr
 ### result-image-quality
 
 *Optional*. Quality of result image. Possible values between 0.0 and 1.0 inclusive. Default: browser default.
+
+
+### result-image-fill-transparent
+
+*Optional*. Color to fill transparent zones in case when result-image-format does not support transparent.
 
 ### on-change
 
