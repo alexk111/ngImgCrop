@@ -1,10 +1,25 @@
 {
-  "name": "ng-img-crop",
-  "version": "0.3.2",
+  "name": "ng-img-crop-add-rectangle",
+  "prettyName": "ngImgCropAddRectangle",
+  "version": "0.3.3",
   "authors": [
-    "Alex Kaul <alexkaul@googlemail.com>"
+    {
+      "name": "Alex Kaul",
+      "email": "alexkaul@googlemail.com"
+    },
+    {
+      "name": "Jodonnell-broadsoft"
+    },
+    {
+      "name": "Marcio Sena",
+      "email": "marciosena.inf@gmail.com"
+    }
   ],
-  "description": "Image crop directive for AngularJS",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/marciovsena/ngImgCrop"
+  },
+  "description": "Image crop directive for AngularJS add rectangle",
   "main": [
     "compile/minified/ng-img-crop.js",
     "compile/minified/ng-img-crop.css"
@@ -16,7 +31,7 @@
     "cropper"
   ],
   "license": "MIT",
-  "homepage": "https://github.com/alexk111/ngImgCrop",
+  "homepage": "https://github.com/marciovsena/ngImgCrop/",
   "ignore": [
     "node_modules",
     "bower_components",
