@@ -103,7 +103,16 @@ crop.factory('cropCanvas', [function() {
       var xRatio=image.width/ctx.canvas.width,
           yRatio=image.height/ctx.canvas.height,
           xLeft=centerCoords[0]-size/2,
-          yTop=centerCoords[1]-size/2;
+          yTop=centerCoords[1]-size/2,
+          clipWidth=size*xRatio,
+          clipHeight=size*yRatio;
+       
+      if (clipWidth > image.width){
+        clipWidth = image.width;
+      }
+      if (clipHeight > image.height){
+        clipHeight = image.height;
+      }
 
       ctx.save();
       ctx.strokeStyle = colors.areaOutline;
@@ -115,7 +124,7 @@ crop.factory('cropCanvas', [function() {
 
       // draw part of original image
       if (size > 0) {
-          ctx.drawImage(image, xLeft*xRatio, yTop*yRatio, size*xRatio, size*yRatio, xLeft, yTop, size, size);
+          ctx.drawImage(image, xLeft*xRatio, yTop*yRatio, clipWidth, clipHeight, xLeft, yTop, size, size);
       }
 
       ctx.beginPath();
