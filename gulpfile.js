@@ -83,6 +83,7 @@ gulp.task('scripts', function(){
       Config.paths.source.js + '/classes/*.js',
       Config.paths.source.js + '/ng-img-crop.js'
     ])
+    .pipe(ngAnnotate())
     .pipe(concat(pkg.name+'.js', {
       separator: '\n\n',
       process: function(src) {
