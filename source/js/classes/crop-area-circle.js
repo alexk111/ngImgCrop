@@ -63,7 +63,7 @@ crop.factory('cropAreaCircle', ['cropArea', function(CropArea) {
     this._cropCanvas.drawIconResizeBoxNESW(this._calcResizeIconCenterCoords(), this._boxResizeBaseSize, this._boxResizeIsHover?this._boxResizeHoverRatio:this._boxResizeNormalRatio);
   };
 
-  CropAreaCircle.prototype.processMouseMove=function(mouseCurX, mouseCurY) {
+  CropAreaCircle.prototype.processMouseMove=function(mouseCurX, mouseCurY, position) {
     var cursor='default';
     var res=false;
 
@@ -71,6 +71,8 @@ crop.factory('cropAreaCircle', ['cropArea', function(CropArea) {
     this._areaIsHover = false;
 
     if (this._areaIsDragging) {
+      position.x = this.getX();
+      position.y = this.getY();
       this._x = mouseCurX - this._posDragStartX;
       this._y = mouseCurY - this._posDragStartY;
       this._areaIsHover = true;
@@ -89,6 +91,9 @@ crop.factory('cropAreaCircle', ['cropArea', function(CropArea) {
         }
 
         this._size = Math.max(this._minSize, iFR);
+        position.size = this._size;
+
+
         this._boxResizeIsHover = true;
         res=true;
         this._events.trigger('area-resize');

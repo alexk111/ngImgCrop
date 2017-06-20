@@ -22,7 +22,7 @@ crop.factory('cropHost', ['$document', 'cropAreaCircle', 'cropAreaSquare', 'crop
       return { top: Math.round(top), left: Math.round(left) };
   };
 
-  return function(elCanvas, opts, events){
+  return function(elCanvas, opts, events, position){
     /* PRIVATE VARIABLES */
 
     // Object Pointers
@@ -91,10 +91,18 @@ crop.factory('cropHost', ['$document', 'cropAreaCircle', 'cropAreaSquare', 'crop
         }
         elCanvas.prop('width',canvasDims[0]).prop('height',canvasDims[1]).css({'margin-left': -canvasDims[0]/2+'px', 'margin-top': -canvasDims[1]/2+'px'});
 
-        theArea.setX(ctx.canvas.width/2);
-        theArea.setY(ctx.canvas.height/2);
-        theArea.setSize(Math.min(200, ctx.canvas.width/2, ctx.canvas.height/2));
-      } else {
+          if(position.withoutSavingPosition) {
+            position.size = Math.min(200, ctx.canvas.width / 2, ctx.canvas.height / 2);
+            position.x = ctx.canvas.width / 2;
+            position.y = ctx.canvas.height / 2;
+          }
+
+          theArea.setX(position.x);
+          theArea.setY(position.y);
+          theArea.setSize(position.size);
+
+
+        } else {
         elCanvas.prop('width',0).prop('height',0).css({'margin-top': 0});
       }
 
@@ -124,14 +132,13 @@ crop.factory('cropHost', ['$document', 'cropAreaCircle', 'cropAreaSquare', 'crop
           pageX=e.pageX;
           pageY=e.pageY;
         }
-        theArea.processMouseMove(pageX-offset.left, pageY-offset.top);
+        theArea.processMouseMove(pageX-offset.left, pageY-offset.top, position);
         drawScene();
       }
     };
 
     var onMouseDown=function(e) {
       e.preventDefault();
-      e.stopPropagation();
       if(image!==null) {
         var offset=getElementOffset(ctx.canvas),
             pageX, pageY;
@@ -158,7 +165,7 @@ crop.factory('cropHost', ['$document', 'cropAreaCircle', 'cropAreaSquare', 'crop
           pageX=e.pageX;
           pageY=e.pageY;
         }
-        theArea.processMouseUp(pageX-offset.left, pageY-offset.top);
+        theArea.processMouseUp(pageX-offset.left, pageY-offset.top, position);
         drawScene();
       }
     };
@@ -274,6 +281,10 @@ crop.factory('cropHost', ['$document', 'cropAreaCircle', 'cropAreaSquare', 'crop
         theArea.setX(theArea.getX()*ratioNewCurWidth);
         theArea.setY(theArea.getY()*ratioNewCurHeight);
         theArea.setSize(theArea.getSize()*ratioMin);
+        position.x = theArea.getX();
+        position.y = theArea.getY();
+        position.size = theArea.getSize();
+
       } else {
         elCanvas.prop('width',0).prop('height',0).css({'margin-top': 0});
       }
@@ -320,9 +331,18 @@ crop.factory('cropHost', ['$document', 'cropAreaCircle', 'cropAreaSquare', 'crop
       }
       theArea = new AreaClass(ctx, events);
       theArea.setMinSize(curMinSize);
-      theArea.setSize(curSize);
-      theArea.setX(curX);
-      theArea.setY(curY);
+
+      if(position.withoutSavingPosition) {
+        position.size = curSize;
+        position.x = curX;
+        position.y = curY;
+      }
+      theArea.setSize(position.size);
+      theArea.setX(position.x);
+      theArea.setY(position.y);
+
+
+
 
       // resetCropHost();
       if(image!==null) {
