@@ -230,6 +230,7 @@ crop.factory('cropHost', ['$document', 'cropAreaCircle', 'cropAreaSquare', 'crop
             }
             resetCropHost();
             events.trigger('image-updated');
+            events.trigger('area-init', theArea);
           });
         };
         newImage.onerror=function() {
@@ -323,6 +324,7 @@ crop.factory('cropHost', ['$document', 'cropAreaCircle', 'cropAreaSquare', 'crop
       theArea.setSize(curSize);
       theArea.setX(curX);
       theArea.setY(curY);
+      
 
       // resetCropHost();
       if(image!==null) {
@@ -330,6 +332,7 @@ crop.factory('cropHost', ['$document', 'cropAreaCircle', 'cropAreaSquare', 'crop
       }
 
       drawScene();
+      
     };
 
     /* Life Cycle begins */

@@ -2,10 +2,10 @@
  * ngImgCrop v0.3.2
  * https://github.com/alexk111/ngImgCrop
  *
- * Copyright (c) 2014 Alex Kaul
+ * Copyright (c) 2015 Alex Kaul
  * License: MIT
  *
- * Generated at Wednesday, December 3rd, 2014, 3:54:12 PM
+ * Generated at Monday, March 16th, 2015, 11:39:51 AM
  */
 (function() {
 'use strict';
@@ -88,7 +88,7 @@ crop.factory('cropAreaCircle', ['cropArea', function(CropArea) {
       this._areaIsHover = true;
       cursor='move';
       res=true;
-      this._events.trigger('area-move');
+      this._events.trigger('area-move', this);
     } else if (this._boxResizeIsDragging) {
         cursor = 'nesw-resize';
         var iFR, iFX, iFY;
@@ -103,7 +103,7 @@ crop.factory('cropAreaCircle', ['cropArea', function(CropArea) {
         this._size = Math.max(this._minSize, iFR);
         this._boxResizeIsHover = true;
         res=true;
-        this._events.trigger('area-resize');
+        this._events.trigger('area-resize', this);
     } else if (this._isCoordWithinBoxResize([mouseCurX,mouseCurY])) {
         cursor = 'nesw-resize';
         this._areaIsHover = false;
@@ -261,7 +261,7 @@ crop.factory('cropAreaSquare', ['cropArea', function(CropArea) {
       this._areaIsHover = true;
       cursor='move';
       res=true;
-      this._events.trigger('area-move');
+      this._events.trigger('area-move', this);
     } else if (this._resizeCtrlIsDragging>-1) {
       var xMulti, yMulti;
       switch(this._resizeCtrlIsDragging) {
@@ -301,7 +301,7 @@ crop.factory('cropAreaSquare', ['cropArea', function(CropArea) {
       this._y+=posModifier*yMulti;
       this._resizeCtrlIsHover = this._resizeCtrlIsDragging;
       res=true;
-      this._events.trigger('area-resize');
+      this._events.trigger('area-resize', this);
     } else {
       var hoveredResizeBox=this._isCoordWithinResizeCtrl([mouseCurX,mouseCurY]);
       if (hoveredResizeBox>-1) {
@@ -1597,6 +1597,7 @@ crop.factory('cropHost', ['$document', 'cropAreaCircle', 'cropAreaSquare', 'crop
             }
             resetCropHost();
             events.trigger('image-updated');
+            events.trigger('area-init', theArea);
           });
         };
         newImage.onerror=function() {
@@ -1690,6 +1691,7 @@ crop.factory('cropHost', ['$document', 'cropAreaCircle', 'cropAreaSquare', 'crop
       theArea.setSize(curSize);
       theArea.setX(curX);
       theArea.setY(curY);
+      
 
       // resetCropHost();
       if(image!==null) {
@@ -1697,6 +1699,7 @@ crop.factory('cropHost', ['$document', 'cropAreaCircle', 'cropAreaSquare', 'crop
       }
 
       drawScene();
+      
     };
 
     /* Life Cycle begins */
@@ -1748,9 +1751,11 @@ crop.factory('cropPubSub', [function() {
       return this;
     };
     // Publish
-    this.trigger = function(name, args) {
+    this.trigger = function() {
+      var args = Array.prototype.slice.call(arguments);
+      var name = args.shift();
       angular.forEach(events[name], function(handler) {
-        handler.call(null, args);
+        handler.apply(null, args);
       });
       return this;
     };
@@ -1772,6 +1777,7 @@ crop.directive('imgCrop', ['$timeout', 'cropHost', 'cropPubSub', function($timeo
       resultImageQuality: '=',
 
       onChange: '&',
+      onAreaChange: '&',
       onLoadBegin: '&',
       onLoadDone: '&',
       onLoadError: '&'
@@ -1804,9 +1810,10 @@ crop.directive('imgCrop', ['$timeout', 'cropHost', 'cropPubSub', function($timeo
       // Wrapper to safely exec functions within $apply on a running $digest cycle
       var fnSafeApply=function(fn) {
         return function(){
+          var args = Array.prototype.slice.call(arguments);
           $timeout(function(){
             scope.$apply(function(scope){
-              fn(scope);
+              fn.apply(scope, args);
             });
           });
         };
@@ -1814,22 +1821,48 @@ crop.directive('imgCrop', ['$timeout', 'cropHost', 'cropPubSub', function($timeo
 
       // Setup CropHost Event Handlers
       events
-        .on('load-start', fnSafeApply(function(scope){
-          scope.onLoadBegin({});
+        .on('load-start', fnSafeApply(function(){
+          this.onLoadBegin({});
         }))
-        .on('load-done', fnSafeApply(function(scope){
-          scope.onLoadDone({});
+        .on('load-done', fnSafeApply(function(){
+          this.onLoadDone({});
         }))
-        .on('load-error', fnSafeApply(function(scope){
-          scope.onLoadError({});
+        .on('load-error', fnSafeApply(function(){
+          this.onLoadError({});
         }))
-        .on('area-move area-resize', fnSafeApply(function(scope){
-          if(!!scope.changeOnFly) {
-            updateResultImage(scope);
+        .on('area-init', fnSafeApply(function(area){
+          var resizeEvent = {
+            x: area._x,
+            y: area._y,
+            size: area._size,
+            image: {
+              width: area._ctx.canvas.width,
+              height: area._ctx.canvas.height,
+            }
+          };
+
+          this.onAreaChange({$event:resizeEvent});
+        }))
+        .on('area-move area-resize', fnSafeApply(function( area ){
+
+          var resizeEvent = {
+            x: area._x,
+            y: area._y,
+            size: area._size,
+            image: {
+              width: area._ctx.canvas.width,
+              height: area._ctx.canvas.height,
+            }
+          };
+
+          this.onAreaChange({$event:resizeEvent});
+
+          if(!!this.changeOnFly) {
+            updateResultImage(this);
           }
         }))
-        .on('area-move-end area-resize-end image-updated', fnSafeApply(function(scope){
-          updateResultImage(scope);
+        .on('area-move-end area-resize-end image-updated', fnSafeApply(function(){
+          updateResultImage(this);
         }));
 
       // Sync CropHost with Directive's options

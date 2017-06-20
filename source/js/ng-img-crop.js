@@ -15,6 +15,7 @@ crop.directive('imgCrop', ['$timeout', 'cropHost', 'cropPubSub', function($timeo
       resultImageQuality: '=',
 
       onChange: '&',
+      onAreaChange: '&',
       onLoadBegin: '&',
       onLoadDone: '&',
       onLoadError: '&'
@@ -47,9 +48,10 @@ crop.directive('imgCrop', ['$timeout', 'cropHost', 'cropPubSub', function($timeo
       // Wrapper to safely exec functions within $apply on a running $digest cycle
       var fnSafeApply=function(fn) {
         return function(){
+          var args = Array.prototype.slice.call(arguments);
           $timeout(function(){
             scope.$apply(function(scope){
-              fn(scope);
+              fn.apply(scope, args);
             });
           });
         };
@@ -57,22 +59,48 @@ crop.directive('imgCrop', ['$timeout', 'cropHost', 'cropPubSub', function($timeo
 
       // Setup CropHost Event Handlers
       events
-        .on('load-start', fnSafeApply(function(scope){
-          scope.onLoadBegin({});
+        .on('load-start', fnSafeApply(function(){
+          this.onLoadBegin({});
         }))
-        .on('load-done', fnSafeApply(function(scope){
-          scope.onLoadDone({});
+        .on('load-done', fnSafeApply(function(){
+          this.onLoadDone({});
         }))
-        .on('load-error', fnSafeApply(function(scope){
-          scope.onLoadError({});
+        .on('load-error', fnSafeApply(function(){
+          this.onLoadError({});
         }))
-        .on('area-move area-resize', fnSafeApply(function(scope){
-          if(!!scope.changeOnFly) {
-            updateResultImage(scope);
+        .on('area-init', fnSafeApply(function(area){
+          var resizeEvent = {
+            x: area._x,
+            y: area._y,
+            size: area._size,
+            image: {
+              width: area._ctx.canvas.width,
+              height: area._ctx.canvas.height,
+            }
+          };
+
+          this.onAreaChange({$event:resizeEvent});
+        }))
+        .on('area-move area-resize', fnSafeApply(function( area ){
+
+          var resizeEvent = {
+            x: area._x,
+            y: area._y,
+            size: area._size,
+            image: {
+              width: area._ctx.canvas.width,
+              height: area._ctx.canvas.height,
+            }
+          };
+
+          this.onAreaChange({$event:resizeEvent});
+
+          if(!!this.changeOnFly) {
+            updateResultImage(this);
           }
         }))
-        .on('area-move-end area-resize-end image-updated', fnSafeApply(function(scope){
-          updateResultImage(scope);
+        .on('area-move-end area-resize-end image-updated', fnSafeApply(function(){
+          updateResultImage(this);
         }));
 
       // Sync CropHost with Directive's options

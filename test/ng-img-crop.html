@@ -88,7 +88,8 @@
               result-image-format="{{resImgFormat}}"
               result-image-quality="resImgQuality"
               result-image-size="resImgSize"
-              on-change="onChange($dataURI)"
+              on-change="onChange($dataURI, $area)"
+              on-area-change="onAreaChange($event)"
               on-load-begin="onLoadBegin()"
               on-load-done="onLoadDone()"
               on-load-error="onLoadError()"
@@ -115,6 +116,11 @@
         $scope.selMinSize=100;
         $scope.resImgSize=200;
         //$scope.aspectRatio=1.2;
+        //
+        $scope.onAreaChange = function(event) {
+          console.log('On area resize event:', event);
+        };
+        
         $scope.onChange=function($dataURI) {
           console.log('onChange fired');
         };
