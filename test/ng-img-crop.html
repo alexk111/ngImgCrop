@@ -57,6 +57,9 @@
     <label>Result Image Size (Size = Width = Height): <input type="text" ng-model="resImgSize" /></label>
   </div>
   <div>
+    <label> Asect Ratio (Square = 1): <input type="text" ng-model="aspectRatio" /></label> 
+  </div>
+  <div>
     Result Image Format:
     <label><input type="radio" ng-model="resImgFormat" value="image/jpeg" /> image/jpeg</label>
     <label><input type="radio" ng-model="resImgFormat" value="image/png" /> image/png</label>
@@ -88,6 +91,7 @@
               result-image-format="{{resImgFormat}}"
               result-image-quality="resImgQuality"
               result-image-size="resImgSize"
+              aspect-ratio="aspectRatio"
               on-change="onChange($dataURI)"
               on-load-begin="onLoadBegin()"
               on-load-done="onLoadDone()"

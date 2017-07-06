@@ -17,7 +17,8 @@ crop.factory('cropAreaSquare', ['cropArea', function(CropArea) {
     this._posDragStartY=0;
     this._posResizeStartX=0;
     this._posResizeStartY=0;
-    this._posResizeStartSize=0;
+    this._posResizeStartXSize=0;
+    this._posResizeStartYSize=0;
 
     this._resizeCtrlIsHover = -1;
     this._areaIsHover = false;
@@ -27,23 +28,27 @@ crop.factory('cropAreaSquare', ['cropArea', function(CropArea) {
 
   CropAreaSquare.prototype = new CropArea();
 
+  // TODO: Update this to consider the aspect ratio
   CropAreaSquare.prototype._calcSquareCorners=function() {
-    var hSize=this._size/2;
+    var hXSize=this._xSize/2;
+    var hYSize=this._ySize/2;
     return [
-      [this._x-hSize, this._y-hSize],
-      [this._x+hSize, this._y-hSize],
-      [this._x-hSize, this._y+hSize],
-      [this._x+hSize, this._y+hSize]
+      [this._x-hXSize, this._y-hYSize],// top left
+      [this._x+hXSize, this._y-hYSize],// top right
+      [this._x-hXSize, this._y+hYSize],// bottom left
+      [this._x+hXSize, this._y+hYSize]// bottom right
     ];
   };
 
+  // TODO: Update this to consider aspect ratio
   CropAreaSquare.prototype._calcSquareDimensions=function() {
-    var hSize=this._size/2;
+    var hXSize=this._xSize/2;
+    var hYSize=this._ySize/2;
     return {
-      left: this._x-hSize,
-      top: this._y-hSize,
-      right: this._x+hSize,
-      bottom: this._y+hSize
+      left: this._x-hXSize,
+      top: this._y-hYSize,
+      right: this._x+hXSize,
+      bottom: this._y+hYSize
     };
   };
 
@@ -52,6 +57,7 @@ crop.factory('cropAreaSquare', ['cropArea', function(CropArea) {
     return (coord[0]>=squareDimensions.left&&coord[0]<=squareDimensions.right&&coord[1]>=squareDimensions.top&&coord[1]<=squareDimensions.bottom);
   };
 
+  // Check if the user is resizing or moving
   CropAreaSquare.prototype._isCoordWithinResizeCtrl=function(coord) {
     var resizeIconsCenterCoords=this._calcSquareCorners();
     var res=-1;
@@ -66,9 +72,11 @@ crop.factory('cropAreaSquare', ['cropArea', function(CropArea) {
     return res;
   };
 
+  // TODO: Update this to consider the aspect ratio
   CropAreaSquare.prototype._drawArea=function(ctx,centerCoords,size){
-    var hSize=size/2;
-    ctx.rect(centerCoords[0]-hSize,centerCoords[1]-hSize,size,size);
+    var hXSize=size[0]/2;
+    var hYSize=size[1]/2;
+    ctx.rect(centerCoords[0]-hXSize,centerCoords[1]-hYSize,size[0],size[1]);
   };
 
   CropAreaSquare.prototype.draw=function() {
@@ -84,7 +92,7 @@ crop.factory('cropAreaSquare', ['cropArea', function(CropArea) {
       this._cropCanvas.drawIconResizeCircle(resizeIconCenterCoords, this._resizeCtrlBaseRadius, this._resizeCtrlIsHover===i?this._resizeCtrlHoverRatio:this._resizeCtrlNormalRatio);
     }
   };
-
+  // TODO: Update to make the process mouse Move respect width size and height size
   CropAreaSquare.prototype.processMouseMove=function(mouseCurX, mouseCurY) {
     var cursor='default';
     var res=false;
@@ -123,19 +131,30 @@ crop.factory('cropAreaSquare', ['cropArea', function(CropArea) {
           cursor = 'nwse-resize';
           break;
       }
-      var iFX = (mouseCurX - this._posResizeStartX)*xMulti;
-      var iFY = (mouseCurY - this._posResizeStartY)*yMulti;
-      var iFR;
-      if(iFX>iFY) {
-        iFR = this._posResizeStartSize + iFY;
-      } else {
-        iFR = this._posResizeStartSize + iFX;
+      var iFX = ((mouseCurX - this._posResizeStartX)*xMulti) + this._posResizeStartXSize;
+      var iFY = ((mouseCurY - this._posResizeStartY)*yMulti) + this._posResizeStartYSize;
+
+      var wasXSize=this._xSize;
+      var wasYSize=this._ySize;
+
+      // TODO: if there is an aspect ratio constrain the xSize and ySize 
+      if(this._aspectRatio!=null){
+        if(this._aspectRatio >= 1){// if greater than 1, then we know the height has to be constrained
+          this._xSize = Math.max(this._minSize, iFX);
+          this._ySize = this._xSize/this._aspectRatio;
+        }else{// else we know that the width has to be constrained
+          this._ySize = Math.max(this._minSize, iFY);
+          this._xSize = this._ySize*this._aspectRatio;
+        }
+      }else{
+        this._xSize = Math.max(this._minSize, iFX);
+        this._ySize = Math.max(this._minSize, iFY);
       }
-      var wasSize=this._size;
-      this._size = Math.max(this._minSize, iFR);
-      var posModifier=(this._size-wasSize)/2;
-      this._x+=posModifier*xMulti;
-      this._y+=posModifier*yMulti;
+      
+      var xPosModifier=(this._xSize-wasXSize)/2;
+      var yPosModifier=(this._ySize-wasYSize)/2;
+      this._x+=xPosModifier*xMulti;
+      this._y+=yPosModifier*yMulti;
       this._resizeCtrlIsHover = this._resizeCtrlIsDragging;
       res=true;
       this._events.trigger('area-resize');
@@ -181,7 +200,8 @@ crop.factory('cropAreaSquare', ['cropArea', function(CropArea) {
       this._resizeCtrlIsHover = isWithinResizeCtrl;
       this._posResizeStartX=mouseDownX;
       this._posResizeStartY=mouseDownY;
-      this._posResizeStartSize = this._size;
+      this._posResizeStartXSize = this._xSize;
+      this._posResizeStartYSize = this._ySize;
       this._events.trigger('area-resize-start');
     } else if (this._isCoordWithinArea([mouseDownX,mouseDownY])) {
       this._areaIsDragging = true;

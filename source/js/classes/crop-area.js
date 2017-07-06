@@ -10,9 +10,12 @@ crop.factory('cropArea', ['cropCanvas', function(CropCanvas) {
     this._cropCanvas=new CropCanvas(ctx);
 
     this._image=new Image();
+    // center coords
     this._x = 0;
     this._y = 0;
-    this._size = 200;
+    this._xSize = 200;
+    this._ySize = 200;
+    this._aspectRatio = undefined;// Only applies to the CropAreaSquare
   };
 
   /* GETTERS/SETTERS */
@@ -39,41 +42,83 @@ crop.factory('cropArea', ['cropCanvas', function(CropCanvas) {
     this._y = y;
     this._dontDragOutside();
   };
-
-  CropArea.prototype.getSize = function () {
-    return this._size;
+  CropArea.prototype.getXSize = function () {
+    return this._xSize;
   };
-  CropArea.prototype.setSize = function (size) {
-    this._size = Math.max(this._minSize, size);
+  CropArea.prototype.setXSize = function (size) {
+    this._xSize = Math.max(this._minSize, size);
+    this._dontDragOutside();
+  };
+
+  CropArea.prototype.getYSize = function () {
+    return this._ySize;
+  };
+  CropArea.prototype.setYSize = function (size) {
+    this._ySize = Math.max(this._minSize, size);
+    this._respectAspectRatio();
     this._dontDragOutside();
   };
 
   CropArea.prototype.getMinSize = function () {
     return this._minSize;
   };
+  // TODO: Refactor away from using the _size property  
   CropArea.prototype.setMinSize = function (size) {
     this._minSize = size;
-    this._size = Math.max(this._minSize, this._size);
+    // update the size so that if the size was currently smaller, we make it bigger, else we leave it the same
+    this._xSize = Math.max(this._minSize, this._xSize);
+    this._ySize = Math.max(this._minSize, this._ySize);
+    this._respectAspectRatio();
     this._dontDragOutside();
   };
 
+  CropArea.prototype.getAspectRatio = function() {
+    return this._aspectRatio;
+  }
+  CropArea.prototype.setAspectRatio =  function(aspectRatio) {
+    console.dir(aspectRatio);
+    if(aspectRatio == null || aspectRatio===0 || isNaN(aspectRatio) || aspectRatio.length === 0){
+      this._aspectRatio = null;
+    }else{
+      this._aspectRatio = aspectRatio;
+    }
+    this._respectAspectRatio();
+  }
+
   /* FUNCTIONS */
+  // TODO: Update to consider height and width seperately (remove _size)
   CropArea.prototype._dontDragOutside=function() {
     var h=this._ctx.canvas.height,
         w=this._ctx.canvas.width;
-    if(this._size>w) { this._size=w; }
-    if(this._size>h) { this._size=h; }
-    if(this._x<this._size/2) { this._x=this._size/2; }
-    if(this._x>w-this._size/2) { this._x=w-this._size/2; }
-    if(this._y<this._size/2) { this._y=this._size/2; }
-    if(this._y>h-this._size/2) { this._y=h-this._size/2; }
+    if(this._xSize>w) { this._xSize=w; }
+    if(this._ySize>h) { this._ySize=h; }
+    // if the current x is smaller than the half of the crop area,
+    // then we know that he width was updated from changing the minimums/maximums
+    // so we need to make sure that they are at least the same
+    if(this._x<this._xSize/2) { this._x=this._xSize/2; }
+    // Or of somehow the x is now off of the canvas, we need to update it to be inside of the canvas
+    if(this._x>w-this._xSize/2) { this._x=w-this._xSize/2; }
+    // Same as above except for height and for the delta y
+    if(this._y<this._ySize/2) { this._y=this._ySize/2; }
+    if(this._y>h-this._ySize/2) { this._y=h-this._ySize/2; }
+  };
+
+  CropArea.prototype._respectAspectRatio=function(){
+    if(this._aspectRatio!=null){
+      if(this._aspectRatio >= 1){// if greater than 1, then we know the height has to be constrained
+        this._ySize = this._xSize/this._aspectRatio;
+      }else{// else we know that the width has to be constrained
+        this._xSize = this._ySize*this._aspectRatio;
+      }
+    }
   };
 
   CropArea.prototype._drawArea=function() {};
 
+  // TODO: update to draw based on the seperate width and height sizes
   CropArea.prototype.draw=function() {
-    // draw crop area
-    this._cropCanvas.drawCropArea(this._image,[this._x,this._y],this._size,this._drawArea);
+    // Draw the image into the area
+    this._cropCanvas.drawCropArea(this._image,[this._x,this._y],[this.getXSize(), this.getYSize()],this._drawArea);
   };
 
   CropArea.prototype.processMouseMove=function() {};
