@@ -88,8 +88,12 @@ crop.directive('imgCrop', ['$timeout', 'cropHost', 'cropPubSub', function($timeo
         updateResultImage(scope);
       });
       scope.$watch('resultImageSize',function(){
-        cropHost.setResultImageSize(scope.resultImageSize);
-        updateResultImage(scope);
+        try{
+          cropHost.setResultImageSize(JSON.parse(scope.resultImageSize));
+          updateResultImage(scope);
+        }catch(e){
+          console.error("Invalid result image size format", e);
+        }
       });
       scope.$watch('resultImageFormat',function(){
         cropHost.setResultImageFormat(scope.resultImageFormat);

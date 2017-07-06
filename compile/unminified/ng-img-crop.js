@@ -1488,7 +1488,7 @@ crop.factory('cropHost', ['$document', 'cropAreaCircle', 'cropAreaSquare', 'crop
         maxCanvasDims=[300,300];
 
     // Result Image size
-    var resImgSize=200;
+    var resImgSize={w: 200, h: 200};
 
     // Aspect ration for Crop Area
     var aspectRatio = 1;
@@ -1628,8 +1628,8 @@ crop.factory('cropHost', ['$document', 'cropAreaCircle', 'cropAreaSquare', 'crop
       var temp_ctx, temp_canvas;
       temp_canvas = angular.element('<canvas></canvas>')[0];
       temp_ctx = temp_canvas.getContext('2d');
-      temp_canvas.width = 300;// FIXME: This should be determined by the resImageXSize 
-      temp_canvas.height = 200;// FIXME: Read up
+      temp_canvas.width = resImgSize.w; 
+      temp_canvas.height = resImgSize.h;
       if(image!==null){
         temp_ctx.drawImage(
           image, // Image to be clipped
@@ -1639,8 +1639,8 @@ crop.factory('cropHost', ['$document', 'cropAreaCircle', 'cropAreaSquare', 'crop
           theArea.getYSize()*(image.height/ctx.canvas.height),// The height of the image to be clipped 
           0,// The x coordinate of where to place the canvas
           0,// The y coordinate of where to place the canvas
-          theArea.getXSize(),// The resulting image width
-          theArea.getYSize()// The resulting image height
+          resImgSize.w,// The resulting image width
+          resImgSize.h// The resulting image height
           );
       }
       if (resImgQuality!==null ){
@@ -1764,9 +1764,10 @@ crop.factory('cropHost', ['$document', 'cropAreaCircle', 'cropAreaSquare', 'crop
     };
 
     this.setResultImageSize=function(size) {
-      size=parseInt(size,10);
-      if(!isNaN(size)) {
-        resImgSize=size;
+      if(size && size.w && size.h && angular.isNumber(size.w) && angular.isNumber(size.h)){
+        resImgSize = size;
+      }else{
+        console.error("Invalid size object : " + JSON.stringify(size))
       }
     };
 
@@ -1961,8 +1962,12 @@ crop.directive('imgCrop', ['$timeout', 'cropHost', 'cropPubSub', function($timeo
         updateResultImage(scope);
       });
       scope.$watch('resultImageSize',function(){
-        cropHost.setResultImageSize(scope.resultImageSize);
-        updateResultImage(scope);
+        try{
+          cropHost.setResultImageSize(JSON.parse(scope.resultImageSize));
+          updateResultImage(scope);
+        }catch(e){
+          console.error("Invalid result image size format", e);
+        }
       });
       scope.$watch('resultImageFormat',function(){
         cropHost.setResultImageFormat(scope.resultImageFormat);
