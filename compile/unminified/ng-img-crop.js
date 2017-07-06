@@ -62,7 +62,7 @@ crop.factory('cropAreaCircle', ['cropArea', function(CropArea) {
   };
 
   CropAreaCircle.prototype._drawArea=function(ctx,centerCoords,size){
-    ctx.arc(centerCoords[0],centerCoords[1],size/2,0,2*Math.PI);
+    ctx.arc(centerCoords[0],centerCoords[1],size[0]/2,0,2*Math.PI);
   };
 
   CropAreaCircle.prototype.draw=function() {
@@ -100,7 +100,7 @@ crop.factory('cropAreaCircle', ['cropArea', function(CropArea) {
           iFR = this._posResizeStartSize + iFX*2;
         }
 
-        this._size = Math.max(this._minSize, iFR);
+        this.setSize(Math.max(this._minSize, iFR));
         this._boxResizeIsHover = true;
         res=true;
         this._events.trigger('area-resize');
@@ -157,6 +157,26 @@ crop.factory('cropAreaCircle', ['cropArea', function(CropArea) {
     this._posDragStartX = 0;
     this._posDragStartY = 0;
   };
+
+  CropAreaCircle.prototype.setSize = setSize;
+
+  /* OVERRIDES */
+
+  CropAreaCircle.prototype.getXSize = getSize;
+  CropAreaCircle.prototype.setXSize = setSize;
+
+  CropAreaCircle.prototype.getYSize = getSize;
+  CropAreaCircle.prototype.setYSize = setSize;
+
+  function setSize(size) {
+    this._size = Math.max(this._minSize, size);
+    this._xSize = this._size;
+    this._ySize = this._size;
+    this._dontDragOutside();
+  }
+  function getSize() {
+    return this._size;
+  }
 
   return CropAreaCircle;
 }]);
@@ -514,7 +534,7 @@ crop.factory('cropArea', ['cropCanvas', function(CropCanvas) {
   // TODO: update to draw based on the seperate width and height sizes
   CropArea.prototype.draw=function() {
     // Draw the image into the area
-    this._cropCanvas.drawCropArea(this._image,[this._x,this._y],[this._xSize, this._ySize],this._drawArea);
+    this._cropCanvas.drawCropArea(this._image,[this._x,this._y],[this.getXSize(), this.getYSize()],this._drawArea);
   };
 
   CropArea.prototype.processMouseMove=function() {};

@@ -118,7 +118,7 @@ crop.factory('cropArea', ['cropCanvas', function(CropCanvas) {
   // TODO: update to draw based on the seperate width and height sizes
   CropArea.prototype.draw=function() {
     // Draw the image into the area
-    this._cropCanvas.drawCropArea(this._image,[this._x,this._y],[this._xSize, this._ySize],this._drawArea);
+    this._cropCanvas.drawCropArea(this._image,[this._x,this._y],[this.getXSize(), this.getYSize()],this._drawArea);
   };
 
   CropArea.prototype.processMouseMove=function() {};
