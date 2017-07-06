@@ -15,7 +15,7 @@ crop.factory('cropArea', ['cropCanvas', function(CropCanvas) {
     this._y = 0;
     this._xSize = 200;
     this._ySize = 200;
-    this._aspectRatio = 1;// Only applies to the CropAreaSquare
+    this._aspectRatio = undefined;// Only applies to the CropAreaSquare
   };
 
   /* GETTERS/SETTERS */

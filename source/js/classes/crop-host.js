@@ -319,7 +319,9 @@ crop.factory('cropHost', ['$document', 'cropAreaCircle', 'cropAreaSquare', 'crop
 
     this.setAspectRatio=function(ratio) {
       aspectRatio = ratio;
-      console.log("aspect ratio has been set: " + ratio);
+      if(theArea){
+        theArea.setAspectRatio(aspectRatio);
+      }
     }
 
     this.setResultImageFormat=function(format) {
@@ -338,8 +340,7 @@ crop.factory('cropHost', ['$document', 'cropAreaCircle', 'cropAreaSquare', 'crop
           curYSize=theArea.getYSize(),
           curMinSize=theArea.getMinSize(),
           curX=theArea.getX(),
-          curY=theArea.getY(),
-          curAspectRatio=theArea.getAspectRatio();
+          curY=theArea.getY();
 
       var AreaClass=CropAreaSquare;
       if(type==='circle') {
@@ -351,7 +352,7 @@ crop.factory('cropHost', ['$document', 'cropAreaCircle', 'cropAreaSquare', 'crop
       theArea.setYSize(curYSize);
       theArea.setX(curX);
       theArea.setY(curY);
-      theArea.setAspectRatio(curAspectRatio)
+      theArea.setAspectRatio(aspectRatio)
 
       // resetCropHost();
       if(image!==null) {

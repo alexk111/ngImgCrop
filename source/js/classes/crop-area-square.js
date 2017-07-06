@@ -141,8 +141,23 @@ crop.factory('cropAreaSquare', ['cropArea', function(CropArea) {
       // }
       var wasXSize=this._xSize;
       var wasYSize=this._ySize;
-      this._xSize = Math.max(this._minSize, iFX);
-      this._ySize = Math.max(this._minSize, iFY);
+
+      // TODO: if there is an aspect ratio constrain the xSize and ySize 
+      if(this._aspectRatio!=null){
+        if(this._aspectRatio >= 1){// if greater than 1, then we know the height has to be constrained
+          this._xSize = Math.max(this._minSize, iFX);
+          this._ySize = this._xSize/this._aspectRatio;
+        }else{// else we know that the width has to be constrained
+          this._ySize = Math.max(this._minSize, iFY);
+          this._xSize = this._ySize*this._aspectRatio;
+        }
+      }else{
+        this._xSize = Math.max(this._minSize, iFX);
+        this._ySize = Math.max(this._minSize, iFY);
+      }
+
+
+      
       var xPosModifier=(this._xSize-wasXSize)/2;
       var yPosModifier=(this._ySize-wasYSize)/2;
       this._x+=xPosModifier*xMulti;

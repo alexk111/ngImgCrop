@@ -304,8 +304,21 @@ crop.factory('cropAreaSquare', ['cropArea', function(CropArea) {
       // }
       var wasXSize=this._xSize;
       var wasYSize=this._ySize;
-      this._xSize = Math.max(this._minSize, iFX);
-      this._ySize = Math.max(this._minSize, iFY);
+
+      // TODO: if there is an aspect ratio constrain the xSize and ySize 
+      if(this._aspectRatio!=null){
+        if(this._aspectRatio >= 1){// if greater than 1, then we know the height has to be constrained
+          this._xSize = Math.max(this._minSize, iFX);
+          this._ySize = this._xSize/this._aspectRatio;
+        }else{// else we know that the width has to be constrained
+          this._ySize = Math.max(this._minSize, iFY);
+          this._xSize = this._ySize*this._aspectRatio;
+        }
+      }else{
+        this._xSize = Math.max(this._minSize, iFX);
+        this._ySize = Math.max(this._minSize, iFY);
+      }
+
       var xPosModifier=(this._xSize-wasXSize)/2;
       var yPosModifier=(this._ySize-wasYSize)/2;
       this._x+=xPosModifier*xMulti;
@@ -403,7 +416,7 @@ crop.factory('cropArea', ['cropCanvas', function(CropCanvas) {
     this._y = 0;
     this._xSize = 200;
     this._ySize = 200;
-    this._aspectRatio = 1;// Only applies to the CropAreaSquare
+    this._aspectRatio = undefined;// Only applies to the CropAreaSquare
   };
 
   /* GETTERS/SETTERS */
@@ -1726,7 +1739,9 @@ crop.factory('cropHost', ['$document', 'cropAreaCircle', 'cropAreaSquare', 'crop
 
     this.setAspectRatio=function(ratio) {
       aspectRatio = ratio;
-      console.log("aspect ratio has been set: " + ratio);
+      if(theArea){
+        theArea.setAspectRatio(aspectRatio);
+      }
     }
 
     this.setResultImageFormat=function(format) {
@@ -1745,8 +1760,7 @@ crop.factory('cropHost', ['$document', 'cropAreaCircle', 'cropAreaSquare', 'crop
           curYSize=theArea.getYSize(),
           curMinSize=theArea.getMinSize(),
           curX=theArea.getX(),
-          curY=theArea.getY(),
-          curAspectRatio=theArea.getAspectRatio();
+          curY=theArea.getY();
 
       var AreaClass=CropAreaSquare;
       if(type==='circle') {
@@ -1758,7 +1772,7 @@ crop.factory('cropHost', ['$document', 'cropAreaCircle', 'cropAreaSquare', 'crop
       theArea.setYSize(curYSize);
       theArea.setX(curX);
       theArea.setY(curY);
-      theArea.setAspectRatio(curAspectRatio)
+      theArea.setAspectRatio(aspectRatio)
 
       // resetCropHost();
       if(image!==null) {
