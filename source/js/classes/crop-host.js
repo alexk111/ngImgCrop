@@ -37,6 +37,9 @@ crop.factory('cropHost', ['$document', 'cropAreaCircle', 'cropAreaSquare', 'crop
     // Result Image size
     var resImgSize=200;
 
+    // Aspect ration for Crop Area
+    var aspectRatio = 1;
+
     // Result Image type
     var resImgFormat='image/png';
 
@@ -93,7 +96,11 @@ crop.factory('cropHost', ['$document', 'cropAreaCircle', 'cropAreaSquare', 'crop
 
         theArea.setX(ctx.canvas.width/2);
         theArea.setY(ctx.canvas.height/2);
-        theArea.setSize(Math.min(200, ctx.canvas.width/2, ctx.canvas.height/2));
+        //theArea.setYSize(Math.min(200/aspectRatio, (ctx.canvas.width/2)/aspectRatio));
+        //theArea.setXSize(Math.min(200, ctx.canvas.width/2));
+        theArea.setYSize(100);
+        theArea.setXSize(100);
+        
       } else {
         elCanvas.prop('width',0).prop('height',0).css({'margin-top': 0});
       }
@@ -163,15 +170,25 @@ crop.factory('cropHost', ['$document', 'cropAreaCircle', 'cropAreaSquare', 'crop
       }
     };
 
-
+    // TODO: Update to respect the aspect ratio
     this.getResultImageDataURI=function() {
       var temp_ctx, temp_canvas;
       temp_canvas = angular.element('<canvas></canvas>')[0];
       temp_ctx = temp_canvas.getContext('2d');
-      temp_canvas.width = resImgSize;
-      temp_canvas.height = resImgSize;
+      temp_canvas.width = 300;// FIXME: This should be determined by the resImageXSize 
+      temp_canvas.height = 200;// FIXME: Read up
       if(image!==null){
-        temp_ctx.drawImage(image, (theArea.getX()-theArea.getSize()/2)*(image.width/ctx.canvas.width), (theArea.getY()-theArea.getSize()/2)*(image.height/ctx.canvas.height), theArea.getSize()*(image.width/ctx.canvas.width), theArea.getSize()*(image.height/ctx.canvas.height), 0, 0, resImgSize, resImgSize);
+        temp_ctx.drawImage(
+          image, // Image to be clipped
+          (theArea.getX()-theArea.getXSize()/2)*(image.width/ctx.canvas.width),// x coordinate of where to start clipping
+          (theArea.getY()-theArea.getYSize()/2)*(image.height/ctx.canvas.height),// y coordinate of where to start clipping
+          theArea.getXSize()*(image.width/ctx.canvas.width),// The width of the image to be clipped
+          theArea.getYSize()*(image.height/ctx.canvas.height),// The height of the image to be clipped 
+          0,// The x coordinate of where to place the canvas
+          0,// The y coordinate of where to place the canvas
+          theArea.getXSize(),// The resulting image width
+          theArea.getYSize()// The resulting image height
+          );
       }
       if (resImgQuality!==null ){
         return temp_canvas.toDataURL(resImgFormat, resImgQuality);
@@ -240,6 +257,7 @@ crop.factory('cropHost', ['$document', 'cropAreaCircle', 'cropAreaSquare', 'crop
       }
     };
 
+    // TODO: update the max dimensions to respect the aspect ratio
     this.setMaxDimensions=function(width, height) {
       maxCanvasDims=[width,height];
 
@@ -273,7 +291,9 @@ crop.factory('cropHost', ['$document', 'cropAreaCircle', 'cropAreaSquare', 'crop
 
         theArea.setX(theArea.getX()*ratioNewCurWidth);
         theArea.setY(theArea.getY()*ratioNewCurHeight);
-        theArea.setSize(theArea.getSize()*ratioMin);
+        theArea.setXSize(theArea.getXSize()*ratioNewCurWidth);
+        theArea.setYSize(theArea.getYSize()*ratioNewCurHeight);
+
       } else {
         elCanvas.prop('width',0).prop('height',0).css({'margin-top': 0});
       }
@@ -297,6 +317,11 @@ crop.factory('cropHost', ['$document', 'cropAreaCircle', 'cropAreaSquare', 'crop
       }
     };
 
+    this.setAspectRatio=function(ratio) {
+      aspectRatio = ratio;
+      console.log("aspect ratio has been set: " + ratio);
+    }
+
     this.setResultImageFormat=function(format) {
       resImgFormat = format;
     };
@@ -309,20 +334,24 @@ crop.factory('cropHost', ['$document', 'cropAreaCircle', 'cropAreaSquare', 'crop
     };
 
     this.setAreaType=function(type) {
-      var curSize=theArea.getSize(),
+      var curXSize=theArea.getXSize(),
+          curYSize=theArea.getYSize(),
           curMinSize=theArea.getMinSize(),
           curX=theArea.getX(),
-          curY=theArea.getY();
+          curY=theArea.getY(),
+          curAspectRatio=theArea.getAspectRatio();
 
-      var AreaClass=CropAreaCircle;
-      if(type==='square') {
-        AreaClass=CropAreaSquare;
+      var AreaClass=CropAreaSquare;
+      if(type==='circle') {
+        AreaClass=CropAreaCircle;
       }
       theArea = new AreaClass(ctx, events);
       theArea.setMinSize(curMinSize);
-      theArea.setSize(curSize);
+      theArea.setXSize(curXSize);
+      theArea.setYSize(curYSize);
       theArea.setX(curX);
       theArea.setY(curY);
+      theArea.setAspectRatio(curAspectRatio)
 
       // resetCropHost();
       if(image!==null) {

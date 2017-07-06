@@ -13,7 +13,7 @@ crop.directive('imgCrop', ['$timeout', 'cropHost', 'cropPubSub', function($timeo
       resultImageSize: '=',
       resultImageFormat: '@',
       resultImageQuality: '=',
-
+      aspectRatio:'=',
       onChange: '&',
       onLoadBegin: '&',
       onLoadDone: '&',
@@ -99,6 +99,10 @@ crop.directive('imgCrop', ['$timeout', 'cropHost', 'cropPubSub', function($timeo
         cropHost.setResultImageQuality(scope.resultImageQuality);
         updateResultImage(scope);
       });
+      scope.$watch('aspectRatio', function(){
+        cropHost.setAspectRatio(scope.aspectRatio);
+        updateResultImage(scope);
+      })
 
       // Update CropHost dimensions when the directive element is resized
       scope.$watch(
