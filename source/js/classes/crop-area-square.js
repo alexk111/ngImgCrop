@@ -133,12 +133,7 @@ crop.factory('cropAreaSquare', ['cropArea', function(CropArea) {
       }
       var iFX = ((mouseCurX - this._posResizeStartX)*xMulti) + this._posResizeStartXSize;
       var iFY = ((mouseCurY - this._posResizeStartY)*yMulti) + this._posResizeStartYSize;
-      // var iFR;
-      // if(iFX>iFY) {
-      //   iFR = this._posResizeStartSize + iFY;
-      // } else {
-      //   iFR = this._posResizeStartSize + iFX;
-      // }
+
       var wasXSize=this._xSize;
       var wasYSize=this._ySize;
 
@@ -155,8 +150,6 @@ crop.factory('cropAreaSquare', ['cropArea', function(CropArea) {
         this._xSize = Math.max(this._minSize, iFX);
         this._ySize = Math.max(this._minSize, iFY);
       }
-
-
       
       var xPosModifier=(this._xSize-wasXSize)/2;
       var yPosModifier=(this._ySize-wasYSize)/2;

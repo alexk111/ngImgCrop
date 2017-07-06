@@ -55,6 +55,7 @@ crop.factory('cropArea', ['cropCanvas', function(CropCanvas) {
   };
   CropArea.prototype.setYSize = function (size) {
     this._ySize = Math.max(this._minSize, size);
+    this._respectAspectRatio();
     this._dontDragOutside();
   };
 
@@ -67,6 +68,7 @@ crop.factory('cropArea', ['cropCanvas', function(CropCanvas) {
     // update the size so that if the size was currently smaller, we make it bigger, else we leave it the same
     this._xSize = Math.max(this._minSize, this._xSize);
     this._ySize = Math.max(this._minSize, this._ySize);
+    this._respectAspectRatio();
     this._dontDragOutside();
   };
 
@@ -74,7 +76,13 @@ crop.factory('cropArea', ['cropCanvas', function(CropCanvas) {
     return this._aspectRatio;
   }
   CropArea.prototype.setAspectRatio =  function(aspectRatio) {
-    this._aspectRatio = aspectRatio;
+    console.dir(aspectRatio);
+    if(aspectRatio == null || aspectRatio===0 || isNaN(aspectRatio) || aspectRatio.length === 0){
+      this._aspectRatio = null;
+    }else{
+      this._aspectRatio = aspectRatio;
+    }
+    this._respectAspectRatio();
   }
 
   /* FUNCTIONS */
@@ -93,6 +101,16 @@ crop.factory('cropArea', ['cropCanvas', function(CropCanvas) {
     // Same as above except for height and for the delta y
     if(this._y<this._ySize/2) { this._y=this._ySize/2; }
     if(this._y>h-this._ySize/2) { this._y=h-this._ySize/2; }
+  };
+
+  CropArea.prototype._respectAspectRatio=function(){
+    if(this._aspectRatio!=null){
+      if(this._aspectRatio >= 1){// if greater than 1, then we know the height has to be constrained
+        this._ySize = this._xSize/this._aspectRatio;
+      }else{// else we know that the width has to be constrained
+        this._xSize = this._ySize*this._aspectRatio;
+      }
+    }
   };
 
   CropArea.prototype._drawArea=function() {};
