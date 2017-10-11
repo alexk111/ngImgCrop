@@ -139,9 +139,10 @@ crop.factory('cropAreaSquare', ['cropArea', function(CropArea) {
       var sizeChange = (distance - this._distance);
       var wasWidth = this._size;
 
-      this._size = Math.max(this._minSize, (wasWidth + sizeChange));
-      this._x += (sizeChange / 2) * xMulti;
-      this._y += ((sizeChange * this._ratio) / 2) * yMulti;
+      this._size += sizeChange;
+      this._x += ((sizeChange / 2) * xMulti) - this._posDragStartX;
+      this._y += (((sizeChange * this._ratio) / 2) * yMulti) - this._posDragStartY;
+
       this._resizeCtrlIsHover = this._resizeCtrlIsDragging;
       res = true;
       this._events.trigger('area-resize');

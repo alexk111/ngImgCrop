@@ -1,11 +1,11 @@
 /*!
- * ngImgCrop v0.3.2
+ * ngImgCrop v0.3.6
  * https://github.com/alexk111/ngImgCrop
  *
  * Copyright (c) 2017 Alex Kaul
  * License: MIT
  *
- * Generated at Thursday, August 10th, 2017, 3:24:07 PM
+ * Generated at Wednesday, October 11th, 2017, 1:51:07 PM
  */
 (function() {
 'use strict';
@@ -300,9 +300,10 @@ crop.factory('cropAreaSquare', ['cropArea', function(CropArea) {
       var sizeChange = (distance - this._distance);
       var wasWidth = this._size;
 
-      this._size = Math.max(this._minSize, (wasWidth + sizeChange));
-      this._x += (sizeChange / 2) * xMulti;
-      this._y += ((sizeChange * this._ratio) / 2) * yMulti;
+      this._size += sizeChange;
+      this._x += ((sizeChange / 2) * xMulti) - this._posDragStartX;
+      this._y += (((sizeChange * this._ratio) / 2) * yMulti) - this._posDragStartY;
+
       this._resizeCtrlIsHover = this._resizeCtrlIsDragging;
       res = true;
       this._events.trigger('area-resize');
