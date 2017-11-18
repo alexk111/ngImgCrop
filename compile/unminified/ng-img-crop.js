@@ -2,10 +2,10 @@
  * ngImgCrop v0.3.2
  * https://github.com/alexk111/ngImgCrop
  *
- * Copyright (c) 2014 Alex Kaul
+ * Copyright (c) 2017 Alex Kaul
  * License: MIT
  *
- * Generated at Wednesday, December 3rd, 2014, 3:54:12 PM
+ * Generated at Saturday, November 18th, 2017, 2:00:36 PM
  */
 (function() {
 'use strict';
@@ -1721,11 +1721,11 @@ crop.factory('cropHost', ['$document', 'cropAreaCircle', 'cropAreaSquare', 'crop
     this.destroy=function() {
       $document.off('mousemove',onMouseMove);
       elCanvas.off('mousedown',onMouseDown);
-      $document.off('mouseup',onMouseMove);
+      $document.off('mouseup',onMouseUp);
 
       $document.off('touchmove',onMouseMove);
       elCanvas.off('touchstart',onMouseDown);
-      $document.off('touchend',onMouseMove);
+      $document.off('touchend',onMouseUp);
 
       elCanvas.remove();
     };
