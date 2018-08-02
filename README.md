@@ -10,9 +10,7 @@ Simple Image Crop directive for AngularJS. Enables to crop a circle or a square 
 
 ## Screenshots
 
-![Circle Crop](https://raw.github.com/alexk111/ngImgCrop/master/screenshots/circle_1.jpg "Circle Crop")
-
-![Square Crop](https://raw.github.com/alexk111/ngImgCrop/master/screenshots/square_1.jpg "Square Crop")
+![Circle Crop](https://github.com/shenghou/blog/blob/master/src/imgCrop.png)
 
 ## Live demo
 
