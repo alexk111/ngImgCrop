@@ -389,7 +389,7 @@ crop.factory('cropHost', ['$document', 'cropAreaCircle', 'cropAreaSquare', 'crop
     elCanvas.on('touchstart', onMouseDown);
     $document.on('touchend', onMouseUp);
 
-    elCanvas.on('mousewheel DOMMouseScroll', onMouseWheel)
+    elCanvas.on('mousewheel DOMMouseScroll', onMouseWheel);
 
     // CropHost Destructor
     this.destroy = function () {

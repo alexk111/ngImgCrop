@@ -113,7 +113,7 @@ crop.directive('imgCrop', ['$timeout', 'cropHost', 'cropPubSub', function ($time
           cropHost.setMaxDimensions(value[0], value[1]);
           updateResultImage(scope);
         },
-        true,
+        true
       );
 
       // Destroy CropHost Instance when the directive is destroying
