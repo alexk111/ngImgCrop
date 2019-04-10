@@ -126,7 +126,7 @@ crop.factory('cropHost', ['$document', 'cropAreaCircle', 'cropAreaSquare', 'crop
 
         theArea.setX(ctx.canvas.width / 2);
         theArea.setY(ctx.canvas.height / 2);
-        theArea.setSize(Math.min(200, ctx.canvas.width / 2, ctx.canvas.height / 2));
+        theArea.setSize(Math.min(50, ctx.canvas.width / 2, ctx.canvas.height / 2));
       } else {
         elCanvas.prop('width', 0).prop('height', 0).css({ 'margin-top': 0 });
       }

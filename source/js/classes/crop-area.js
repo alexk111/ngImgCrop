@@ -12,7 +12,7 @@ crop.factory('cropArea', ['cropCanvas', function(CropCanvas) {
     this._image=new Image();
     this._x = 0;
     this._y = 0;
-    this._size = 100;
+    this._size = 50;
   };
 
   /* GETTERS/SETTERS */
