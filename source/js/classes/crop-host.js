@@ -144,6 +144,7 @@ crop.factory('cropHost', ['$document', 'cropAreaCircle', 'cropAreaSquare', 'crop
       } else {
         return event.originalEvent.changedTouches;
       }
+
     };
 
     var onMouseMove = function (e) {

@@ -5,7 +5,7 @@
  * Copyright (c) 2019 Alex Kaul
  * License: MIT
  *
- * Generated at Wednesday, April 10th, 2019, 4:52:30 PM
+ * Generated at Wednesday, April 10th, 2019, 5:00:54 PM
  */
 (function() {
 'use strict';
@@ -1513,6 +1513,7 @@ crop.factory('cropHost', ['$document', 'cropAreaCircle', 'cropAreaSquare', 'crop
       } else {
         return event.originalEvent.changedTouches;
       }
+
     };
 
     var onMouseMove = function (e) {
