@@ -5,7 +5,7 @@
  * Copyright (c) 2019 Alex Kaul
  * License: MIT
  *
- * Generated at Wednesday, April 10th, 2019, 5:00:54 PM
+ * Generated at Wednesday, April 10th, 2019, 5:50:28 PM
  */
 (function() {
 'use strict';
@@ -1422,10 +1422,22 @@ crop.factory('cropHost', ['$document', 'cropAreaCircle', 'cropAreaSquare', 'crop
 
     var onMouseWheel = function (e) {
       e.preventDefault();
+      var wheel = 1;
       var curSize = theArea.getSize(),
         curX = theArea.getX(),
         curY = theArea.getY();
-      var wheel = e.deltaY < 0 ? 1 : -1;
+
+      if (typeof e.deltaY !== 'undefined') {
+        wheel = e.deltaY < 0 ? 1 : -1;
+      } else if (typeof e.wheelDelta !== 'undefined') {
+        wheel = e.wheelDelta < 0 ? -1 : 1;
+      }  else if (typeof e.originalEvent !== 'undefined') {
+        wheel = e.originalEvent.deltaY < 0 ? -1 : 1;
+      }
+      else if (typeof e.detail !== 'undefined') {
+        wheel = e.detail < 0 ? -1 : 1;
+      }
+
       var zoom = Math.exp(wheel * zoomIntensity);
       scale *= zoom;
       var AreaClass = CropAreaSquare;
@@ -1513,7 +1525,6 @@ crop.factory('cropHost', ['$document', 'cropAreaCircle', 'cropAreaSquare', 'crop
       } else {
         return event.originalEvent.changedTouches;
       }
-
     };
 
     var onMouseMove = function (e) {
