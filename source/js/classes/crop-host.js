@@ -31,7 +31,7 @@ crop.factory('cropHost', ['$document', 'cropAreaCircle', 'cropAreaSquare', 'crop
       theArea = null;
 
     // Dimensions
-    var minCanvasDims = [100, 100],
+    var minCanvasDims = [30, 30],
       maxCanvasDims = [300, 300];
 
     var resImgSize = 200;
@@ -40,7 +40,7 @@ crop.factory('cropHost', ['$document', 'cropAreaCircle', 'cropAreaSquare', 'crop
     // Mouse Zoom
 
     var resWheelZoom = false;
-    var zoomIntensity = 0.005;
+    var zoomIntensity = 0.008;
     var scale = 1;
 
     // Result Image type
@@ -87,7 +87,7 @@ crop.factory('cropHost', ['$document', 'cropAreaCircle', 'cropAreaSquare', 'crop
         ctx.save();
 
         // and make it darker
-        ctx.fillStyle = 'rgba(0, 0, 0, 0.65)';
+        ctx.fillStyle = 'rgba(0, 0, 0, 0)';
         ctx.fillRect(0, 0, ctx.canvas.width, ctx.canvas.height);
 
         ctx.restore();

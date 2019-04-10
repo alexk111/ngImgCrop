@@ -5,10 +5,10 @@ crop.factory('cropAreaSquare', ['cropArea', function(CropArea) {
     CropArea.apply(this, arguments);
 
     this._resizeCtrlBaseRadius = 10;
-    this._resizeCtrlNormalRatio = 0.75;
+    this._resizeCtrlNormalRatio = 0.6;
     this._resizeCtrlHoverRatio = 1;
-    this._iconMoveNormalRatio = 0.9;
-    this._iconMoveHoverRatio = 1.2;
+    this._iconMoveNormalRatio = 0.7;
+    this._iconMoveHoverRatio = 1.1;
 
     this._resizeCtrlNormalRadius = this._resizeCtrlBaseRadius*this._resizeCtrlNormalRatio;
     this._resizeCtrlHoverRadius = this._resizeCtrlBaseRadius*this._resizeCtrlHoverRatio;

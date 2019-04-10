@@ -5,7 +5,7 @@
  * Copyright (c) 2019 Alex Kaul
  * License: MIT
  *
- * Generated at Wednesday, March 13th, 2019, 12:26:55 PM
+ * Generated at Wednesday, April 10th, 2019, 12:52:28 PM
  */
 (function() {
 'use strict';
@@ -168,10 +168,10 @@ crop.factory('cropAreaSquare', ['cropArea', function(CropArea) {
     CropArea.apply(this, arguments);
 
     this._resizeCtrlBaseRadius = 10;
-    this._resizeCtrlNormalRatio = 0.75;
+    this._resizeCtrlNormalRatio = 0.6;
     this._resizeCtrlHoverRatio = 1;
-    this._iconMoveNormalRatio = 0.9;
-    this._iconMoveHoverRatio = 1.2;
+    this._iconMoveNormalRatio = 0.7;
+    this._iconMoveHoverRatio = 1.1;
 
     this._resizeCtrlNormalRadius = this._resizeCtrlBaseRadius*this._resizeCtrlNormalRatio;
     this._resizeCtrlHoverRadius = this._resizeCtrlBaseRadius*this._resizeCtrlHoverRatio;
@@ -376,19 +376,20 @@ crop.factory('cropAreaSquare', ['cropArea', function(CropArea) {
   return CropAreaSquare;
 }]);
 
+
 crop.factory('cropArea', ['cropCanvas', function(CropCanvas) {
   var CropArea = function(ctx, events) {
     this._ctx=ctx;
     this._events=events;
 
-    this._minSize=80;
+    this._minSize=30;
 
     this._cropCanvas=new CropCanvas(ctx);
 
     this._image=new Image();
     this._x = 0;
     this._y = 0;
-    this._size = 200;
+    this._size = 100;
   };
 
   /* GETTERS/SETTERS */
@@ -460,6 +461,7 @@ crop.factory('cropArea', ['cropCanvas', function(CropCanvas) {
 
   return CropArea;
 }]);
+
 
 crop.factory('cropCanvas', [function() {
   // Shape = Array of [x,y]; [0, 0] - center
@@ -1399,7 +1401,7 @@ crop.factory('cropHost', ['$document', 'cropAreaCircle', 'cropAreaSquare', 'crop
       theArea = null;
 
     // Dimensions
-    var minCanvasDims = [100, 100],
+    var minCanvasDims = [30, 30],
       maxCanvasDims = [300, 300];
 
     var resImgSize = 200;
@@ -1407,7 +1409,7 @@ crop.factory('cropHost', ['$document', 'cropAreaCircle', 'cropAreaSquare', 'crop
     // Mouse Zoom
 
     var resWheelZoom = false;
-    var zoomIntensity = 0.005;
+    var zoomIntensity = 0.008;
     var scale = 1;
 
     // Result Image type
@@ -1454,7 +1456,7 @@ crop.factory('cropHost', ['$document', 'cropAreaCircle', 'cropAreaSquare', 'crop
         ctx.save();
 
         // and make it darker
-        ctx.fillStyle = 'rgba(0, 0, 0, 0.65)';
+        ctx.fillStyle = 'rgba(0, 0, 0, 0)';
         ctx.fillRect(0, 0, ctx.canvas.width, ctx.canvas.height);
 
         ctx.restore();

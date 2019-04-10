@@ -5,14 +5,14 @@ crop.factory('cropArea', ['cropCanvas', function(CropCanvas) {
     this._ctx=ctx;
     this._events=events;
 
-    this._minSize=80;
+    this._minSize=30;
 
     this._cropCanvas=new CropCanvas(ctx);
 
     this._image=new Image();
     this._x = 0;
     this._y = 0;
-    this._size = 200;
+    this._size = 100;
   };
 
   /* GETTERS/SETTERS */
