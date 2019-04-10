@@ -5,7 +5,7 @@
  * Copyright (c) 2019 Alex Kaul
  * License: MIT
  *
- * Generated at Wednesday, April 10th, 2019, 4:12:32 PM
+ * Generated at Wednesday, April 10th, 2019, 4:52:30 PM
  */
 (function() {
 'use strict';
@@ -1409,7 +1409,7 @@ crop.factory('cropHost', ['$document', 'cropAreaCircle', 'cropAreaSquare', 'crop
     // Mouse Zoom
 
     var resWheelZoom = false;
-    var zoomIntensity = 0.03;
+    var zoomIntensity = 0.09;
     var scale = 1;
 
     // Result Image type
