@@ -40,7 +40,7 @@ crop.factory('cropHost', ['$document', 'cropAreaCircle', 'cropAreaSquare', 'crop
     // Mouse Zoom
 
     var resWheelZoom = false;
-    var zoomIntensity = 0.008;
+    var zoomIntensity = 0.03;
     var scale = 1;
 
     // Result Image type
