@@ -2,10 +2,10 @@
  * ngImgCrop v0.3.2
  * https://github.com/alexk111/ngImgCrop
  *
- * Copyright (c) 2014 Alex Kaul
+ * Copyright (c) 2019 Alex Kaul
  * License: MIT
  *
- * Generated at Wednesday, December 3rd, 2014, 3:54:12 PM
+ * Generated at Wednesday, April 10th, 2019, 5:50:28 PM
  */
 (function() {
 'use strict';
@@ -168,10 +168,10 @@ crop.factory('cropAreaSquare', ['cropArea', function(CropArea) {
     CropArea.apply(this, arguments);
 
     this._resizeCtrlBaseRadius = 10;
-    this._resizeCtrlNormalRatio = 0.75;
+    this._resizeCtrlNormalRatio = 0.6;
     this._resizeCtrlHoverRatio = 1;
-    this._iconMoveNormalRatio = 0.9;
-    this._iconMoveHoverRatio = 1.2;
+    this._iconMoveNormalRatio = 0.7;
+    this._iconMoveHoverRatio = 1.1;
 
     this._resizeCtrlNormalRadius = this._resizeCtrlBaseRadius*this._resizeCtrlNormalRatio;
     this._resizeCtrlHoverRadius = this._resizeCtrlBaseRadius*this._resizeCtrlHoverRatio;
@@ -376,19 +376,20 @@ crop.factory('cropAreaSquare', ['cropArea', function(CropArea) {
   return CropAreaSquare;
 }]);
 
+
 crop.factory('cropArea', ['cropCanvas', function(CropCanvas) {
   var CropArea = function(ctx, events) {
     this._ctx=ctx;
     this._events=events;
 
-    this._minSize=80;
+    this._minSize=30;
 
     this._cropCanvas=new CropCanvas(ctx);
 
     this._image=new Image();
     this._x = 0;
     this._y = 0;
-    this._size = 200;
+    this._size = 50;
   };
 
   /* GETTERS/SETTERS */
@@ -460,6 +461,7 @@ crop.factory('cropArea', ['cropCanvas', function(CropCanvas) {
 
   return CropArea;
 }]);
+
 
 crop.factory('cropCanvas', [function() {
   // Shape = Array of [x,y]; [0, 0] - center
@@ -1368,64 +1370,105 @@ crop.service('cropEXIF', [function() {
   }
 }]);
 
-crop.factory('cropHost', ['$document', 'cropAreaCircle', 'cropAreaSquare', 'cropEXIF', function($document, CropAreaCircle, CropAreaSquare, cropEXIF) {
+crop.factory('cropHost', ['$document', 'cropAreaCircle', 'cropAreaSquare', 'cropEXIF', function ($document, CropAreaCircle, CropAreaSquare, cropEXIF) {
   /* STATIC FUNCTIONS */
 
   // Get Element's Offset
-  var getElementOffset=function(elem) {
-      var box = elem.getBoundingClientRect();
+  var getElementOffset = function (elem) {
+    var box = elem.getBoundingClientRect();
 
-      var body = document.body;
-      var docElem = document.documentElement;
+    var body = document.body;
+    var docElem = document.documentElement;
 
-      var scrollTop = window.pageYOffset || docElem.scrollTop || body.scrollTop;
-      var scrollLeft = window.pageXOffset || docElem.scrollLeft || body.scrollLeft;
+    var scrollTop = window.pageYOffset || docElem.scrollTop || body.scrollTop;
+    var scrollLeft = window.pageXOffset || docElem.scrollLeft || body.scrollLeft;
 
-      var clientTop = docElem.clientTop || body.clientTop || 0;
-      var clientLeft = docElem.clientLeft || body.clientLeft || 0;
+    var clientTop = docElem.clientTop || body.clientTop || 0;
+    var clientLeft = docElem.clientLeft || body.clientLeft || 0;
 
-      var top  = box.top +  scrollTop - clientTop;
-      var left = box.left + scrollLeft - clientLeft;
+    var top = box.top + scrollTop - clientTop;
+    var left = box.left + scrollLeft - clientLeft;
 
-      return { top: Math.round(top), left: Math.round(left) };
+    return { top: Math.round(top), left: Math.round(left) };
   };
 
-  return function(elCanvas, opts, events){
+  return function (elCanvas, opts, events) {
     /* PRIVATE VARIABLES */
 
     // Object Pointers
-    var ctx=null,
-        image=null,
-        theArea=null;
+    var ctx = null,
+      image = null,
+      theArea = null;
 
     // Dimensions
-    var minCanvasDims=[100,100],
-        maxCanvasDims=[300,300];
+    var minCanvasDims = [30, 30],
+      maxCanvasDims = [300, 300];
 
-    // Result Image size
-    var resImgSize=200;
+    var resImgSize = 200;
+
+    // Mouse Zoom
+
+    var resWheelZoom = false;
+    var zoomIntensity = 0.09;
+    var scale = 1;
 
     // Result Image type
-    var resImgFormat='image/png';
+    var resImgFormat = 'image/png';
 
     // Result Image quality
-    var resImgQuality=null;
+    var resImgQuality = null;
 
     /* PRIVATE FUNCTIONS */
+
+    var onMouseWheel = function (e) {
+      e.preventDefault();
+      var wheel = 1;
+      var curSize = theArea.getSize(),
+        curX = theArea.getX(),
+        curY = theArea.getY();
+
+      if (typeof e.deltaY !== 'undefined') {
+        wheel = e.deltaY < 0 ? 1 : -1;
+      } else if (typeof e.wheelDelta !== 'undefined') {
+        wheel = e.wheelDelta < 0 ? -1 : 1;
+      }  else if (typeof e.originalEvent !== 'undefined') {
+        wheel = e.originalEvent.deltaY < 0 ? -1 : 1;
+      }
+      else if (typeof e.detail !== 'undefined') {
+        wheel = e.detail < 0 ? -1 : 1;
+      }
+
+      var zoom = Math.exp(wheel * zoomIntensity);
+      scale *= zoom;
+      var AreaClass = CropAreaSquare;
+      theArea = new AreaClass(ctx, events);
+      var newSize = curSize * (Math.abs(zoom));
+      var newX = curX + ((curSize - newSize) / 4);
+      var newY = curY + ((curSize - newSize) / 4);
+
+      theArea.setSize(newSize);
+      theArea.setX(newX);
+      theArea.setY(newY);
+      if (image !== null) {
+        theArea.setImage(image);
+      }
+      drawScene();
+      events.trigger('image-updated');
+    };
 
     // Draw Scene
     function drawScene() {
       // clear canvas
       ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
 
-      if(image!==null) {
+      if (image !== null) {
         // draw source image
         ctx.drawImage(image, 0, 0, ctx.canvas.width, ctx.canvas.height);
 
         ctx.save();
 
         // and make it darker
-        ctx.fillStyle = 'rgba(0, 0, 0, 0.65)';
+        ctx.fillStyle = 'rgba(0, 0, 0, 0)';
         ctx.fillRect(0, 0, ctx.canvas.width, ctx.canvas.height);
 
         ctx.restore();
@@ -1436,34 +1479,37 @@ crop.factory('cropHost', ['$document', 'cropAreaCircle', 'cropAreaSquare', 'crop
     }
 
     // Resets CropHost
-    var resetCropHost=function() {
-      if(image!==null) {
+    var resetCropHost = function () {
+      if (image !== null) {
         theArea.setImage(image);
-        var imageDims=[image.width, image.height],
-            imageRatio=image.width/image.height,
-            canvasDims=imageDims;
+        var imageDims = [image.width, image.height],
+          imageRatio = image.width / image.height,
+          canvasDims = imageDims;
 
-        if(canvasDims[0]>maxCanvasDims[0]) {
-          canvasDims[0]=maxCanvasDims[0];
-          canvasDims[1]=canvasDims[0]/imageRatio;
-        } else if(canvasDims[0]<minCanvasDims[0]) {
-          canvasDims[0]=minCanvasDims[0];
-          canvasDims[1]=canvasDims[0]/imageRatio;
+        if (canvasDims[0] > maxCanvasDims[0]) {
+          canvasDims[0] = maxCanvasDims[0];
+          canvasDims[1] = canvasDims[0] / imageRatio;
+        } else if (canvasDims[0] < minCanvasDims[0]) {
+          canvasDims[0] = minCanvasDims[0];
+          canvasDims[1] = canvasDims[0] / imageRatio;
         }
-        if(canvasDims[1]>maxCanvasDims[1]) {
-          canvasDims[1]=maxCanvasDims[1];
-          canvasDims[0]=canvasDims[1]*imageRatio;
-        } else if(canvasDims[1]<minCanvasDims[1]) {
-          canvasDims[1]=minCanvasDims[1];
-          canvasDims[0]=canvasDims[1]*imageRatio;
+        if (canvasDims[1] > maxCanvasDims[1]) {
+          canvasDims[1] = maxCanvasDims[1];
+          canvasDims[0] = canvasDims[1] * imageRatio;
+        } else if (canvasDims[1] < minCanvasDims[1]) {
+          canvasDims[1] = minCanvasDims[1];
+          canvasDims[0] = canvasDims[1] * imageRatio;
         }
-        elCanvas.prop('width',canvasDims[0]).prop('height',canvasDims[1]).css({'margin-left': -canvasDims[0]/2+'px', 'margin-top': -canvasDims[1]/2+'px'});
+        elCanvas.prop('width', canvasDims[0]).prop('height', canvasDims[1]).css({
+          'margin-left': -canvasDims[0] / 2 + 'px',
+          'margin-top': -canvasDims[1] / 2 + 'px',
+        });
 
-        theArea.setX(ctx.canvas.width/2);
-        theArea.setY(ctx.canvas.height/2);
-        theArea.setSize(Math.min(200, ctx.canvas.width/2, ctx.canvas.height/2));
+        theArea.setX(ctx.canvas.width / 2);
+        theArea.setY(ctx.canvas.height / 2);
+        theArea.setSize(Math.min(50, ctx.canvas.width / 2, ctx.canvas.height / 2));
       } else {
-        elCanvas.prop('width',0).prop('height',0).css({'margin-top': 0});
+        elCanvas.prop('width', 0).prop('height', 0).css({ 'margin-top': 0 });
       }
 
       drawScene();
@@ -1473,217 +1519,224 @@ crop.factory('cropHost', ['$document', 'cropAreaCircle', 'cropAreaSquare', 'crop
      * Returns event.changedTouches directly if event is a TouchEvent.
      * If event is a jQuery event, return changedTouches of event.originalEvent
      */
-    var getChangedTouches=function(event){
-      if(angular.isDefined(event.changedTouches)){
+    var getChangedTouches = function (event) {
+      if (angular.isDefined(event.changedTouches)) {
         return event.changedTouches;
-      }else{
+      } else {
         return event.originalEvent.changedTouches;
       }
     };
 
-    var onMouseMove=function(e) {
-      if(image!==null) {
-        var offset=getElementOffset(ctx.canvas),
-            pageX, pageY;
-        if(e.type === 'touchmove') {
-          pageX=getChangedTouches(e)[0].pageX;
-          pageY=getChangedTouches(e)[0].pageY;
+    var onMouseMove = function (e) {
+      if (image !== null) {
+        var offset = getElementOffset(ctx.canvas),
+          pageX, pageY;
+        if (e.type === 'touchmove') {
+          pageX = getChangedTouches(e)[0].pageX;
+          pageY = getChangedTouches(e)[0].pageY;
         } else {
-          pageX=e.pageX;
-          pageY=e.pageY;
+          pageX = e.pageX;
+          pageY = e.pageY;
         }
-        theArea.processMouseMove(pageX-offset.left, pageY-offset.top);
+        theArea.processMouseMove(pageX - offset.left, pageY - offset.top);
         drawScene();
       }
     };
 
-    var onMouseDown=function(e) {
+    var onMouseDown = function (e) {
       e.preventDefault();
       e.stopPropagation();
-      if(image!==null) {
-        var offset=getElementOffset(ctx.canvas),
-            pageX, pageY;
-        if(e.type === 'touchstart') {
-          pageX=getChangedTouches(e)[0].pageX;
-          pageY=getChangedTouches(e)[0].pageY;
+      if (image !== null) {
+        var offset = getElementOffset(ctx.canvas),
+          pageX, pageY;
+        if (e.type === 'touchstart') {
+          pageX = getChangedTouches(e)[0].pageX;
+          pageY = getChangedTouches(e)[0].pageY;
         } else {
-          pageX=e.pageX;
-          pageY=e.pageY;
+          pageX = e.pageX;
+          pageY = e.pageY;
         }
-        theArea.processMouseDown(pageX-offset.left, pageY-offset.top);
+        theArea.processMouseDown(pageX - offset.left, pageY - offset.top);
         drawScene();
       }
     };
 
-    var onMouseUp=function(e) {
-      if(image!==null) {
-        var offset=getElementOffset(ctx.canvas),
-            pageX, pageY;
-        if(e.type === 'touchend') {
-          pageX=getChangedTouches(e)[0].pageX;
-          pageY=getChangedTouches(e)[0].pageY;
+    var onMouseUp = function (e) {
+      if (image !== null) {
+        var offset = getElementOffset(ctx.canvas),
+          pageX, pageY;
+        if (e.type === 'touchend') {
+          pageX = getChangedTouches(e)[0].pageX;
+          pageY = getChangedTouches(e)[0].pageY;
         } else {
-          pageX=e.pageX;
-          pageY=e.pageY;
+          pageX = e.pageX;
+          pageY = e.pageY;
         }
-        theArea.processMouseUp(pageX-offset.left, pageY-offset.top);
+        theArea.processMouseUp(pageX - offset.left, pageY - offset.top);
         drawScene();
       }
     };
 
-    this.getResultImageDataURI=function() {
+    this.getResultImageDataURI = function () {
       var temp_ctx, temp_canvas;
       temp_canvas = angular.element('<canvas></canvas>')[0];
       temp_ctx = temp_canvas.getContext('2d');
       temp_canvas.width = resImgSize;
       temp_canvas.height = resImgSize;
-      if(image!==null){
-        temp_ctx.drawImage(image, (theArea.getX()-theArea.getSize()/2)*(image.width/ctx.canvas.width), (theArea.getY()-theArea.getSize()/2)*(image.height/ctx.canvas.height), theArea.getSize()*(image.width/ctx.canvas.width), theArea.getSize()*(image.height/ctx.canvas.height), 0, 0, resImgSize, resImgSize);
+      if (image !== null) {
+        temp_ctx.drawImage(image, (theArea.getX() - theArea.getSize() / 2) * (image.width / ctx.canvas.width), (theArea.getY() - theArea.getSize() / 2) * (image.height / ctx.canvas.height), theArea.getSize() * (image.width / ctx.canvas.width), theArea.getSize() * (image.height / ctx.canvas.height), 0, 0, resImgSize, resImgSize);
       }
-      if (resImgQuality!==null ){
+      if (resImgQuality !== null) {
         return temp_canvas.toDataURL(resImgFormat, resImgQuality);
       }
       return temp_canvas.toDataURL(resImgFormat);
     };
 
-    this.setNewImageSource=function(imageSource) {
-      image=null;
+    this.setNewImageSource = function (imageSource) {
+      image = null;
       resetCropHost();
       events.trigger('image-updated');
-      if(!!imageSource) {
+      if (!!imageSource) {
         var newImage = new Image();
-        if(imageSource.substring(0,4).toLowerCase()==='http') {
+        if (imageSource.substring(0, 4).toLowerCase() === 'http') {
           newImage.crossOrigin = 'anonymous';
         }
-        newImage.onload = function(){
+        newImage.onload = function () {
           events.trigger('load-done');
 
-          cropEXIF.getData(newImage,function(){
-            var orientation=cropEXIF.getTag(newImage,'Orientation');
+          cropEXIF.getData(newImage, function () {
+            var orientation = cropEXIF.getTag(newImage, 'Orientation');
 
-            if([3,6,8].indexOf(orientation)>-1) {
-              var canvas = document.createElement("canvas"),
-                  ctx=canvas.getContext("2d"),
-                  cw = newImage.width, ch = newImage.height, cx = 0, cy = 0, deg=0;
-              switch(orientation) {
+            if ([3, 6, 8].indexOf(orientation) > -1) {
+              var canvas = document.createElement('canvas'),
+                ctx = canvas.getContext('2d'),
+                cw = newImage.width, ch = newImage.height, cx = 0, cy = 0, deg = 0;
+              switch (orientation) {
                 case 3:
-                  cx=-newImage.width;
-                  cy=-newImage.height;
-                  deg=180;
+                  cx = -newImage.width;
+                  cy = -newImage.height;
+                  deg = 180;
                   break;
                 case 6:
                   cw = newImage.height;
                   ch = newImage.width;
-                  cy=-newImage.height;
-                  deg=90;
+                  cy = -newImage.height;
+                  deg = 90;
                   break;
                 case 8:
                   cw = newImage.height;
                   ch = newImage.width;
-                  cx=-newImage.width;
-                  deg=270;
+                  cx = -newImage.width;
+                  deg = 270;
                   break;
               }
 
               canvas.width = cw;
               canvas.height = ch;
-              ctx.rotate(deg*Math.PI/180);
+              ctx.rotate(deg * Math.PI / 180);
               ctx.drawImage(newImage, cx, cy);
 
-              image=new Image();
-              image.src = canvas.toDataURL("image/png");
+              image = new Image();
+              image.src = canvas.toDataURL('image/png');
             } else {
-              image=newImage;
+              image = newImage;
             }
             resetCropHost();
             events.trigger('image-updated');
           });
         };
-        newImage.onerror=function() {
+        newImage.onerror = function () {
           events.trigger('load-error');
         };
         events.trigger('load-start');
-        newImage.src=imageSource;
+        newImage.src = imageSource;
       }
     };
 
-    this.setMaxDimensions=function(width, height) {
-      maxCanvasDims=[width,height];
+    this.setMaxDimensions = function (width, height) {
+      maxCanvasDims = [width, height];
 
-      if(image!==null) {
-        var curWidth=ctx.canvas.width,
-            curHeight=ctx.canvas.height;
+      if (image !== null) {
+        var curWidth = ctx.canvas.width,
+          curHeight = ctx.canvas.height;
 
-        var imageDims=[image.width, image.height],
-            imageRatio=image.width/image.height,
-            canvasDims=imageDims;
+        var imageDims = [image.width, image.height],
+          imageRatio = image.width / image.height,
+          canvasDims = imageDims;
 
-        if(canvasDims[0]>maxCanvasDims[0]) {
-          canvasDims[0]=maxCanvasDims[0];
-          canvasDims[1]=canvasDims[0]/imageRatio;
-        } else if(canvasDims[0]<minCanvasDims[0]) {
-          canvasDims[0]=minCanvasDims[0];
-          canvasDims[1]=canvasDims[0]/imageRatio;
+        if (canvasDims[0] > maxCanvasDims[0]) {
+          canvasDims[0] = maxCanvasDims[0];
+          canvasDims[1] = canvasDims[0] / imageRatio;
+        } else if (canvasDims[0] < minCanvasDims[0]) {
+          canvasDims[0] = minCanvasDims[0];
+          canvasDims[1] = canvasDims[0] / imageRatio;
         }
-        if(canvasDims[1]>maxCanvasDims[1]) {
-          canvasDims[1]=maxCanvasDims[1];
-          canvasDims[0]=canvasDims[1]*imageRatio;
-        } else if(canvasDims[1]<minCanvasDims[1]) {
-          canvasDims[1]=minCanvasDims[1];
-          canvasDims[0]=canvasDims[1]*imageRatio;
+        if (canvasDims[1] > maxCanvasDims[1]) {
+          canvasDims[1] = maxCanvasDims[1];
+          canvasDims[0] = canvasDims[1] * imageRatio;
+        } else if (canvasDims[1] < minCanvasDims[1]) {
+          canvasDims[1] = minCanvasDims[1];
+          canvasDims[0] = canvasDims[1] * imageRatio;
         }
-        elCanvas.prop('width',canvasDims[0]).prop('height',canvasDims[1]).css({'margin-left': -canvasDims[0]/2+'px', 'margin-top': -canvasDims[1]/2+'px'});
+        elCanvas.prop('width', canvasDims[0]).prop('height', canvasDims[1]).css({
+          'margin-left': -canvasDims[0] / 2 + 'px',
+          'margin-top': -canvasDims[1] / 2 + 'px',
+        });
 
-        var ratioNewCurWidth=ctx.canvas.width/curWidth,
-            ratioNewCurHeight=ctx.canvas.height/curHeight,
-            ratioMin=Math.min(ratioNewCurWidth, ratioNewCurHeight);
+        var ratioNewCurWidth = ctx.canvas.width / curWidth,
+          ratioNewCurHeight = ctx.canvas.height / curHeight,
+          ratioMin = Math.min(ratioNewCurWidth, ratioNewCurHeight);
 
-        theArea.setX(theArea.getX()*ratioNewCurWidth);
-        theArea.setY(theArea.getY()*ratioNewCurHeight);
-        theArea.setSize(theArea.getSize()*ratioMin);
+        theArea.setX(theArea.getX() * ratioNewCurWidth);
+        theArea.setY(theArea.getY() * ratioNewCurHeight);
+        theArea.setSize(theArea.getSize() * ratioMin);
       } else {
-        elCanvas.prop('width',0).prop('height',0).css({'margin-top': 0});
+        elCanvas.prop('width', 0).prop('height', 0).css({ 'margin-top': 0 });
       }
 
       drawScene();
 
     };
 
-    this.setAreaMinSize=function(size) {
-      size=parseInt(size,10);
-      if(!isNaN(size)) {
+    this.setAreaMinSize = function (size) {
+      size = parseInt(size, 10);
+      if (!isNaN(size)) {
         theArea.setMinSize(size);
         drawScene();
       }
     };
 
-    this.setResultImageSize=function(size) {
-      size=parseInt(size,10);
-      if(!isNaN(size)) {
-        resImgSize=size;
+    this.setResultImageSize = function (size) {
+      size = parseInt(size, 10);
+      if (!isNaN(size)) {
+        resImgSize = size;
       }
     };
 
-    this.setResultImageFormat=function(format) {
+    this.setMouseWheelZoom = function (enabled) {
+      resWheelZoom = enabled;
+    };
+
+    this.setResultImageFormat = function (format) {
       resImgFormat = format;
     };
 
-    this.setResultImageQuality=function(quality){
+    this.setResultImageQuality = function (quality) {
       quality = parseFloat(quality);
-      if (!isNaN(quality) && quality>=0 && quality<=1){
+      if (!isNaN(quality) && quality >= 0 && quality <= 1) {
         resImgQuality = quality;
       }
     };
 
-    this.setAreaType=function(type) {
-      var curSize=theArea.getSize(),
-          curMinSize=theArea.getMinSize(),
-          curX=theArea.getX(),
-          curY=theArea.getY();
+    this.setAreaType = function (type) {
+      var curSize = theArea.getSize(),
+        curMinSize = theArea.getMinSize(),
+        curX = theArea.getX(),
+        curY = theArea.getY();
 
-      var AreaClass=CropAreaCircle;
-      if(type==='square') {
-        AreaClass=CropAreaSquare;
+      var AreaClass = CropAreaCircle;
+      if (type === 'square') {
+        AreaClass = CropAreaSquare;
       }
       theArea = new AreaClass(ctx, events);
       theArea.setMinSize(curMinSize);
@@ -1692,7 +1745,7 @@ crop.factory('cropHost', ['$document', 'cropAreaCircle', 'cropAreaSquare', 'crop
       theArea.setY(curY);
 
       // resetCropHost();
-      if(image!==null) {
+      if (image !== null) {
         theArea.setImage(image);
       }
 
@@ -1708,24 +1761,27 @@ crop.factory('cropHost', ['$document', 'cropAreaCircle', 'cropAreaSquare', 'crop
     theArea = new CropAreaCircle(ctx, events);
 
     // Init Mouse Event Listeners
-    $document.on('mousemove',onMouseMove);
-    elCanvas.on('mousedown',onMouseDown);
-    $document.on('mouseup',onMouseUp);
+    $document.on('mousemove', onMouseMove);
+    elCanvas.on('mousedown', onMouseDown);
+    $document.on('mouseup', onMouseUp);
 
     // Init Touch Event Listeners
-    $document.on('touchmove',onMouseMove);
-    elCanvas.on('touchstart',onMouseDown);
-    $document.on('touchend',onMouseUp);
+    $document.on('touchmove', onMouseMove);
+    elCanvas.on('touchstart', onMouseDown);
+    $document.on('touchend', onMouseUp);
+
+    elCanvas.on('mousewheel DOMMouseScroll', onMouseWheel);
 
     // CropHost Destructor
-    this.destroy=function() {
-      $document.off('mousemove',onMouseMove);
-      elCanvas.off('mousedown',onMouseDown);
-      $document.off('mouseup',onMouseMove);
+    this.destroy = function () {
+      $document.off('mousemove', onMouseMove);
+      elCanvas.off('mousedown', onMouseDown);
+      $document.off('mouseup', onMouseMove);
 
-      $document.off('touchmove',onMouseMove);
-      elCanvas.off('touchstart',onMouseDown);
-      $document.off('touchend',onMouseMove);
+      $document.off('touchmove', onMouseMove);
+      elCanvas.off('touchstart', onMouseDown);
+      $document.off('touchend', onMouseMove);
+      elCanvas.off('mousewheel DOMMouseScroll', onMouseWheel);
 
       elCanvas.remove();
     };
@@ -1757,7 +1813,7 @@ crop.factory('cropPubSub', [function() {
   };
 }]);
 
-crop.directive('imgCrop', ['$timeout', 'cropHost', 'cropPubSub', function($timeout, CropHost, CropPubSub) {
+crop.directive('imgCrop', ['$timeout', 'cropHost', 'cropPubSub', function ($timeout, CropHost, CropPubSub) {
   return {
     restrict: 'E',
     scope: {
@@ -1770,42 +1826,42 @@ crop.directive('imgCrop', ['$timeout', 'cropHost', 'cropPubSub', function($timeo
       resultImageSize: '=',
       resultImageFormat: '@',
       resultImageQuality: '=',
-
+      mouseWheelZoom: '=',
       onChange: '&',
       onLoadBegin: '&',
       onLoadDone: '&',
-      onLoadError: '&'
+      onLoadError: '&',
     },
     template: '<canvas></canvas>',
-    controller: ['$scope', function($scope) {
+    controller: ['$scope', function ($scope) {
       $scope.events = new CropPubSub();
     }],
-    link: function(scope, element/*, attrs*/) {
+    link: function (scope, element/*, attrs*/) {
       // Init Events Manager
       var events = scope.events;
 
       // Init Crop Host
-      var cropHost=new CropHost(element.find('canvas'), {}, events);
+      var cropHost = new CropHost(element.find('canvas'), {}, events);
 
       // Store Result Image to check if it's changed
       var storedResultImage;
 
-      var updateResultImage=function(scope) {
-        var resultImage=cropHost.getResultImageDataURI();
-        if(storedResultImage!==resultImage) {
-          storedResultImage=resultImage;
-          if(angular.isDefined(scope.resultImage)) {
-            scope.resultImage=resultImage;
+      var updateResultImage = function (scope) {
+        var resultImage = cropHost.getResultImageDataURI();
+        if (storedResultImage !== resultImage) {
+          storedResultImage = resultImage;
+          if (angular.isDefined(scope.resultImage)) {
+            scope.resultImage = resultImage;
           }
-          scope.onChange({$dataURI: scope.resultImage});
+          scope.onChange({ $dataURI: scope.resultImage });
         }
       };
 
       // Wrapper to safely exec functions within $apply on a running $digest cycle
-      var fnSafeApply=function(fn) {
-        return function(){
-          $timeout(function(){
-            scope.$apply(function(scope){
+      var fnSafeApply = function (fn) {
+        return function () {
+          $timeout(function () {
+            scope.$apply(function (scope) {
               fn(scope);
             });
           });
@@ -1814,45 +1870,49 @@ crop.directive('imgCrop', ['$timeout', 'cropHost', 'cropPubSub', function($timeo
 
       // Setup CropHost Event Handlers
       events
-        .on('load-start', fnSafeApply(function(scope){
-          scope.onLoadBegin({});
-        }))
-        .on('load-done', fnSafeApply(function(scope){
-          scope.onLoadDone({});
-        }))
-        .on('load-error', fnSafeApply(function(scope){
-          scope.onLoadError({});
-        }))
-        .on('area-move area-resize', fnSafeApply(function(scope){
-          if(!!scope.changeOnFly) {
-            updateResultImage(scope);
-          }
-        }))
-        .on('area-move-end area-resize-end image-updated', fnSafeApply(function(scope){
+      .on('load-start', fnSafeApply(function (scope) {
+        scope.onLoadBegin({});
+      }))
+      .on('load-done', fnSafeApply(function (scope) {
+        scope.onLoadDone({});
+      }))
+      .on('load-error', fnSafeApply(function (scope) {
+        scope.onLoadError({});
+      }))
+      .on('area-move area-resize', fnSafeApply(function (scope) {
+        if (!!scope.changeOnFly) {
           updateResultImage(scope);
-        }));
+        }
+      }))
+      .on('area-move-end area-resize-end image-updated', fnSafeApply(function (scope) {
+        updateResultImage(scope);
+      }));
 
       // Sync CropHost with Directive's options
-      scope.$watch('image',function(){
+      scope.$watch('image', function () {
         cropHost.setNewImageSource(scope.image);
       });
-      scope.$watch('areaType',function(){
+      scope.$watch('areaType', function () {
         cropHost.setAreaType(scope.areaType);
         updateResultImage(scope);
       });
-      scope.$watch('areaMinSize',function(){
+      scope.$watch('areaMinSize', function () {
         cropHost.setAreaMinSize(scope.areaMinSize);
         updateResultImage(scope);
       });
-      scope.$watch('resultImageSize',function(){
+      scope.$watch('mouseWheelZoom', function () {
+        cropHost.setMouseWheelZoom(scope.mouseWheelZoom);
+        updateResultImage(scope);
+      });
+      scope.$watch('resultImageSize', function () {
         cropHost.setResultImageSize(scope.resultImageSize);
         updateResultImage(scope);
       });
-      scope.$watch('resultImageFormat',function(){
+      scope.$watch('resultImageFormat', function () {
         cropHost.setResultImageFormat(scope.resultImageFormat);
         updateResultImage(scope);
       });
-      scope.$watch('resultImageQuality',function(){
+      scope.$watch('resultImageQuality', function () {
         cropHost.setResultImageQuality(scope.resultImageQuality);
         updateResultImage(scope);
       });
@@ -1863,17 +1923,18 @@ crop.directive('imgCrop', ['$timeout', 'cropHost', 'cropPubSub', function($timeo
           return [element[0].clientWidth, element[0].clientHeight];
         },
         function (value) {
-          cropHost.setMaxDimensions(value[0],value[1]);
+          cropHost.setMaxDimensions(value[0], value[1]);
           updateResultImage(scope);
         },
         true
       );
 
       // Destroy CropHost Instance when the directive is destroying
-      scope.$on('$destroy', function(){
-          cropHost.destroy();
+      scope.$on('$destroy', function () {
+        cropHost.destroy();
       });
-    }
+    },
   };
 }]);
+
 }());
